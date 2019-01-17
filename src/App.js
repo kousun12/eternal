@@ -262,7 +262,7 @@ class App extends Component<P, S> {
                 </p>
               </div>
               <div className={Classes.DIALOG_FOOTER_ACTIONS}>
-                <Button onClick={this._loadUrl}>👾 load</Button>
+                <Button onClick={this._loadUrl}>👾 ok, computer</Button>
               </div>
             </div>
           </Dialog>
