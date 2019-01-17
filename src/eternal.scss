@@ -19,9 +19,9 @@ body {
   background-size: $dot-space $dot-space;
 }
 
-//.body::-webkit-scrollbar, html::-webkit-scrollbar {
-//  display: none;
-//}
+.body::-webkit-scrollbar, html::-webkit-scrollbar {
+  display: none;
+}
 
 .bp3-portal {
   font-family: Monaco, "Source Code Pro", monospace, sans-serif;
