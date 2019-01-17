@@ -17,27 +17,27 @@ What i want is
 
 There are several example graphs that can be loaded from within the app itself. `cmd + e` on a mac and `ctrl + e` on windows; you may need to zoom out to fit some graphs `cmd + -`:
 
-###### nude, eternally
+###### [nude, eternally](https://kousun12.github.io/eternal?e=nude%2C%20eternally)
 This is radiohead, forever. `Thom Yorke` eternally over `EMaj7 - AMaj9 - G#m7`. Don't get any big ideas, though; indeterminate but not infinite. An irreducible arpeggio, in 78 nodes.
 
-###### in the gardens of eden
+###### [in the gardens of eden](https://kousun12.github.io/eternal?e=in%20the%20gardens%20of%20eden)
 Et in Arcadia, eno. [`Brian`](https://www.edge.org/conversation/brian_eno-composers-as-gardeners) plants his seeds as he thinks of Aristotle's `prime mover`. Against the `C`s of entropy, `Terry Riley`'s decomposing soul fertilizes our lilies.  
 
-###### platonic plague
+###### [platonic plague](https://kousun12.github.io/eternal?e=platonic%20plague)
 man, i fold<br>
 to the realm of forms<br>
 man, i fold<br>
 to fi del it y
 
-###### the music while the music lasts
+###### [the music while the music lasts](https://kousun12.github.io/eternal?e=the%20music%20while%20the%20music%20lasts)
 i do not know much about gods; but i think that the river<br>
 Is a strong brown god - sullen, untamed and intractable<br>
 they sing in the silence of space
 
-###### stephen wolfram
+###### [stephen wolfram](https://kousun12.github.io/eternal?e=)
 Stephen Wolfram is an operator that, when given a 1D cellular automata rule number [0-255] and a representation of the world, outputs the subsequent state of the world according to that rule. He will do this indefinitely and is, in fact, Earth's first eternal human.
 
-###### shaders
+###### [shaders](https://kousun12.github.io/eternal?e=shaders)
 sisyphus walks the color tensor, in `YUV`
 
 ###### etc...
