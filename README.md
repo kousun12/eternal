@@ -29,12 +29,12 @@ to the realm of forms<br>
 man, i fold<br>
 to fi del it y
 
-###### [the music while the music lasts](https://kousun12.github.io/eternal?e=the%20music%20while%20the%20music%20lasts)
+###### [the music while the music lasts](https://kousun12.github.io/eternal?e=the+music+while+the+music+lasts)
 i do not know much about gods; but i think that the river<br>
 Is a strong brown god - sullen, untamed and intractable<br>
 they sing in the silence of space
 
-###### [stephen wolfram](https://kousun12.github.io/eternal?e=)
+###### [stephen wolfram](https://kousun12.github.io/eternal?e=stephen+wolfram)
 Stephen Wolfram is an operator that, when given a 1D cellular automata rule number [0-255] and a representation of the world, outputs the subsequent state of the world according to that rule. He will do this indefinitely and is, in fact, Earth's first eternal human.
 
 ###### [shaders](https://kousun12.github.io/eternal?e=shaders)

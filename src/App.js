@@ -70,7 +70,7 @@ class App extends Component<P, S> {
     let serialization = welcomeGraph;
     const exId = get(window.location.search.match(/[?&]e=([\w-\d% +]+)&?/), 1);
     if (exId) {
-      const name = decodeURIComponent(exId).replace('+', ' ');
+      const name = decodeURIComponent(exId).replace(/\+/g, ' ');
       if (examples.find(e => e.name === name)) {
         this.setState({ promptLoad: name });
       }
