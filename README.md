@@ -39,7 +39,7 @@ Stephen Wolfram is an operator that, when given a 1D cellular automata rule numb
 sisyphus walks the color tensor, in `YUV`
 
 ###### etc...
-and so on, until the end.
+and so on, until the ends.
 
 <br/><p align="center"><img src="public/sierpinski.gif" alt="sierpinskiksnipreis"></p><br/>
 
