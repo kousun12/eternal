@@ -27,6 +27,7 @@ import {
   VignetteEffect,
 } from 'postprocessing';
 const Types = window.Types;
+const URL_BASE = process.env.PUBLIC_URL || ''
 
 type P = { child: Mesh };
 type S = { base: Base, added: string[] };
@@ -253,7 +254,7 @@ export class GlitchPassNode extends NodeBase<{}, {}, { glitch: Object }> {
         callback();
       }
     };
-    textureLoader.load('/latent/textures/perturb.jpg', texture => {
+    textureLoader.load(URL_BASE + '/latent/textures/perturb.jpg', texture => {
       texture.magFilter = texture.minFilter = NearestFilter;
       assets.set('perturb-map', texture);
     });

@@ -6,6 +6,7 @@ import NodeBase from 'models/NodeBase';
 import Edge from 'models/Edge';
 const Piano = require('tone-piano').Piano;
 const Types = window.Types;
+const URL_BASE = process.env.PUBLIC_URL || ''
 
 // Tone Types
 export const TT = {
@@ -628,7 +629,7 @@ export class PlayerNode extends NodeBase<{}, { url: string, call: any }, { playe
 
   _makePlayer = (url: string) => {
     if(url.startsWith("/")) {
-      url = process.env.PUBLIC_URL + url
+      url = URL_BASE + url
     }
     this._player = new Tone.Player(url, () => {
       this.notifyAllOutputs(true);

@@ -37,7 +37,7 @@ const calculateEventSize = () => {
   }
   return eventOffset;
 };
-const URL_BASE = process.env.PUBLIC_URL
+const URL_BASE = process.env.PUBLIC_URL || ''
 
 const EVENT_SIZE = calculateEventSize();
 const PRIMER_IDX = 355;
