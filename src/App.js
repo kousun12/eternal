@@ -4,7 +4,15 @@ import './boot';
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { get } from 'lodash';
-import { HotkeysTarget, Hotkeys, Hotkey, setHotkeysDialogProps } from '@blueprintjs/core';
+import {
+  HotkeysTarget,
+  Hotkeys,
+  Hotkey,
+  setHotkeysDialogProps,
+  Dialog,
+  Button,
+  Classes,
+} from '@blueprintjs/core';
 
 import 'font-awesome/css/font-awesome.css';
 import 'font-awesome/scss/font-awesome.scss';
@@ -36,6 +44,7 @@ type S = {
   searchingNodes: boolean,
   searchingExamples: boolean,
   visible: boolean,
+  promptLoad: ?string,
 };
 
 class App extends Component<P, S> {
@@ -53,6 +62,7 @@ class App extends Component<P, S> {
       searchingNodes: false,
       visible: true,
       searchingExamples: false,
+      promptLoad: null,
     };
   }
 
@@ -61,7 +71,9 @@ class App extends Component<P, S> {
     const exId = get(window.location.search.match(/[?&]e=([\w-\d% +]+)&?/), 1);
     if (exId) {
       const name = decodeURIComponent(exId).replace('+', ' ');
-      serialization = examples.find(e => e.name === name) || serialization;
+      if (examples.find(e => e.name === name)) {
+        this.setState({ promptLoad: name });
+      }
     }
     this._setGraph(Graph.load(serialization));
 
@@ -163,6 +175,15 @@ class App extends Component<P, S> {
   _showNodeSearch = () => this.setState({ searchingNodes: true });
   _toggleGraph = () => this.setState({ visible: !this.state.visible });
 
+  _loadUrl = () => {
+    const { promptLoad } = this.state;
+    if (promptLoad) {
+      const serialization = examples.find(e => e.name === promptLoad);
+      serialization && this._setGraph(Graph.load(serialization));
+    }
+    this.setState({ promptLoad: null });
+  };
+
   _nextNode = () => {
     if (!this.state.selectedNode) return;
     const nodes = get(this.state.graph, 'nodes', []);
@@ -196,6 +217,7 @@ class App extends Component<P, S> {
       searchingNodes,
       visible,
       searchingExamples,
+      promptLoad,
     } = this.state;
     return (
       <>
@@ -230,6 +252,18 @@ class App extends Component<P, S> {
           onItemSelect={this._loadGraph}
           onClose={this._closeSearch}
         />
+        {promptLoad && (
+          <Dialog isOpen={true} className="bp3-dark" title={promptLoad}>
+            <div className={Classes.DIALOG_FOOTER}>
+              <div className={Classes.DIALOG_BODY}>
+                welcome to the eternal
+              </div>
+              <div className={Classes.DIALOG_FOOTER_ACTIONS}>
+                <Button onClick={this._loadUrl}>👾 load</Button>
+              </div>
+            </div>
+          </Dialog>
+        )}
         <FileUpload onFile={this._onFileUpload} ref={r => (this.fileUpload = r)} />
         <h2 className="graph-title">{get(graph, 'name', '')}</h2>
       </>
@@ -271,13 +305,10 @@ class App extends Component<P, S> {
 }
 
 setHotkeysDialogProps({ className: 'bp3-dark', globalHotkeysGroup: 'Menu' });
-const AppWithHK = HotkeysTarget(App)
+const AppWithHK = HotkeysTarget(App);
 
 document.addEventListener('DOMContentLoaded', () => {
-  ReactDOM.render(
-    <AppWithHK className="bp3-dark" />,
-    document.getElementById('eternal-root')
-  );
+  ReactDOM.render(<AppWithHK className="bp3-dark" />, document.getElementById('eternal-root'));
 });
 
 export default AppWithHK;
