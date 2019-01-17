@@ -1,0 +1,6 @@
+{
+  "type": "MusicRNN",
+  "dataConverter": {
+      "type": "PerformanceConverter"
+  }
+}
