@@ -253,10 +253,13 @@ class App extends Component<P, S> {
           onClose={this._closeSearch}
         />
         {promptLoad && (
-          <Dialog isOpen={true} className="bp3-dark" title={promptLoad}>
+          <Dialog isOpen={true} className="bp3-dark" title='Load...'>
             <div className={Classes.DIALOG_FOOTER}>
               <div className={Classes.DIALOG_BODY}>
-                welcome to the eternal
+                <p>you are about to load</p>
+                <p>
+                  ~{promptLoad}~
+                </p>
               </div>
               <div className={Classes.DIALOG_FOOTER_ACTIONS}>
                 <Button onClick={this._loadUrl}>👾 load</Button>
