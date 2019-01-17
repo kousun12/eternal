@@ -54,7 +54,6 @@ class Spline extends React.Component<P, S> {
   };
 
   _onNotify = () => {
-    window['$debug'] &&
       this.el &&
       // $FlowIssue
       this.el.animate(
