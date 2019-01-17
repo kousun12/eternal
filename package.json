@@ -2,7 +2,7 @@
   "name": "eternal",
   "version": "0.1.0",
   "private": false,
-  "homepage": "http://kousun12.github.io/eternal",
+  "homepage": "https://kousun12.github.io/eternal",
   "dependencies": {
     "@babel/plugin-proposal-export-default-from": "^7.0.0",
     "@babel/preset-flow": "^7.0.0",
@@ -68,7 +68,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "predeploy": "npm run build",
+    "predeploy": "yarn run build",
     "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
