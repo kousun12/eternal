@@ -4,7 +4,7 @@ This project was created for gratuitous reasons; it’s an attempt to serve an a
 
 The computationalist perspective is one which I see emerging in our society. The relationships between computation, thinking, and perception are moving from metaphorical to formal. Art has always been the process of encoding a mental representation into an artifact. The artifact here is a program which allows one to describe a sub-program, encoded as a computational graph that might reflect a mental representation in your bio-mind. 
 
-What I am interested in here is ~music eternal~... non-halting computational acoustic processes. What I want is ~music eternal~.
+What I am interested in here is \~music eternal\~... non-halting computational acoustic processes. What I want is \~music eternal\~.
 
 #### Development
 
