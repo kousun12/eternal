@@ -97,7 +97,9 @@ class App extends Component<P, S> {
     }
     window['$node'] = null;
     this.mostRecentNode = get(graph.nodes, [0, 'node']);
-    this.setState({ graph, selectedNode: null }, () => (window['$graph'] = graph));
+    const readme = graph.nodes.find(nis => nis.node.title === 'README')
+    const selectedNode = readme ? readme.node : null
+    this.setState({ graph, selectedNode }, () => (window['$graph'] = graph));
   };
 
   _onSearch = () => {

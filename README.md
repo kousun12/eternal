@@ -2,7 +2,7 @@
 
 <p align="center"><a href="https://kousun12.github.io/eternal/">demo</a></p>
 
-i don't like to explain myself, but here it is useful; for you, i will try. This project was created for gratuitous reasons; it’s an attempt to serve an aesthetic that I appreciate, over a medium which I feel is appropriate for its expression. The computationalist perspective is one which I see emerging in our society. The relationships between computation, thinking, and perception are moving from metaphorical ➜ formal. Art has always been the process of encoding a mental representation into an artifact. The artifact here is a program which allows the description and decision of a sub-program, encoded as a computational graph, intended to allow transcriptions of a mental representation for your bio-minds. 
+i don't like to explain myself, but here it is useful; for you, i will try. This project was created for gratuitous reasons; it’s an attempt to serve an aesthetic that I appreciate, over a medium which I feel is appropriate for its expression. The computationalist perspective is one which I see emerging in our society. The relationships between computation, thinking, and perception are moving from metaphorical ➜ formal. Art has always been the process of encoding a mental representation into an artifact. The artifact here is a program which allows the description and decision of a sub-program, encoded as a computational graph, intended to allow transcriptions of a mental representation for your bio-minds.
 
 ```bash
 what i am interested in here is 
@@ -47,6 +47,7 @@ and so on, until the ends.
 
 
 #### Development
+While this might smell something like consumer software, you should understand it as an art project. While I believe that there's a space for something like this (a flow-based-programming inspired audio / visual creative tool), this has been made only as an aesthetic exploration; I don't intend to support it in any way, but you should feel at liberty to do with it what you please.
 
 `npm start`
 
