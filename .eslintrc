@@ -1,0 +1,13 @@
+{
+  "globals": {
+    "Types": true
+  },
+  "overrides": [
+    {
+      "files": ["*"],
+      "rules": {
+        "no-undef": "off"
+      }
+    }
+  ]
+}
