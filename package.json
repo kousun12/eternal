@@ -1,6 +1,7 @@
 {
   "name": "eternal",
   "version": "0.1.0",
+  "license": "MIT",
   "private": false,
   "homepage": "https://kousun12.github.io/eternal",
   "dependencies": {
