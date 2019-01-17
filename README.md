@@ -41,7 +41,7 @@ sisyphus walks the color tensor, in `YUV`
 ###### etc...
 and so on, until the end.
 
-<img align="center" src="public/sierpinski.gif" alt="sierpinskiksnipreis" style="margin: 16px;"> 
+<br/><p align="center"><img src="public/sierpinski.gif" alt="sierpinskiksnipreis"></p><br/>
 
 
 #### Development
