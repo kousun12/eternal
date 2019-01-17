@@ -58,9 +58,9 @@ class App extends Component<P, S> {
 
   componentDidMount() {
     let serialization = welcomeGraph;
-    const exId = get(window.location.search.match(/[?&]e=([\w-\d% ]+)&?/), 1);
+    const exId = get(window.location.search.match(/[?&]e=([\w-\d% +]+)&?/), 1);
     if (exId) {
-      const name = decodeURIComponent(exId);
+      const name = decodeURIComponent(exId).replace('+', ' ');
       serialization = examples.find(e => e.name === name) || serialization;
     }
     this._setGraph(Graph.load(serialization));
