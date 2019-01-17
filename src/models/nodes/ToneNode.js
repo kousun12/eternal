@@ -627,6 +627,9 @@ export class PlayerNode extends NodeBase<{}, { url: string, call: any }, { playe
   _player: Tone.Player = new Tone.Player();
 
   _makePlayer = (url: string) => {
+    if(url.startsWith("/")) {
+      url = process.env.PUBLIC_URL + url
+    }
     this._player = new Tone.Player(url, () => {
       this.notifyAllOutputs(true);
       this._loaded = url;

@@ -37,10 +37,11 @@ const calculateEventSize = () => {
   }
   return eventOffset;
 };
+const URL_BASE = process.env.PUBLIC_URL
 
 const EVENT_SIZE = calculateEventSize();
 const PRIMER_IDX = 355;
-const CHECKPOINT_URL = '/latent/performance';
+const CHECKPOINT_URL = URL_BASE + '/latent/performance';
 
 export const pentatonic = [0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0];
 export const cMajor = [2, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1];
