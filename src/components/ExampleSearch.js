@@ -13,7 +13,7 @@ export const examples = [
   require('models/examples/in the gardens of eden.json'),
   require('models/examples/platonic plague.json'),
   require('models/examples/the music while the music lasts.json'),
-  require('models/examples/stephan wolfram.json'),
+  require('models/examples/stephen wolfram.json'),
   require('models/examples/shaders.json'),
   require('models/examples/percept nets.json'),
   require('models/examples/soundfont-midi.json'),
