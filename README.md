@@ -15,7 +15,7 @@ What i want is
 
 #### examples // myths
 
-There are several example graphs that can be loaded from within the app itself. `cmd + e` on a mac and `ctrl + e` on windows; you may need to zoom out to fit some graphs `cmd + -`:
+There are several example graphs that can be loaded from within the app itself. `cmd|ctrl + e`; you may need to zoom out to fit some graphs `cmd + -`:
 
 ###### [nude, eternally](https://kousun12.github.io/eternal?e=nude%2C%20eternally)
 This is radiohead, forever. `Thom Yorke` eternally over `EMaj7 - AMaj9 - G#m7`. Don't get any big ideas, though; indeterminate but not infinite. An irreducible arpeggio, in 78 nodes.
