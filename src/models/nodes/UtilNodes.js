@@ -1,6 +1,6 @@
 // @flow
 import React from 'react';
-import { get } from 'lodash';
+import { get, reverse } from 'lodash';
 import NodeBase from 'models/NodeBase';
 import Edge from 'models/Edge';
 import { TT } from 'models/nodes/ToneNode';
@@ -99,7 +99,7 @@ export class StephenWolfram extends NodeBase<
       bin.unshift(...[...new Array(8 - bin.length)].map(() => 0));
     }
     // $FlowIssue
-    return bin;
+    return reverse(bin);
   }
 
   willReceiveProps = (newProps: Object, prevProps: Object) => {
