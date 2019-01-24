@@ -52,12 +52,12 @@ self.__precacheManifest = [
     "url": "/eternal/static/media/icons-16.d0bcd5b9.woff"
   },
   {
-    "revision": "0ec8ac2bacb2c3a1b2a2064305bc1223",
-    "url": "/eternal/static/media/icons-20.0ec8ac2b.ttf"
-  },
-  {
     "revision": "f4d910a0626d8e60f310a7199dc6b191",
     "url": "/eternal/static/media/icons-20.f4d910a0.eot"
+  },
+  {
+    "revision": "0ec8ac2bacb2c3a1b2a2064305bc1223",
+    "url": "/eternal/static/media/icons-20.0ec8ac2b.ttf"
   },
   {
     "revision": "9d0578e5315c18aa528db1f1bfcb56f5",
