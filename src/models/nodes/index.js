@@ -59,7 +59,7 @@ import Vector2D from './Vector2D';
 import Vector3D from './Vector3D';
 import { DomNode } from './Dom';
 import { PlusNode } from './String';
-import { ScaleNode, ChromaNode, ChordNode, TransposeNode } from './Music';
+import { ScaleNode, ChromaNode, ChordNode, TransposeNode, KeyTriadsNode } from './Music';
 import { PerformanceRNNNode } from './Neural';
 import { DivideNode, SumNode, ProductNode, IntToIntMathNode } from './MathNodes';
 import { number, string, boolean, date } from './primitives';
@@ -125,6 +125,7 @@ export {
   ChromaNode,
   ChordNode,
   TransposeNode,
+  KeyTriadsNode,
   MidiOutNode,
   MidiInNode,
   JSONParse,
@@ -199,6 +200,7 @@ const allNodes = [
   ChromaNode,
   ChordNode,
   TransposeNode,
+  KeyTriadsNode,
   MidiOutNode,
   MidiInNode,
   JSONParse,

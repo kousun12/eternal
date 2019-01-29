@@ -2,11 +2,15 @@
 import React from 'react';
 import { get } from 'lodash';
 import { Chord, Scale } from 'tonal';
+import * as Key from 'tonal-key'
 import { chroma } from 'tonal-pcset';
 import { transpose } from 'tonal-distance';
 import NodeBase from 'models/NodeBase';
 import Edge from 'models/Edge';
 const Types = window.Types;
+window.Chord = Chord
+window.Key = Key
+window.Scale = Scale
 
 export class ScaleNode extends NodeBase<
   {},
@@ -91,6 +95,36 @@ export class ChordNode extends NodeBase<
       notes: Chord.notes(this.props.tonic, this.props.name),
       intervals: Chord.intervals(this.props.name || this.props.tonic),
     };
+  };
+
+  onInputChange = (edge: Edge, change: Object) => this.outKeys();
+}
+
+export class KeyTriadsNode extends NodeBase<
+  {},
+  { key: string },
+  { notes: string[] }
+  > {
+  static +displayName = 'Key Triads';
+  static +registryName = 'KeyTriadsNode';
+  static description = <span>Triads For a Key</span>;
+  static schema = {
+    input: {
+      key: Types.string.desc(
+        'The name of the key (a tonic + a mode), e.g. C major, Db dorian'
+      ),
+    },
+    output: {
+      notes: Types.object.desc('Triad lead-sheet symbols for this key'),
+    },
+    state: {},
+  };
+
+  process = () => {
+    if (!get(this.props, 'key')) {
+      return { notes: [] };
+    }
+    return {notes: Key.triads(this.props.key)};
   };
 
   onInputChange = (edge: Edge, change: Object) => this.outKeys();
