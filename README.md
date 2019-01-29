@@ -2,7 +2,7 @@
 
 <p align="center"><a href="https://kousun12.github.io/eternal/">~~ demo ~~</a></p>
 
-This project was created for gratuitous reasons; it’s an attempt to serve an aesthetic that I appreciate, over a medium which I feel is appropriate for its expression. _It is defintely more of an art project than a product._ The computationalist perspective is one which I see emerging in our society. The relationships between computation, thinking, and perception are moving from metaphorical ➜ formal. Art has always been the process of encoding a mental representation into an artifact. The artifact here is a program which allows the description and decision of a sub-program, encoded as a computational graph, intended to allow transcriptions of a mental representation from your bio-minds.
+This project was created for gratuitous reasons; it’s an attempt to serve an aesthetic that I appreciate, over a medium which I feel is appropriate for its expression. _It is defintely more of an art project than a product._ The computationalist perspective seems to me one of the most important of our time. The relationships between computation, thinking, and perception are moving from metaphorical to formal. Art has always been the process of encoding a mental representation into an artifact. The artifact here is a program which allows the description and decision of a sub-program, encoded as a computational graph, intended to allow transcriptions of a mental representation from your bio-minds. This project tries to highlight an aesthetic quality of the universal representations that produce aesthetic artifacts as a side-effect.
 
 #### examples // myths
 
