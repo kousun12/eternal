@@ -144,6 +144,14 @@ class App extends Component<P, S> {
     this._closeSearch();
   };
 
+  _loadExample = (json: GraphSerialization) => {
+    window.location.search = `?e=${encodeURIComponent(json.name.replace(/ /g, '+'))}`
+  };
+
+  _reload = () => {
+    window.location.search = ''
+  };
+
   _toggleDebug = () => {
     window['$debug'] = !window['$debug'];
     console.log('debug mode', window['$debug']);
@@ -251,7 +259,7 @@ class App extends Component<P, S> {
         )}
         <ExampleSearch
           isOpen={searchingExamples}
-          onItemSelect={this._loadGraph}
+          onItemSelect={this._loadExample}
           onClose={this._closeSearch}
         />
         {promptLoad && (
@@ -301,6 +309,7 @@ class App extends Component<P, S> {
         />
         <Hotkey global combo="shift + meta + s" label="Export as JSON" onKeyDown={this._showSave} />
         <Hotkey global combo="shift + meta + o" label="Load from JSON" onKeyDown={this._loadJSON} />
+        <Hotkey global combo="shift + meta + x" label="Clear All" onKeyDown={this._reload} />
         <Hotkey global combo="alt + d" label="Debug Mode" onKeyDown={this._toggleDebug} />
         <Hotkey global combo="j" label="Next Node" onKeyDown={this._nextNode} />
         <Hotkey global combo="k" label="Prev Node" onKeyDown={this._prevNode} />
