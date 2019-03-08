@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "license": "MIT",
   "private": false,
-  "homepage": "https://kousun12.github.io/eternal",
+  "homepage": "http://eternal.robcheung.com",
   "dependencies": {
     "@babel/plugin-proposal-export-default-from": "^7.0.0",
     "@babel/preset-flow": "^7.0.0",
