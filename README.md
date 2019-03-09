@@ -4,7 +4,7 @@
 
 This project was created for gratuitous reasons; it’s an attempt to serve an aesthetic that I appreciate, over a medium which I feel is appropriate for its expression. _It is defintely more of an art project than a product._ The computationalist perspective seems to me one of the most important of our time. The relationships between computation, thinking, and perception are moving from metaphorical to formal. Art has always been the process of encoding a mental representation into an artifact. The artifact here is a program which allows the description and decision of a sub-program, encoded as a computational graph, intended to allow transcriptions of a mental representation from your bio-minds. This project tries to highlight an aesthetic quality of universal encodings that produce aesthetic artifacts as a side-effect; something like the mirth one gets when opening a well-factored bit of source code.
 
-<p align="center"><img src="eternal.png" alt="screenshot"></p>
+<br/><p align="center"><img src="eternal.png" alt="screenshot"></p><br/>
 
 #### examples // myths
 
