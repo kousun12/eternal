@@ -2,7 +2,13 @@
 
 <p align="center"><a href="https://kousun12.github.io/eternal">~~ demo ~~</a></p>
 
-This project was created for gratuitous reasons; it’s an attempt to serve an aesthetic that I appreciate, over a medium which I feel is appropriate for its expression. _It is defintely more of an art project than a product._ The computationalist perspective seems to me one of the most important of our time. The relationships between computation, thinking, and perception are moving from metaphorical to formal. Art has always been the process of encoding a mental representation into an artifact. The artifact here is a program which allows the description and decision of a sub-program, encoded as a computational graph, intended to allow transcriptions of a mental representation from your bio-minds. This project tries to highlight an aesthetic quality of universal encodings that produce aesthetic artifacts as a side-effect; something like the mirth one gets when opening a well-factored bit of source code that happens to compute something interesting.
+This project was created for gratuitous reasons; it’s an attempt to serve an aesthetic that I appreciate, over a medium which I feel is appropriate for its expression. 
+
+Having spent a lot of time / mind in and around computers, my sense of aesthetics has something to do with not only the things-in-themselves, but their representations, specifically as information processes, i.e. programs. Complex phenomena which are beautiful but also succinctly describable have beauty in both perceptual and abstract senses. This project is one which allows one to describe audio/visual processes as programs, encoded as a visual graph. You can think of it as an extension of Sol LeWitt's process art or Brian Eno's idea of "music as gardening".
+
+##### aside
+
+I've, since making this, discovered tools like max/msp / houdini & many more extremely well thought out versions of this as a tool. While I still like some aspects of this as a tool that those others do not have, note that _this defintely more of an art project than a product._ It was made to juxtapose representations with perceptions, and while you can probably make arbitrary things with it, you will find many other better supported tools that aren't created out of my specific interests. Nevertheless, enjoy. 
 
 <br/><p align="center"><img src="eternal.png" alt="screenshot"></p><br/>
 
