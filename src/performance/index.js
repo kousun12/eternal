@@ -16,7 +16,6 @@ const MIN_MIDI_PITCH = 0;
 const MAX_MIDI_PITCH = 127;
 const VELOCITY_BINS = 32;
 const MAX_SHIFT_STEPS = 100;
-const STEPS_PER_SECOND = 100;
 
 export const MIDI_EVENT_ON = 0x90;
 export const MIDI_EVENT_OFF = 0x80;
@@ -85,7 +84,8 @@ export default class Performance {
   fcW: tf.Tensor2D;
   pitchHistArray: number[] = pentatonic;
   pitchHistogram: tf.Tensor1D;
-  noteDensityBucket: number = 0;
+  noteDensityBucket: number = 1;
+  stepsPerSecond: number = 100;
   noteDensityEncoding: tf.Tensor1D;
   currentTime = 0;
   startTime = 0;
@@ -125,6 +125,10 @@ export default class Performance {
       });
     this.refreshConditioning();
   };
+
+  setTempo = (sps) => {
+    this.stepsPerSecond = sps;
+  }
 
   cleanup = () => {
     if (this.intervalId) {
@@ -293,7 +297,7 @@ export default class Performance {
           this.velocityMapListener && this.velocityMapListener(this.activeVelocities);
           return;
         } else if (eventType === 'time_shift') {
-          this.currentTime += (index - offset + 1) / STEPS_PER_SECOND;
+          this.currentTime += (index - offset + 1) / this.stepsPerSecond;
           this.activeNotes.forEach((timeSec, noteNum) => {
             if (this.currentTime - timeSec > MAX_NOTE_DURATION_SECONDS) {
               this.midiListener &&

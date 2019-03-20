@@ -45,6 +45,7 @@ export class PerformanceRNNNode extends NodeBase<
 > {
   static +displayName = 'Performance RNN';
   static +registryName = 'PerformanceRNNNode';
+  static defaultProps = { stepsPerSecond: 100 };
   static description = (
     <span>Sample an RNN model trained on the Yamaha e-Piano Competition dataset</span>
   );
@@ -55,6 +56,9 @@ export class PerformanceRNNNode extends NodeBase<
       ),
       density: Types.number.desc(
         'A density conditioning variable between 0-6 that serves as a directive for how many notes will be generated per step, in exponential scale. i.e. notes generated per step will be 2^density'
+      ),
+      stepsPerSecond: Types.number.desc(
+        'number of steps per second. effectively a tempo measure for note generation / playback'
       ),
       synth: ToneTypes.Synth.desc(
         'Optionally attach a synth to this node and trigger its attack / release'
@@ -168,6 +172,10 @@ export class PerformanceRNNNode extends NodeBase<
   willReceiveProps = (newProps: Object, prevProps: Object) => {
     if (!prevProps || (newProps.density !== undefined && newProps.density !== prevProps.density)) {
       this.performance.noteDensityBucket = newProps.density;
+      this.performance.refreshConditioning();
+    }
+    if (!prevProps || (newProps.stepsPerSecond !== undefined && newProps.stepsPerSecond !== prevProps.stepsPerSecond)) {
+      this.performance.stepsPerSecond = newProps.stepsPerSecond;
       this.performance.refreshConditioning();
     }
     if (
