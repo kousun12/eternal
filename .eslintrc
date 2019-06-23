@@ -1,4 +1,5 @@
 {
+  "extends": "react-app",
   "globals": {
     "Types": true
   },
