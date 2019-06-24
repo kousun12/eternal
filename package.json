@@ -62,7 +62,8 @@
   },
   "devDependencies": {
     "flow-bin": "^0.81.0",
-    "gh-pages": "^2.0.1"
+    "gh-pages": "^2.0.1",
+    "prettier": "^1.18.2"
   },
   "scripts": {
     "start": "react-scripts start",
