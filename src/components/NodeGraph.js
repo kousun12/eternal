@@ -176,8 +176,8 @@ class NodeGraph extends React.Component<P, S> {
     const maxH = Math.max(...this.state.graph.nodes.map(nis => nis.pos.y));
     const elem = document.getElementById('eternal-root');
     if (elem) {
-      elem.style.width = maxW + 300;
-      elem.style.height = maxH + 500;
+      elem.style.width = String(maxW + 300);
+      elem.style.height = String(maxH + 500);
     }
   };
 
