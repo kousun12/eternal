@@ -172,9 +172,8 @@ class NodeGraph extends React.Component<P, S> {
   };
 
   resetSize = () => {
-    const maxW = Math.max(this.state.graph.nodes.map(nis => nis.pos.x))
-    const maxH = Math.max(this.state.graph.nodes.map(nis => nis.pos.y))
-    console.log('max', maxW, maxH)
+    const maxW = Math.max(...this.state.graph.nodes.map(nis => nis.pos.x))
+    const maxH = Math.max(...this.state.graph.nodes.map(nis => nis.pos.y))
     document.getElementById('eternal-root').style.width = maxW + 300
     document.getElementById('eternal-root').style.height = maxH + 500
   }

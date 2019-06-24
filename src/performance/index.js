@@ -98,8 +98,6 @@ export default class Performance {
   generationInterval: ?TimeoutID;
   stopped = false;
 
-  constructor() {}
-
   start = () => {
     if (this.initialized) {
       return;
@@ -126,7 +124,7 @@ export default class Performance {
     this.refreshConditioning();
   };
 
-  setTempo = (sps) => {
+  setTempo = (sps: number) => {
     this.stepsPerSecond = sps;
   }
 

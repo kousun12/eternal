@@ -1,6 +1,5 @@
 // @flow
 import React from 'react';
-import { get } from 'lodash';
 import onClickOutside from 'react-onclickoutside';
 
 import TrashIcon from './TrashIcon';
