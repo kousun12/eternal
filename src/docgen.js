@@ -21,13 +21,13 @@ const docs = () =>
 ${desc}
   
 
-#### inputs
+##### inputs (${Object.keys(n.schema.input).length})
 
 ${Object.entries(n.schema.input)
   .map(renderAttr)
   .join('\n\n')}
   
-#### outputs
+##### outputs (${Object.keys(n.schema.output).length})
 
 ${Object.entries(n.schema.output)
   .map(renderAttr)
@@ -47,6 +47,16 @@ export function download(str, exportName = 'docs') {
   anchor.remove();
 }
 
-// const docstring = docs().join('\n');
-// download(docstring);
-// console.log(docstring);
+const md = () => {
+  const nodes = docs();
+  return `
+# Node Docs
+
+Here's a list of all ${nodes.length} current nodes, their descriptions, and i/o.
+
+${nodes.join('\n\n')}    
+`;
+};
+// const output = md();
+// download(output);
+// console.log(output);
