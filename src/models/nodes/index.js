@@ -221,6 +221,6 @@ window.allNodes = allNodes;
 
 const NodeRegistry = fromPairs(allNodes.map(n => [n.getRegistryName(), n]));
 if (Object.keys(NodeRegistry).length !== allNodes.length) {
-  throw Error('duplicate node by registryName in node registry');
+  throw new Error('duplicate node by registryName in node registry');
 }
 window.NodeRegistry = NodeRegistry;

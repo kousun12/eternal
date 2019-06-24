@@ -111,7 +111,7 @@ export class TypeBuilder {
 
   withMetadata(metadata: TypeMetadata): TypeBuilder {
     if (this.metadata) {
-      throw Error(
+      throw new Error(
         "you likely don't mean to replace the metadata you are building; use `withMetadataAttr`."
       );
     }
@@ -156,15 +156,15 @@ export class TypeBuilder {
 
   validate = () => {
     const { name, schema, type } = this;
-    if (!name) throw Error('need a name');
+    if (!name) throw new Error('need a name');
     // we may want to just key on id and allow duplicate names
-    if (name in typeRegistry) throw Error('already exists');
-    if (!type) throw Error('need a type');
+    if (name in typeRegistry) throw new Error('already exists');
+    if (!type) throw new Error('need a type');
     if (type === 'primitive') {
-      if (schema) throw Error('primitives cannot have schemas');
+      if (schema) throw new Error('primitives cannot have schemas');
     } else {
       // again, this type is a cop-out but practically useful
-      if (name !== 'object' && !schema) throw Error('non primitives need a schema');
+      if (name !== 'object' && !schema) throw new Error('non primitives need a schema');
       // may want to validate enum / complex schema shape
     }
   };

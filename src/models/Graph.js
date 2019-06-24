@@ -35,7 +35,7 @@ export default class Graph {
     if (n) {
       return n;
     } else {
-      throw Error('not found');
+      throw new Error('not found');
     }
   };
 

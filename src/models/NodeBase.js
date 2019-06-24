@@ -70,7 +70,7 @@ export default class NodeBase<Val: Object, In: ?Object, Out: ?Object> {
    * @param keys a subset of outKeys which should be processed
    */
   process: (string[]) => Out = keys => {
-    throw Error('unimplemented');
+    throw new Error('unimplemented');
   };
 
   /**

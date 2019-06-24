@@ -50,7 +50,7 @@ export default class Edge {
     const from = nodes.find(n => n.id === j.fromId);
     const to = nodes.find(n => n.id === j.toId);
     if (!from || !to) {
-      throw Error('could not load graph');
+      throw new Error('could not load graph');
     }
     return new Edge(from, to, j.fromPort, j.toPort, j.id);
   }

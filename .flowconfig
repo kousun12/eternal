@@ -18,5 +18,6 @@ module.system.node.resolve_dirname=src
 esproposal.decorators=ignore
 
 suppress_comment= \\(.\\|\n\\)*\\$FlowIssue
+suppress_comment= \\(.\\|\n\\)*\\$FlowIgnore
 
 [strict]

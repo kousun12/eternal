@@ -2,7 +2,6 @@
 import React from 'react';
 import { compact } from 'lodash';
 import Tone from 'tone';
-import { get } from 'lodash';
 import NodeBase from 'models/NodeBase';
 import Edge from 'models/Edge';
 import Performance from 'performance';
@@ -37,7 +36,12 @@ export type ToneData = [Tone.Frequency, ToneAction, Tone.Time, ?number];
 
 export class PerformanceRNNNode extends NodeBase<
   {},
-  { chroma: number[], density: number, synth: Tone.Synth | Tone.Instrument },
+  {
+    chroma: number[],
+    density: number,
+    synth: Tone.Synth | Tone.Instrument,
+    stepsPerSecond: number,
+  },
   {
     midiData: [MidiData, number],
     toneData: ToneData,
@@ -166,7 +170,7 @@ export class PerformanceRNNNode extends NodeBase<
     } else if (typeof hist === 'string') {
       return hist.split('').map(s => parseInt(s));
     }
-    throw Error('cannot parse histogram');
+    throw new Error('cannot parse histogram');
   };
 
   willReceiveProps = (newProps: Object, prevProps: Object) => {
@@ -174,7 +178,11 @@ export class PerformanceRNNNode extends NodeBase<
       this.performance.noteDensityBucket = newProps.density;
       this.performance.refreshConditioning();
     }
-    if (!prevProps || (newProps.stepsPerSecond !== undefined && newProps.stepsPerSecond !== prevProps.stepsPerSecond)) {
+    if (
+      !prevProps ||
+      (newProps.stepsPerSecond !== undefined &&
+        newProps.stepsPerSecond !== prevProps.stepsPerSecond)
+    ) {
       this.performance.stepsPerSecond = newProps.stepsPerSecond;
       this.performance.refreshConditioning();
     }
