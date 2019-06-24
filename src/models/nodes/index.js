@@ -142,7 +142,7 @@ export {
   date,
 };
 
-const allNodes = [
+export const allNodes = [
   Vector2D,
   MeshNode,
   TorusKnotGeometryNode,

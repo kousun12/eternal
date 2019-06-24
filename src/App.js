@@ -30,6 +30,7 @@ import FileUpload from 'components/FileUpload';
 import SaveDialog from 'components/SaveDialog';
 import NodeSearcher from 'components/NodeSearcher';
 import ExampleSearch, { examples } from 'components/ExampleSearch';
+import './docgen';
 
 import 'eternal.scss';
 import type { GraphSerialization } from 'models/Graph';
@@ -97,8 +98,8 @@ class App extends Component<P, S> {
     }
     window['$node'] = null;
     this.mostRecentNode = get(graph.nodes, [0, 'node']);
-    const readme = graph.nodes.find(nis => nis.node.title === 'README')
-    const selectedNode = readme ? readme.node : null
+    const readme = graph.nodes.find(nis => nis.node.title === 'README');
+    const selectedNode = readme ? readme.node : null;
     this.setState({ graph, selectedNode }, () => (window['$graph'] = graph));
   };
 
@@ -145,11 +146,11 @@ class App extends Component<P, S> {
   };
 
   _loadExample = (json: GraphSerialization) => {
-    window.location.search = `?e=${encodeURIComponent(json.name.replace(/ /g, '+'))}`
+    window.location.search = `?e=${encodeURIComponent(json.name.replace(/ /g, '+'))}`;
   };
 
   _reload = () => {
-    window.location.search = ''
+    window.location.search = '';
   };
 
   _toggleDebug = () => {
@@ -263,13 +264,11 @@ class App extends Component<P, S> {
           onClose={this._closeSearch}
         />
         {promptLoad && (
-          <Dialog isOpen={true} className="bp3-dark" title='Load...'>
+          <Dialog isOpen={true} className="bp3-dark" title="Load...">
             <div className={Classes.DIALOG_FOOTER}>
               <div className={Classes.DIALOG_BODY}>
                 <p>you are about to load</p>
-                <p>
-                  ~{promptLoad}~
-                </p>
+                <p>~{promptLoad}~</p>
               </div>
               <div className={Classes.DIALOG_FOOTER_ACTIONS}>
                 <Button onClick={this._loadUrl}>👾 ok, computer</Button>
@@ -322,6 +321,7 @@ setHotkeysDialogProps({ className: 'bp3-dark', globalHotkeysGroup: 'Menu' });
 const AppWithHK = HotkeysTarget(App);
 
 document.addEventListener('DOMContentLoaded', () => {
+  // $FlowIgnore
   ReactDOM.render(<AppWithHK className="bp3-dark" />, document.getElementById('eternal-root'));
 });
 
