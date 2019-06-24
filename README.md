@@ -10,6 +10,9 @@ Having spent a lot of time / mind in and around computers, my sense of aesthetic
 
 I've, since making this, discovered tools like max/msp / houdini & many more extremely well thought out versions of this as a tool. While I still like some aspects of this as a tool that those others do not have, note that _this defintely more of an art project than a product._ It was made to juxtapose representations with perceptions, and while you can probably make arbitrary things with it, you will find many other better supported tools that aren't created out of my specific interests. Nevertheless, enjoy. 
 
+<br/><p align="center"><img src="https://i.redd.it/p95xbsfvz4631.png" alt="nude-shot"></p><br/>
+
+
 <br/><p align="center"><img src="eternal.png" alt="screenshot"></p><br/>
 
 #### examples // myths
