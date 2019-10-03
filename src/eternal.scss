@@ -45,13 +45,23 @@ body {
 
 .graph-title {
   font-family: Monaco, "Source Code Pro", monospace, sans-serif;
-  position: absolute;
-  width: 100%;
-  text-align: center;
   color: #a5a5a5;
   margin: 0;
-  padding-top: 50px;
-  z-index: 4;
+}
+
+.graph-toolbar {
+  font-family: Monaco, "Source Code Pro", monospace, sans-serif;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  border-bottom: 1px solid #4c4e4f;
+  color: #888888;
+  padding: 12px 20px;
+  margin: 0;
+  z-index: 20;
+  text-align: right;
+  background-color: rgba(20, 20, 20, 0.88);
 }
 
 .node {

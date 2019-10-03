@@ -4,7 +4,7 @@ import type { Pos } from 'types';
 import type { AnyNode } from 'models/NodeBase';
 
 window.$eTop = 49;
-window.$eHeight = 23;
+window.$eHeight = 20;
 window.$eInL = 0;
 window.$eOutL = 197;
 

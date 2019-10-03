@@ -12,6 +12,8 @@ import {
   Dialog,
   Button,
   Classes,
+  Tooltip,
+  AnchorButton,
 } from '@blueprintjs/core';
 
 import 'font-awesome/css/font-awesome.css';
@@ -54,6 +56,7 @@ class App extends Component<P, S> {
   mostRecentNode: ?AnyNode = null;
   fileUpload: ?FileUpload;
   _mousePos: Pos = { x: 50, y: 50 };
+  _insertPos: ?Pos = null;
 
   constructor(p: P) {
     super(p);
@@ -173,7 +176,12 @@ class App extends Component<P, S> {
   _addNode = (cls: Class<AnyNode>) => {
     const { graph } = this.state;
     this.setState({ searchOpen: false });
-    graph && graph.addNode(new cls(), this._mousePos);
+    if (graph) {
+      const node = new cls();
+      graph.addNode(node, this._insertPos || this._mousePos);
+      this._onNodeSelect(node);
+    }
+    this._insertPos = null;
   };
 
   _onNodeSelect = (node: ?AnyNode) => {
@@ -243,6 +251,70 @@ class App extends Component<P, S> {
     } = this.state;
     return (
       <>
+        <div className="graph-toolbar ignore-react-onclickoutside">
+          <div style={{ ...styles.toolSection, ...styles.leftAlign }}>
+            <Tooltip content="load an example">
+              <AnchorButton
+                minimal
+                icon="folder-shared-open"
+                large
+                onClick={this._searchExamples}
+              />
+            </Tooltip>
+            <Tooltip content="insert a new node">
+              <AnchorButton minimal icon="new-link" large onClick={this._manualInsert} />
+            </Tooltip>
+            <Tooltip content={`${visible ? 'hide' : 'show'} graph`}>
+              <AnchorButton
+                minimal
+                icon={visible ? 'eye-open' : 'eye-off'}
+                large
+                onClick={this._toggleGraph}
+              />
+            </Tooltip>
+            <Tooltip content="toggle debug mode">
+              <AnchorButton minimal icon="build" large onClick={this._toggleDebug} />
+            </Tooltip>
+            <Tooltip content="export graph as JSON">
+              <AnchorButton minimal icon="download" large onClick={this._showSave} />
+            </Tooltip>
+            <Tooltip content="open JSON file">
+              <AnchorButton minimal icon="upload" large onClick={this._loadJSON} />
+            </Tooltip>
+            <Tooltip content="node list API docs">
+              <AnchorButton
+                minimal
+                icon="panel-stats"
+                large
+                href="https://github.com/kousun12/eternal/blob/master/docs.md"
+                target="_blank"
+              />
+            </Tooltip>
+          </div>
+          <h2 className="graph-title">{get(graph, 'name', '')}</h2>
+          <div style={styles.toolSection}>
+            <Tooltip content="open github repo">
+              <AnchorButton
+                minimal
+                icon="git-repo"
+                large
+                href="https://github.com/kousun12/eternal"
+                target="_blank"
+              />
+            </Tooltip>
+            <Tooltip content="show keyboard shortcuts">
+              <AnchorButton minimal icon="key-command" large onClick={this._showHotkeys} />
+            </Tooltip>
+            <Tooltip content={`${selectedNode ? 'hide' : 'show'} info pane`}>
+              <AnchorButton
+                minimal
+                icon={`chevron-${selectedNode ? 'right' : 'left'}`}
+                large
+                onClick={this._toggleInfo}
+              />
+            </Tooltip>
+          </div>
+        </div>
         {graph && (
           <NodeGraph
             visible={visible}
@@ -288,10 +360,20 @@ class App extends Component<P, S> {
           </Dialog>
         )}
         <FileUpload onFile={this._onFileUpload} ref={r => (this.fileUpload = r)} />
-        <h2 className="graph-title">{get(graph, 'name', '')}</h2>
       </>
     );
   }
+
+  _showHotkeys = () => {
+    document.dispatchEvent(
+      new KeyboardEvent('keydown', { which: 47, keyCode: 47, shiftKey: true, bubbles: true })
+    );
+  };
+
+  _manualInsert = () => {
+    this._onSearch();
+    this._insertPos = { x: 50, y: 50 };
+  };
 
   // noinspection JSUnusedGlobalSymbols
   renderHotkeys() {
@@ -334,6 +416,11 @@ class App extends Component<P, S> {
     );
   }
 }
+
+const styles = {
+  toolSection: { flex: 1 },
+  leftAlign: { textAlign: 'left' },
+};
 
 setHotkeysDialogProps({ className: 'bp3-dark', globalHotkeysGroup: 'Menu' });
 const AppWithHK = HotkeysTarget(App);
