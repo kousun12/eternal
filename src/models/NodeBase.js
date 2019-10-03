@@ -44,6 +44,7 @@ export default class NodeBase<Val: Object, In: ?Object, Out: ?Object> {
   static +defaultState: ?$Shape<Val>;
   static +defaultProps: ?$Shape<In>;
   static +schema: Schema = { input: {}, output: {}, state: {} };
+  static +shortNames: { [string]: string } = {};
 
   constructor(attrs?: $Shape<Val>, props?: $Shape<In>, nodeId?: string, title?: ?string) {
     this.id = nodeId || uuid();
@@ -330,7 +331,11 @@ export default class NodeBase<Val: Object, In: ?Object, Out: ?Object> {
     keys.forEach(k => {
       const accept = change[k] !== undefined;
       if (k in partial && accept) {
-        set(partial, setPath ? setPath : k, change[k]);
+        if (typeof partial.set === 'function') {
+          partial.set(k, change[k]);
+        } else {
+          set(partial, setPath ? setPath : k, change[k]);
+        }
       }
     });
     return keys;
@@ -384,6 +389,14 @@ export default class NodeBase<Val: Object, In: ?Object, Out: ?Object> {
 
   static outKeys(): string[] {
     return Object.keys(this.schema.output);
+  }
+
+  static displayInKeys(): string[] {
+    return Object.keys(this.schema.input).map(k => (this.shortNames[k] ? this.shortNames[k] : k));
+  }
+
+  static displayOutKeys(): string[] {
+    return Object.keys(this.schema.output).map(k => (this.shortNames[k] ? this.shortNames[k] : k));
   }
 
   static initializeState(): Object {

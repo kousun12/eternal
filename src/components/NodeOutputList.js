@@ -7,6 +7,7 @@ type P = {
   onStartConnector: number => void,
   items: string[],
   connected: string[],
+  display: string[],
 };
 export default class NodeOutputList extends React.Component<P> {
   onMouseDown = (i: number) => {
@@ -14,7 +15,7 @@ export default class NodeOutputList extends React.Component<P> {
   };
 
   render() {
-    const { items, connected } = this.props;
+    const { items, connected, display } = this.props;
     return (
       <div className="nodeOutputWrapper">
         <ul className="nodeOutputList">
@@ -25,7 +26,7 @@ export default class NodeOutputList extends React.Component<P> {
                 onMouseDown={this.onMouseDown}
                 key={`item-${i}`}
                 index={i}
-                item={item}
+                item={display[i]}
               />
             );
           })}

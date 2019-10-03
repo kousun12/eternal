@@ -27,7 +27,7 @@ import {
   VignetteEffect,
 } from 'postprocessing';
 const Types = window.Types;
-const URL_BASE = process.env.PUBLIC_URL || ''
+const URL_BASE = process.env.PUBLIC_URL || '';
 
 type P = { child: Mesh };
 type S = { base: Base, added: string[] };
@@ -201,9 +201,9 @@ export class Color extends NodeBase<{}, ColorT, { rgb: ColorT, hex: number }> {
   static description = <span>A color representation</span>;
   static schema = {
     input: {
-      r: Types.number.desc('red channel'),
-      g: Types.number.desc('green channel'),
-      b: Types.number.desc('blue channel'),
+      r: Types.number.desc('red channel, [0,255]'),
+      g: Types.number.desc('green channel, [0,255]'),
+      b: Types.number.desc('blue channel, [0,255]'),
     },
     output: {
       hex: Types.number.desc('hex representation of this color'),
@@ -330,6 +330,9 @@ export class VignettePassNode extends NodeBase<
     },
     state: {},
   };
+
+  static shortNames = { effect: 'fx' };
+
   effect: Effect;
   pass: Pass;
   rendered: boolean = false;
@@ -405,6 +408,9 @@ export class ScanlinePassNode extends NodeBase<{}, {}, { pass: Object, effect: E
     },
     state: {},
   };
+
+  static shortNames = { effect: 'fx' };
+
   effect: Effect;
   pass: Pass;
   rendered: boolean = false;
@@ -459,6 +465,7 @@ export class DotScreenPassNode extends NodeBase<{}, {}, { pass: Object, effect: 
     },
     state: {},
   };
+  static shortNames = { effect: 'fx' };
   effect: Effect;
   pass: Pass;
   rendered: boolean = false;
@@ -525,6 +532,7 @@ export class NoisePassNode extends NodeBase<
     },
     state: {},
   };
+  static shortNames = { effect: 'fx' };
   effect: Effect;
   pass: Pass;
   rendered: boolean = false;

@@ -9,6 +9,7 @@ type P = {
   onCompleteConnector: number => void,
   items: string[],
   connected: string[],
+  display: string[],
 };
 
 export default class NodeInputList extends React.Component<P> {
@@ -17,7 +18,7 @@ export default class NodeInputList extends React.Component<P> {
   };
 
   render() {
-    const { items, connected } = this.props;
+    const { items, connected, display } = this.props;
     return (
       <div className="nodeInputWrapper">
         <ul className="nodeInputList">
@@ -26,7 +27,7 @@ export default class NodeInputList extends React.Component<P> {
               onMouseUp={this.onMouseUp}
               key={`item-${i}`}
               index={i}
-              item={item}
+              item={display[i]}
               filled={connected.includes(item)}
             />
           ))}

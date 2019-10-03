@@ -2,11 +2,12 @@ $bg-color: #1b1c1d;
 $dot-color: #4c4e4f;
 $dot-size: 0.1rem;
 $dot-space: 3rem;
-$node-width: 188px;
+$node-width: 198px;
 $primary-graph-color: #4caa4d;
 $secondary-graph-color: #883e96;
 $graph-red: #ac445c;
 $graph-teal: #3e9688;
+$graph-yellow: #c1b827;
 
 body {
   width: 100vw;
@@ -58,42 +59,44 @@ body {
   max-width: $node-width;
   width: $node-width;
   position: absolute;
-  border: 1px solid transparent;
-  border-radius: 4px;
+  border-radius: 6px;
   -webkit-box-shadow: 6px 6px 28px -2px rgba(0, 0, 0, 0.4);
   -moz-box-shadow: 6px 6px 28px -2px rgba(0, 0, 0, 0.4);
   box-shadow: 6px 6px 28px -2px rgba(0, 0, 0, 0.4);
   background-color: rgba(0, 0, 0, 0.88);
+  border: 1px solid #666;
   user-select: none;
 }
 
 .node.selected {
-  border: 1px solid #666;
-  box-shadow: 0 0 8px 3px #555;
+  border: 1px solid white;
+  box-shadow: 0 0 8px 3px #bbb;
 }
 
 .node.in-view {
-  border: 1px solid #b9b9b9;
-  box-shadow: 0 0 8px 3px #555;
+  border: 1px solid white;
+  box-shadow: 0 0 8px 3px #bbb;
 }
 
 .node-content {
-  padding: 10px;
+  padding: 10px 0;
+  margin-left: -6px;
+  margin-right: -6px;
 }
 
 .node-title {
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .node-header {
   font-family: Monaco, "Source Code Pro", monospace, sans-serif;
   cursor: all-scroll;
   background: rgba(76, 170, 77, 0.1);
-  border-top-left-radius: 4px;
-  border-top-right-radius: 4px;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
   border-bottom: 1px solid #353535;
-  padding: 2px 10px;
-  letter-spacing: 1px;
+  padding: 2px 10px 4px 10px;
+  //letter-spacing: 1px;
   color: white;
   text-align: center;
   white-space: pre-wrap;
@@ -101,7 +104,7 @@ body {
 
 .connector {
   fill: none;
-  stroke: #4f4f4f;
+  stroke: #606060;
   stroke-width: 4;
   -webkit-box-shadow: 6px 6px 28px -2px rgba(0, 0, 0, 0.75);
   -moz-box-shadow: 6px 6px 28px -2px rgba(0, 0, 0, 0.75);
@@ -112,7 +115,7 @@ body {
 }
 
 .spline-end, .spline-start {
-  //fill: white;
+  fill: #606060;
 }
 
 .connector-click-area {
@@ -124,13 +127,13 @@ body {
 
 .connector-click-area:hover + .connector,
 .connector:hover {
-  stroke: #d0d0d0;
+  stroke: white;
   cursor: pointer;
   stroke-width: 6;
 }
 
 .connector.selected {
-  stroke: #c1b827;
+  stroke: $graph-yellow;
   stroke-width: 8;
 }
 
@@ -193,11 +196,10 @@ body {
 }
 
 .nodeOutputList li span i {
-  padding-left: 6px;
 }
 
 .nodeOutputList li span i.unconnected {
-  color: #888888;
+  color: #626262;
 }
 
 .nodeOutputList li:hover span {
@@ -208,21 +210,24 @@ body {
 .nodeInputList li span {
   cursor: default;
   font-size: 9px;
-  color: #999999;
+  color: #858585;
   text-decoration: none;
   background: transparent;
   box-sizing: border-box;
 }
+.nodeInputList li span.hover {
+  color: white;
+}
 
 .nodeInputList li .connected-node {
-  color: #d9d9d9;
+  color: #e7e7e7;
 }
 
 .nodeInputList li span i {
   padding-right: 6px;
 }
 
-.dragging .nodeInputList li span i.hover {
+.dragging .nodeInputList li span.hover {
   vertical-align: top;
   font-size: 15px;
   color: #ffffff;
@@ -231,7 +236,7 @@ body {
   padding-right: 3px;
 }
 
-.dragging .nodeInputList li span i.hover + span {
+.dragging .nodeInputList li span.hover + span {
   vertical-align: top;
   font-weight: bold;
   color: #ffffff;

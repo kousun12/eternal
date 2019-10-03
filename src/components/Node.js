@@ -148,11 +148,13 @@ class Node extends React.Component<P, S> {
               <NodeInputList
                 connected={node.connectedInputKeys()}
                 items={node.inKeys()}
+                display={node.constructor.displayInKeys()}
                 onCompleteConnector={this.onCompleteConnector}
               />
               <NodeOutputList
                 connected={node.connectedOutputKeys()}
                 items={node.outKeys()}
+                display={node.constructor.displayOutKeys()}
                 onStartConnector={this.onStartConnector}
               />
             </div>

@@ -53,6 +53,8 @@ export class TorusKnotGeometryNode extends NodeBase<S, P, O> {
     state: { geometry: Types.object.desc('this particular geometry') },
   };
 
+  static shortNames = { geometry: 'geo', tubularSegments: 'tSeg', radialSegments: 'rSeg' };
+
   _setGeo = () => {
     const { radius, tube, tubularSegments, radialSegments, p, q } = this.props;
     this.state.geometry && this.state.geometry.dispose();
@@ -105,6 +107,8 @@ export class PlaneGeometryNode extends NodeBase<S, { width: number, height: numb
     output: { geometry: Types.object.desc('this particular geometry') },
     state: { geometry: Types.object.desc('this particular geometry') },
   };
+
+  static shortNames = { geometry: 'geo' };
 
   _setGeo = () => {
     const { width, height } = this.props;
@@ -165,6 +169,8 @@ export class BoxGeometryNode extends NodeBase<
     state: { geometry: Types.object.desc('this particular geometry') },
   };
 
+  static shortNames = { geometry: 'geo' };
+
   _setGeo = () => {
     const { width, height, depth } = this.props;
     this.state.geometry && this.state.geometry.dispose();
@@ -223,6 +229,8 @@ export class SphereGeometryNode extends NodeBase<
     output: { geometry: Types.object.desc('this particular geometry') },
     state: { geometry: Types.object.desc('this particular geometry') },
   };
+
+  static shortNames = { geometry: 'geo', widthSegments: 'wSeg', heightSegments: 'hSeg' };
 
   _setGeo = () => {
     const { radius, widthSegments, heightSegments } = this.props;

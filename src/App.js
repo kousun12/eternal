@@ -34,6 +34,7 @@ import './docgen';
 
 import 'eternal.scss';
 import type { GraphSerialization } from 'models/Graph';
+import type { Pos } from 'types';
 const welcomeGraph = require('models/examples/welcome.json');
 
 type P = {};
@@ -52,6 +53,7 @@ class App extends Component<P, S> {
   nodeIndex: number = 0;
   mostRecentNode: ?AnyNode = null;
   fileUpload: ?FileUpload;
+  _mousePos: Pos = { x: 50, y: 50 };
 
   constructor(p: P) {
     super(p);
@@ -90,7 +92,16 @@ class App extends Component<P, S> {
         this._toggleDebug();
       }
     }
+    document.addEventListener('mousemove', this._onMouseMove);
   }
+
+  componentWillUnmount() {
+    document.removeEventListener('mousemove', this._onMouseMove);
+  }
+
+  _onMouseMove = (me: MouseEvent) => {
+    this._mousePos = { x: me.clientX, y: me.clientY };
+  };
 
   _setGraph = (graph: Graph) => {
     if (this.state.graph) {
@@ -146,7 +157,7 @@ class App extends Component<P, S> {
   };
 
   _loadExample = (json: GraphSerialization) => {
-    window.location.search = `?e=${encodeURIComponent(json.name.replace(/ /g, '+'))}`;
+    window.location.search = `?e=${encodeURIComponent((json.name || '').replace(/ /g, '+'))}`;
   };
 
   _reload = () => {
@@ -162,7 +173,7 @@ class App extends Component<P, S> {
   _addNode = (cls: Class<AnyNode>) => {
     const { graph } = this.state;
     this.setState({ searchOpen: false });
-    graph && graph.addNode(new cls(), { x: 50, y: 50 });
+    graph && graph.addNode(new cls(), this._mousePos);
   };
 
   _onNodeSelect = (node: ?AnyNode) => {
@@ -267,11 +278,11 @@ class App extends Component<P, S> {
           <Dialog isOpen={true} className="bp3-dark" title="Load...">
             <div className={Classes.DIALOG_FOOTER}>
               <div className={Classes.DIALOG_BODY}>
-                <p>you are about to load</p>
+                <p>you are about to load the example</p>
                 <p>~{promptLoad}~</p>
               </div>
               <div className={Classes.DIALOG_FOOTER_ACTIONS}>
-                <Button onClick={this._loadUrl}>👾 ok, computer</Button>
+                <Button onClick={this._loadUrl}>👾 ok computer</Button>
               </div>
             </div>
           </Dialog>
@@ -284,6 +295,13 @@ class App extends Component<P, S> {
 
   // noinspection JSUnusedGlobalSymbols
   renderHotkeys() {
+    if (this.state.promptLoad) {
+      return (
+        <Hotkeys>
+          <Hotkey global combo="enter" label="Load Example" onKeyDown={this._loadUrl} />
+        </Hotkeys>
+      );
+    }
     return (
       <Hotkeys>
         <Hotkey

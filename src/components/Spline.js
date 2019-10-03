@@ -53,12 +53,12 @@ class Spline extends React.Component<P, S> {
   };
 
   _onNotify = () => {
-      this.el &&
+    this.el &&
       // $FlowIssue
       this.el.animate(
         [
           { stroke: '#999999', strokeWidth: 4, filter: 'blur(0)' },
-          { stroke: '#3e9688', strokeWidth: 6, filter: 'blur(20px)' },
+          { stroke: '#4caa4d', strokeWidth: 6, filter: 'blur(20px)' },
           { stroke: '#999999', strokeWidth: 4, filter: 'blur(0)' },
         ],
         { duration: 500, iterations: 1 }

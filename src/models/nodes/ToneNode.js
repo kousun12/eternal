@@ -6,7 +6,7 @@ import NodeBase from 'models/NodeBase';
 import Edge from 'models/Edge';
 const Piano = require('tone-piano').Piano;
 const Types = window.Types;
-const URL_BASE = process.env.PUBLIC_URL || ''
+const URL_BASE = process.env.PUBLIC_URL || '';
 
 // Tone Types
 export const TT = {
@@ -628,8 +628,8 @@ export class PlayerNode extends NodeBase<{}, { url: string, call: any }, { playe
   _player: Tone.Player = new Tone.Player();
 
   _makePlayer = (url: string) => {
-    if(url.startsWith("/")) {
-      url = URL_BASE + url
+    if (url.startsWith('/')) {
+      url = URL_BASE + url;
     }
     this._player = new Tone.Player(url, () => {
       this.notifyAllOutputs(true);
@@ -691,15 +691,12 @@ export class SetNoteNode extends NodeBase<
       if (edge.inDataFor(change)) {
         const { synth, note, time } = this.props;
         if (synth && note) {
-          if (time) {
-            synth.setNote(note, time);
-            Tone.Draw.schedule(() => {
-              this.notifyAllOutputs();
-            }, time);
-          } else {
-            synth.setNote(note);
-            return this.outKeys();
+          if (synth.setNote) {
+            synth.setNote(note, time || undefined);
+          } else if (synth.voices) {
+            synth.voices.forEach(v => v.setNote(note, time || undefined));
           }
+          time && Tone.Draw.schedule(this.notifyAllOutputs, time);
         }
       }
     }
@@ -756,6 +753,7 @@ export class ArpeggiateNode extends NodeBase<
       humanize: Types.boolean.desc(
         'Random variation +/-0.01s to the scheduled time. Or give it a time value which it will randomize by'
       ),
+      probability: Types.number.desc('probability that each iteration will play, [0,1]'),
     },
     output: {
       note: Types.string.desc('The note'),
@@ -778,7 +776,7 @@ export class ArpeggiateNode extends NodeBase<
   };
 
   willReceiveProps = (newProps: Object) => {
-    ['humanize', 'interval', 'pattern'].forEach(k => {
+    ['humanize', 'interval', 'pattern', 'probability'].forEach(k => {
       this.pattern[k] = newProps[k];
     });
     if (newProps.notes) {
@@ -977,6 +975,13 @@ export class DuoSynthNode extends NodeBase<{ value: Tone.DuoSynth }, {}, { out: 
     state: { value: TT.Synth.desc('The synth') },
   };
 
+  static shortNames = {
+    vibratoAmount: 'vibrato',
+    vibratoRate: 'vibratoF',
+    harmonicity: 'ratio',
+    frequency: 'freq',
+  };
+
   onAddToGraph = () => {
     this.state.value = DuoSynthNode.defaultSynth();
   };
@@ -993,8 +998,8 @@ export class DuoSynthNode extends NodeBase<{ value: Tone.DuoSynth }, {}, { out: 
 
   onInputChange = (edge: Edge, change: Object) => {
     if (DuoSynthNode.fwdSignals.includes(edge.toPort)) {
-      const changed = this.pushToState('value', change, [], [edge.toPort, 'value']);
-      return changed ? this.outKeys() : [];
+      this.pushToState('value', change, [], [edge.toPort, 'value']);
+      return [];
     }
     return [];
   };
@@ -1012,14 +1017,15 @@ export class DuoSynthNode extends NodeBase<{ value: Tone.DuoSynth }, {}, { out: 
       decay: 0,
       release: 1000,
     };
-    return new Tone.DuoSynth({
+    const synthOpts = {
       harmonicity: 1,
       volume: -20,
       voice0: { oscillator: { type: 'sawtooth' }, envelope, filterEnvelope },
       voice1: { oscillator: { type: 'sine' }, envelope, filterEnvelope },
       vibratoRate: 0.5,
       vibratoAmount: 0.1,
-    });
+    };
+    return new Tone.DuoSynth(synthOpts);
   }
 }
 

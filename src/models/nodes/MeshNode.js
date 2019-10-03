@@ -27,6 +27,8 @@ export default class MeshNode extends NodeBase<S, P, O> {
     state: { mesh: Types.object },
   };
 
+  static shortNames = { material: 'mat', geometry: 'geo', rotation: 'rot' };
+
   willBecomeLive = () => {
     const { geometry, material } = this.props;
     this.state.mesh = new Mesh(geometry, material);

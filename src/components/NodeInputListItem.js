@@ -38,17 +38,17 @@ export default class NodeInputListItem extends Component<P, S> {
   render() {
     const { hover } = this.state;
     const { filled, item } = this.props;
-    const icon = filled || hover ? 'fa-circle' : 'fa-circle-o';
+    const icon = filled || hover ? 'fa-circle' : 'fa-circle';
     const modifier = hover ? ' hover' : filled ? ' connected-node' : '';
 
     return (
       <li>
-        <span onClick={e => this.noop(e)} onMouseUp={e => this.onMouseUp(e)} className="input-text">
-          <i
-            className={`fa ${icon}${modifier}`}
-            onMouseOver={this.onMouseOver}
-            onMouseOut={this.onMouseOut}
-          />
+        <span
+          onClick={e => this.noop(e)}
+          onMouseUp={e => this.onMouseUp(e)}
+          className={`input-text${modifier}`}
+        >
+          <i className={`fa ${icon}`} onMouseOver={this.onMouseOver} onMouseOut={this.onMouseOut} />
           {item}
         </span>
       </li>

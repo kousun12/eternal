@@ -2,7 +2,7 @@
 import React from 'react';
 import { get } from 'lodash';
 import NodeBase from 'models/NodeBase';
-import { DoubleSide, Material, MeshLambertMaterial, ShaderMaterial } from 'three';
+import { Material, MeshLambertMaterial, ShaderMaterial } from 'three';
 import Base, { uniforms } from 'threeUtil/Base';
 const Types = window.Types;
 
@@ -35,6 +35,7 @@ export class LambertMaterialNode extends NodeBase<S, P, O> {
     output: { material: Types.object },
     state: { material: Types.object },
   };
+  static shortNames = { material: 'mat' };
 
   onAddToGraph = () => {
     this.state.material = new MeshLambertMaterial({
@@ -85,6 +86,7 @@ export class ShaderMaterialNode extends NodeBase<S, { vertex: string, fragment: 
     output: { material: Types.object },
     state: { material: Types.object },
   };
+  static shortNames = { material: 'mat', transparent: 'transp' };
 
   _setMaterial = () => {
     this.state.material = new ShaderMaterial({
