@@ -95,6 +95,7 @@ class App extends Component<P, S> {
         this._toggleDebug();
       }
     }
+    window['$debug'] = true;
     document.addEventListener('mousemove', this._onMouseMove);
   }
 

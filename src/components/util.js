@@ -4,9 +4,9 @@ import type { Pos } from 'types';
 import type { AnyNode } from 'models/NodeBase';
 
 window.$eTop = 49;
-window.$eHeight = 20;
+window.$eHeight = 20.91;
 window.$eInL = 0;
-window.$eOutL = 197;
+window.$eOutL = 198;
 
 export function inOffset(x: number, y: number, index: number): Pos {
   return { x: x + window.$eInL, y: y + window.$eTop + index * window.$eHeight };

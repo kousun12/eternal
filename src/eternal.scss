@@ -90,8 +90,8 @@ body {
 
 .node-content {
   padding: 10px 0;
-  margin-left: -6px;
-  margin-right: -6px;
+  margin-left: -5px;
+  margin-right: -5px;
 }
 
 .node-title {
@@ -115,7 +115,7 @@ body {
 .connector {
   fill: none;
   stroke: #606060;
-  stroke-width: 4;
+  stroke-width: 3;
   -webkit-box-shadow: 6px 6px 28px -2px rgba(0, 0, 0, 0.75);
   -moz-box-shadow: 6px 6px 28px -2px rgba(0, 0, 0, 0.75);
   box-shadow: 6px 6px 28px -2px rgba(0, 0, 0, 0.75);
