@@ -1,8 +1,8 @@
 // @flow
 import React from 'react';
-import { get } from 'lodash';
 import NodeBase from 'models/NodeBase';
 import Edge from 'models/Edge';
+
 const Types = window.Types;
 
 type MIDIOutput = {
@@ -10,8 +10,6 @@ type MIDIOutput = {
   name: ?string,
   type: string,
 };
-
-const noop = () => {};
 
 export class MidiOutNode extends NodeBase<{}, { id?: string }, { device: ?MIDIOutput }> {
   static +displayName = 'Midi Out';
@@ -58,7 +56,7 @@ export class MidiOutNode extends NodeBase<{}, { id?: string }, { device: ?MIDIOu
   };
 
   onAddToGraph = () => {
-    this.loadAll().then(noop);
+    this.loadAll();
   };
 
   willReceiveProps = (newProps: Object, prevProps: Object) => {
@@ -121,7 +119,7 @@ export class MidiInNode extends NodeBase<{}, { id?: string }, { device: ?MIDIOut
   };
 
   onAddToGraph = () => {
-    this.loadAll().then(noop);
+    this.loadAll();
   };
 
   willReceiveProps = (newProps: Object, prevProps: Object) => {

@@ -1,19 +1,15 @@
 // @flow
 import React, { Component } from 'react';
-import { get, pickBy, throttle } from 'lodash';
+import { get, throttle } from 'lodash';
 import type { AnyNode, Changeable, Displayable } from 'models/NodeBase';
 import JsonTree from 'vendor/JsonTree/js';
 import InfoPopup from 'components/AttributePane/InfoPopup';
 import { Hotkey, Hotkeys, HotkeysTarget, PopoverInteractionKind } from '@blueprintjs/core';
+
 const Types = window.Types;
 
-type P = {
-  node: AnyNode,
-};
-
-type S = {
-  fullDocs: boolean,
-};
+type P = { node: AnyNode };
+type S = { fullDocs: boolean };
 
 class AttributePane extends Component<P, S> {
   state = { fullDocs: false };

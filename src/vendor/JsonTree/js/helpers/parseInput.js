@@ -12,10 +12,10 @@ export default function parseInput(input) {
     } else if (input[0] === '{') {
       //object
       return formatResponse('object', JSON.parse(input));
-    } else if (input.match(/\-?\d+\.\d+/) && input.match(/\-?\d+\.\d+/)[0] === input) {
+    } else if (input.match(/-?\d+\.\d+/) && input.match(/-?\d+\.\d+/)[0] === input) {
       //integer
       return formatResponse('float', parseFloat(input));
-    } else if (input.match(/\-?\d+/) && input.match(/\-?\d+/)[0] === input) {
+    } else if (input.match(/-?\d+/) && input.match(/-?\d+/)[0] === input) {
       //float
       return formatResponse('integer', parseInt(input));
     }

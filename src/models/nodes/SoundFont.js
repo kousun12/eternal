@@ -150,6 +150,8 @@ export class SoundFontPlayerNode extends NodeBase<
       case 'attackRelease':
         sf.play(note, undefined, { duration: 0.5 });
         break;
+      default:
+        break;
     }
   };
 
@@ -172,6 +174,8 @@ export class SoundFontPlayerNode extends NodeBase<
           this._playMap[note].stop();
           this._playMap[note] = sf.play(note, time, { ...sf.opts, gain: velocity / 100 });
         }
+        break;
+      default:
         break;
     }
   };

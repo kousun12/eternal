@@ -1,8 +1,8 @@
 // @flow
 import React from 'react';
-import { get } from 'lodash';
 import NodeBase from 'models/NodeBase';
-const Types = window.Types
+
+const Types = window.Types;
 
 export class PlusNode extends NodeBase<{}, { left: any, right: any }, { out: any }> {
   static +displayName = 'Plus';

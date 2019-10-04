@@ -1,8 +1,9 @@
 // @flow
 import React from 'react';
-import { get, uniq } from 'lodash';
+import { uniq } from 'lodash';
 import NodeBase from 'models/NodeBase';
 import Edge from 'models/Edge';
+
 const Types = window.Types;
 
 export class EqualsNode extends NodeBase<{}, { numbers: any[] }, { result: boolean }> {

@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { EventEmitter } from 'events';
 import dispatcher from './../helpers/dispatcher';
 import { toType } from './../helpers/util';

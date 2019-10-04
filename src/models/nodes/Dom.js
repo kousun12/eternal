@@ -1,8 +1,8 @@
 // @flow
 import React from 'react';
-import { get } from 'lodash';
 import NodeBase from 'models/NodeBase';
-const Types = window.Types
+
+const Types = window.Types;
 
 export class DomNode extends NodeBase<{}, { html: string }, null> {
   static +displayName = 'HTML Element';

@@ -5,15 +5,13 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { get } from 'lodash';
 import {
-  HotkeysTarget,
-  Hotkeys,
-  Hotkey,
-  setHotkeysDialogProps,
-  Dialog,
   Button,
   Classes,
-  Tooltip,
-  AnchorButton,
+  Dialog,
+  Hotkey,
+  Hotkeys,
+  HotkeysTarget,
+  setHotkeysDialogProps,
 } from '@blueprintjs/core';
 
 import 'font-awesome/css/font-awesome.css';
@@ -25,6 +23,7 @@ import '@blueprintjs/icons/lib/css/blueprint-icons.css';
 import NodeGraph from 'components/NodeGraph';
 import AttributePane from 'components/AttributePane';
 import Searcher from 'components/SearchBar';
+import type { GraphSerialization } from 'models/Graph';
 import Graph from 'models/Graph';
 import type { AnyNode } from 'models/NodeBase';
 import { downloadObj } from 'helpers';
@@ -35,8 +34,9 @@ import ExampleSearch, { examples } from 'components/ExampleSearch';
 import './docgen';
 
 import 'eternal.scss';
-import type { GraphSerialization } from 'models/Graph';
 import type { Pos } from 'types';
+import Toolbar from 'components/Toolbar';
+
 const welcomeGraph = require('models/examples/welcome.json');
 
 type P = {};
@@ -139,6 +139,7 @@ class App extends Component<P, S> {
   };
 
   _loadJSON = () => {
+    this._reload();
     this.fileUpload && this.fileUpload.openFileInput();
   };
 
@@ -166,9 +167,7 @@ class App extends Component<P, S> {
     window.location.search = `?e=${encodeURIComponent((json.name || '').replace(/ /g, '+'))}`;
   };
 
-  _reload = () => {
-    window.location.search = '';
-  };
+  _reload = () => window.location.replace('/');
 
   _toggleDebug = () => {
     window['$debug'] = !window['$debug'];
@@ -241,6 +240,11 @@ class App extends Component<P, S> {
     }
   };
 
+  _closeLoadPrompt = () => {
+    this.setState({ promptLoad: null });
+    this._reload();
+  };
+
   render() {
     const {
       selectedNode,
@@ -254,70 +258,18 @@ class App extends Component<P, S> {
     } = this.state;
     return (
       <>
-        <div className="graph-toolbar ignore-react-onclickoutside">
-          <div style={{ ...styles.toolSection, ...styles.leftAlign }}>
-            <Tooltip content="load an example">
-              <AnchorButton
-                minimal
-                icon="folder-shared-open"
-                large
-                onClick={this._searchExamples}
-              />
-            </Tooltip>
-            <Tooltip content="insert a new node">
-              <AnchorButton minimal icon="new-link" large onClick={this._manualInsert} />
-            </Tooltip>
-            <Tooltip content={`${visible ? 'hide' : 'show'} graph`}>
-              <AnchorButton
-                minimal
-                icon={visible ? 'eye-open' : 'eye-off'}
-                large
-                onClick={this._toggleGraph}
-              />
-            </Tooltip>
-            <Tooltip content="toggle debug mode">
-              <AnchorButton minimal icon="build" large onClick={this._toggleDebug} />
-            </Tooltip>
-            <Tooltip content="export graph as JSON">
-              <AnchorButton minimal icon="download" large onClick={this._showSave} />
-            </Tooltip>
-            <Tooltip content="open JSON file">
-              <AnchorButton minimal icon="upload" large onClick={this._loadJSON} />
-            </Tooltip>
-            <Tooltip content="node list API docs">
-              <AnchorButton
-                minimal
-                icon="panel-stats"
-                large
-                href="https://github.com/kousun12/eternal/blob/master/docs.md"
-                target="_blank"
-              />
-            </Tooltip>
-          </div>
-          <h2 className="graph-title">{get(graph, 'name', '')}</h2>
-          <div style={{ ...styles.toolSection, ...styles.rightAlign }}>
-            <Tooltip content="open github repo">
-              <AnchorButton
-                minimal
-                icon="git-repo"
-                large
-                href="https://github.com/kousun12/eternal"
-                target="_blank"
-              />
-            </Tooltip>
-            <Tooltip content="show keyboard shortcuts">
-              <AnchorButton minimal icon="key-command" large onClick={this._showHotkeys} />
-            </Tooltip>
-            <Tooltip content={`${selectedNode ? 'hide' : 'show'} info pane`}>
-              <AnchorButton
-                minimal
-                icon={`chevron-${selectedNode ? 'right' : 'left'}`}
-                large
-                onClick={this._toggleInfo}
-              />
-            </Tooltip>
-          </div>
-        </div>
+        <Toolbar
+          loadExample={this._searchExamples}
+          insertNode={this._manualInsert}
+          toggleVis={this._toggleGraph}
+          graphVisible={visible}
+          toggleDebug={this._toggleDebug}
+          exportJSON={this._showSave}
+          loadJSON={this._loadJSON}
+          title={get(graph, 'name', '')}
+          toggleInfo={this._toggleInfo}
+          infoShowing={Boolean(selectedNode)}
+        />
         {graph && (
           <NodeGraph
             visible={visible}
@@ -350,7 +302,13 @@ class App extends Component<P, S> {
           onClose={this._closeSearch}
         />
         {promptLoad && (
-          <Dialog isOpen={true} className="bp3-dark" title="Load...">
+          <Dialog
+            canOutsideClickClose={false}
+            isOpen={promptLoad}
+            className="bp3-dark"
+            title="Load..."
+            onClose={this._closeLoadPrompt}
+          >
             <div className={Classes.DIALOG_FOOTER}>
               <div className={Classes.DIALOG_BODY}>
                 <p>you are about to load the example</p>
@@ -366,12 +324,6 @@ class App extends Component<P, S> {
       </>
     );
   }
-
-  _showHotkeys = () => {
-    document.dispatchEvent(
-      new KeyboardEvent('keydown', { which: 47, keyCode: 47, shiftKey: true, bubbles: true })
-    );
-  };
 
   _manualInsert = () => {
     this._onSearch();

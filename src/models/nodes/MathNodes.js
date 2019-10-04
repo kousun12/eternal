@@ -1,8 +1,8 @@
 // @flow
 import React from 'react';
-import { get } from 'lodash';
 import NodeBase from 'models/NodeBase';
 import Edge from 'models/Edge';
+
 const Types = window.Types;
 
 export class DivideNode extends NodeBase<

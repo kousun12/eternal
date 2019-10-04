@@ -126,6 +126,7 @@ export class StephenWolfram extends NodeBase<
             const lIdx = (((index - 1) % state.length) + state.length) % state.length;
             const rIdx = (index + 1) % state.length;
             // noinspection EqualityComparisonWithCoercionJS accept coercion for convenience
+            // eslint-disable-next-line eqeqeq
             const num = (state[lIdx] == 1 ? 4 : 0) + (i == 1 ? 2 : 0) + (state[rIdx] == 1 ? 1 : 0);
             return this.transitions[num];
           });
