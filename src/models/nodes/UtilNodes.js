@@ -4,7 +4,7 @@ import { get, reverse } from 'lodash';
 import NodeBase from 'models/NodeBase';
 import Edge from 'models/Edge';
 import { TT } from 'models/nodes/ToneNode';
-import Regexp from 'components/JsonTree/js/components/DataTypes/Regexp';
+import Regexp from 'vendor/JsonTree/js/components/DataTypes/Regexp';
 const Types = window.Types;
 
 export class InfoLog extends NodeBase<{}, { anything: any }, { anything: any }> {

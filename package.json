@@ -75,6 +75,7 @@
   "eslintConfig": {
     "extends": "react-app"
   },
+  "eslintIgnore": ["src/vendor/**"],
   "browserslist": [
     ">0.2%",
     "not dead",

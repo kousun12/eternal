@@ -13,7 +13,7 @@ import ObjectName from './../ObjectName';
 import { CollapsedIcon, ExpandedIcon } from './../ToggleIcons';
 //theme
 import Theme from './../../themes/getStyle';
-import AttributeStore from 'components/JsonTree/js/stores/ObjectAttributes';
+import AttributeStore from 'vendor/JsonTree/js/stores/ObjectAttributes';
 
 //increment 1 with each nested object & array
 const DEPTH_INCREMENT = 1;

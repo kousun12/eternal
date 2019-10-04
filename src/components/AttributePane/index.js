@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { get, pickBy, throttle } from 'lodash';
 import type { AnyNode, Changeable, Displayable } from 'models/NodeBase';
-import JsonTree from 'components/JsonTree/js';
+import JsonTree from 'vendor/JsonTree/js';
 import InfoPopup from 'components/AttributePane/InfoPopup';
 import { Hotkey, Hotkeys, HotkeysTarget, PopoverInteractionKind } from '@blueprintjs/core';
 const Types = window.Types;
