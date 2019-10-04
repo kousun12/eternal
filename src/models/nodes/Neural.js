@@ -77,6 +77,7 @@ export class PerformanceRNNNode extends NodeBase<
     },
     state: {},
   };
+  static shortNames = { stepsPerSecond: 'steps/s' };
   performance: Performance;
   toneOut: ToneData;
   midiOut: [MidiData, number];

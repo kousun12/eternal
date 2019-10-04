@@ -18,7 +18,6 @@ export const examples = [
   require('models/examples/percept nets.json'),
   require('models/examples/soundfont-midi.json'),
   require('models/examples/soundfont-tone.json'),
-  require('models/examples/vibra-tions.json'),
   require('models/examples/midi-in.json'),
 ];
 

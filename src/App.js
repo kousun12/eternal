@@ -51,11 +51,13 @@ type S = {
   promptLoad: ?string,
 };
 
+const defaultNodePos = { x: 70, y: 120 };
+
 class App extends Component<P, S> {
   nodeIndex: number = 0;
   mostRecentNode: ?AnyNode = null;
   fileUpload: ?FileUpload;
-  _mousePos: Pos = { x: 50, y: 50 };
+  _mousePos: Pos = defaultNodePos;
   _insertPos: ?Pos = null;
 
   constructor(p: P) {
@@ -293,7 +295,7 @@ class App extends Component<P, S> {
             </Tooltip>
           </div>
           <h2 className="graph-title">{get(graph, 'name', '')}</h2>
-          <div style={styles.toolSection}>
+          <div style={{ ...styles.toolSection, ...styles.rightAlign }}>
             <Tooltip content="open github repo">
               <AnchorButton
                 minimal
@@ -373,7 +375,7 @@ class App extends Component<P, S> {
 
   _manualInsert = () => {
     this._onSearch();
-    this._insertPos = { x: 50, y: 50 };
+    this._insertPos = defaultNodePos;
   };
 
   // noinspection JSUnusedGlobalSymbols
@@ -419,8 +421,9 @@ class App extends Component<P, S> {
 }
 
 const styles = {
-  toolSection: { flex: 1 },
-  leftAlign: { textAlign: 'left' },
+  toolSection: { flex: 1, display: 'flex' },
+  leftAlign: { justifyContent: 'flex-start' },
+  rightAlign: { justifyContent: 'flex-end' },
 };
 
 setHotkeysDialogProps({ className: 'bp3-dark', globalHotkeysGroup: 'Menu' });

@@ -118,10 +118,11 @@ class NodeGraph extends React.Component<P, S> {
   onCompleteConnector = (id: string, inIndex: number) => {
     const { dragging, source, graph } = this.state;
     if (dragging && source) {
-      let fromNode = graph.nodeWithId(source[0]);
+      const [nodeId, outIdx] = source;
+      let fromNode = graph.nodeWithId(nodeId);
       let toNode = graph.nodeWithId(id);
       if (fromNode && toNode) {
-        let fromAttr = fromNode.node.outKeyAt(source[1]);
+        let fromAttr = fromNode.node.outKeyAt(outIdx);
         let toAttr = toNode.node.inKeyAt(inIndex);
         const edge = new Edge(fromNode.node, toNode.node, fromAttr, toAttr);
         graph.addEdge(edge);
@@ -162,7 +163,7 @@ class NodeGraph extends React.Component<P, S> {
 
   onDeleteNode = (n: AnyNode) => {
     this.state.graph.removeNode(n);
-    this.forceUpdate();
+    this._onNodeChange(null);
   };
 
   _onNodeChange = (n: ?AnyNode) => {
@@ -198,8 +199,9 @@ class NodeGraph extends React.Component<P, S> {
     const nodeIds = highlighted.map(n => n.node.id);
     if (paneId) nodeIds.push(paneId);
     if (dragging && source) {
-      let src = graph.nodeWithIdF(source[0]);
-      activeSpline = <Spline start={outOffset(src.pos.x, src.pos.y, source[1])} end={mousePos} />;
+      const [nodeId, outIdx] = source;
+      let src = graph.nodeWithIdF(nodeId);
+      activeSpline = <Spline start={outOffset(src.pos.x, src.pos.y, outIdx)} end={mousePos} />;
     }
     return (
       <SVGComponent height="100%" width="100%" ref="svgComponent">

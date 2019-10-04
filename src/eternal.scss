@@ -50,6 +50,8 @@ body {
 }
 
 .graph-toolbar {
+  position: absolute;
+  top: 0;
   font-family: Monaco, "Source Code Pro", monospace, sans-serif;
   display: flex;
   flex-direction: row;
@@ -79,8 +81,8 @@ body {
 }
 
 .node.selected {
-  border: 1px solid white;
-  box-shadow: 0 0 8px 3px #bbb;
+  border: 1px solid #dadada;
+  box-shadow: 0 0 8px 3px #a3a3a3;
 }
 
 .node.in-view {
@@ -320,6 +322,7 @@ $attrs-pad-sides: 16px;
   position: fixed;
   right: 0;
   z-index: 12;
+  margin-top: 64px;
   -webkit-box-shadow: -3px 0px 20px 3px rgba(0, 0, 0, 0.3);
   -moz-box-shadow: -3px 0px 20px 3px rgba(0, 0, 0, 0.3);
   box-shadow: -3px 0px 20px 3px rgba(0, 0, 0, 0.3);
