@@ -105,7 +105,7 @@ export class AudioMasterNode extends NodeBase<
     if (name === 'node') {
       const { node } = this.props;
       if (node) {
-        node.disconnect(Tone.Master);
+        node.disconnect();
       }
     }
   };
@@ -132,7 +132,7 @@ export class ToContextDestinationNode extends NodeBase<
 
   onInputChange = (edge: Edge, change: Object) => {
     if ('node' === edge.toPort && this._connectedTo !== edge.id) {
-      edge.inDataFor(change).connect(Tone.context.destination);
+      Tone.connect(edge.inDataFor(change), Tone.context.destination);
       return this.outKeys();
     }
     return [];
@@ -143,7 +143,7 @@ export class ToContextDestinationNode extends NodeBase<
     if (name === 'node') {
       const { node } = this.props;
       if (node) {
-        node.disconnect(Tone.context.destination);
+        node.disconnect();
       }
     }
   };
@@ -199,7 +199,7 @@ export class PannerNode extends NodeBase<
     if (name === 'node') {
       const { node } = this.props;
       if (node) {
-        node.disconnect(this.state.panner);
+        node.disconnect();
       }
     }
   };
@@ -254,7 +254,7 @@ export class VolumeNode extends NodeBase<
     if (name === 'node') {
       const { node } = this.props;
       if (node) {
-        node.disconnect(this.state.volume);
+        node.disconnect();
       }
     }
   };
@@ -314,7 +314,7 @@ export class CompressorNode extends NodeBase<
     if (name === 'node') {
       const { node } = this.props;
       if (node) {
-        node.disconnect(this.state.compressor);
+        node.disconnect();
       }
     }
   };
@@ -376,7 +376,7 @@ export class ReverbNode extends NodeBase<
     if (name === 'node') {
       const { node } = this.props;
       if (node) {
-        node.disconnect(this.state.reverb);
+        node.disconnect();
       }
     }
   };
@@ -438,7 +438,7 @@ export class FeedbackDelayNode extends NodeBase<
     if (name === 'node') {
       const { node } = this.props;
       if (node) {
-        node.disconnect(this.state.feedbackDelay);
+        node.disconnect();
       }
     }
   };
@@ -496,7 +496,7 @@ export class AudioDelayNode extends NodeBase<
     if (name === 'node') {
       const { node } = this.props;
       if (node) {
-        node.disconnect(this.state.delay);
+        node.disconnect();
       }
     }
   };
@@ -555,7 +555,7 @@ export class AudioGainNode extends NodeBase<
     if (name === 'node') {
       const { node } = this.props;
       if (node) {
-        node.disconnect(this.state.gain);
+        node.disconnect();
       }
     }
   };
@@ -1009,7 +1009,7 @@ export class DuoSynthNode extends NodeBase<{ value: Tone.DuoSynth }, {}, { out: 
   };
 
   static defaultSynth() {
-    let envelope = { attack: 0.1, release: 4, releaseCurve: 'linear' };
+    let envelope = { attack: 0.8, release: 4, releaseCurve: 'linear' };
     let filterEnvelope = {
       baseFrequency: 200,
       octaves: 2,
@@ -1124,20 +1124,28 @@ export class StartTransportNode extends NodeBase<{}, { transport: Tone.Transport
     if (edge.toPort === 'transport') {
       const transport = edge.inDataFor(change);
       if (transport && transport.state !== 'started') {
-        setTimeout(() => transport.start(), 1);
+        setTimeout(() => transport.start('+1'), 1);
       }
     }
     return [];
   };
 
+  _stopTime = () => {
+    const { transport } = this.props;
+    if (transport) {
+      transport.stop();
+    }
+  };
+
   beforeDisconnectIn: Edge => void = edge => {
     const name = edge.toPort;
     if (name === 'transport') {
-      const { transport } = this.props;
-      if (transport) {
-        transport.stop();
-      }
+      this._stopTime();
     }
+  };
+
+  willBeRemoved = () => {
+    this._stopTime();
   };
 
   process = () => {

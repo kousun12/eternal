@@ -75,7 +75,6 @@ class App extends Component<P, S> {
   }
 
   componentDidMount() {
-    let serialization = welcomeGraph;
     const exId = get(window.location.search.match(/[?&]e=([\w-\d% +]+)&?/), 1);
     if (exId) {
       const name = decodeURIComponent(exId).replace(/\+/g, ' ');
@@ -83,7 +82,7 @@ class App extends Component<P, S> {
         this.setState({ promptLoad: name });
       }
     }
-    this._setGraph(Graph.load(serialization));
+    this._setGraph(Graph.load(welcomeGraph));
 
     const hide = get(window.location.search.match(/[?&]h=(\d)&?/), 1);
     if (typeof hide === 'string') {
@@ -114,10 +113,12 @@ class App extends Component<P, S> {
       this.state.graph.dispose();
     }
     window['$node'] = null;
-    this.mostRecentNode = get(graph.nodes, [0, 'node']);
-    const readme = graph.nodes.find(nis => nis.node.title === 'README');
-    const selectedNode = readme ? readme.node : null;
-    this.setState({ graph, selectedNode }, () => (window['$graph'] = graph));
+    this.setState({ graph: null }, () => {
+      this.mostRecentNode = get(graph.nodes, [0, 'node']);
+      const readme = graph.nodes.find(nis => nis.node.title === 'README');
+      const selectedNode = readme ? readme.node : null;
+      this.setState({ graph, selectedNode }, () => (window['$graph'] = graph));
+    });
   };
 
   _onSearch = () => {
@@ -139,7 +140,6 @@ class App extends Component<P, S> {
   };
 
   _loadJSON = () => {
-    this._reload();
     this.fileUpload && this.fileUpload.openFileInput();
   };
 
@@ -159,8 +159,12 @@ class App extends Component<P, S> {
   };
 
   _loadGraph = (json: GraphSerialization) => {
-    this._setGraph(Graph.load(json));
-    this._closeSearch();
+    const exId = get(window.location.search.match(/[?&]e=([\w-\d% +]+)&?/), 1);
+    if (exId) {
+      this._reload();
+    } else {
+      this._setGraph(Graph.load(json));
+    }
   };
 
   _loadExample = (json: GraphSerialization) => {
