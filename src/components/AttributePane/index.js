@@ -12,7 +12,7 @@ type P = { node: AnyNode };
 type S = { fullDocs: boolean };
 
 class AttributePane extends Component<P, S> {
-  state = { fullDocs: false };
+  state = { fullDocs: true };
 
   listener: ?string;
 

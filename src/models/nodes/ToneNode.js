@@ -732,24 +732,26 @@ export class ArpeggiateNode extends NodeBase<
     input: {
       notes: Types.object.desc('Notes to arpeggiate over'),
       interval: Types.time.desc('The interval at which this node loops'),
-      pattern: Types.string.aliased(
-        'Pattern',
-        <div>
-          <p>Arpeggio pattern. Possible values are</p>
-          <ul>
-            <li>`up` - cycles upward</li> <li>`down` - cycles downward</li>
-            <li>`upDown` - up then and down</li> <li>`downUp` - cycles down then and up</li>
-            <li>`alternateUp` - jump up two and down one</li>
-            <li>`alternateDown` - jump down two and up one</li>
-            <li>`random` - randomly select an index</li>
-            <li>`randomWalk` - randomly moves one index away from the current position</li>
-            <li>
-              `randomOnce` - randomly select an index without repeating until all values have been
-              chosen.
-            </li>
-          </ul>
-        </div>
-      ),
+      pattern: Types.string
+        .aliased(
+          'Pattern',
+          <div>
+            <p>Arpeggio pattern. Possible values are</p>
+            <ul>
+              <li>`up` - cycles upward</li> <li>`down` - cycles downward</li>
+              <li>`upDown` - up then and down</li> <li>`downUp` - cycles down then and up</li>
+              <li>`alternateUp` - jump up two and down one</li>
+              <li>`alternateDown` - jump down two and up one</li>
+              <li>`random` - randomly select an index</li>
+              <li>`randomWalk` - randomly moves one index away from the current position</li>
+              <li>
+                `randomOnce` - randomly select an index without repeating until all values have been
+                chosen.
+              </li>
+            </ul>
+          </div>
+        )
+        .desc('The arpeggiation pattern. See the `Pattern` type for options.'),
       humanize: Types.boolean.desc(
         'Random variation +/-0.01s to the scheduled time. Or give it a time value which it will randomize by'
       ),
