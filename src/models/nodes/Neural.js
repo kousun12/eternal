@@ -47,7 +47,7 @@ export class PerformanceRNNNode extends NodeBase<
     toneData: ToneData,
   }
 > {
-  static +displayName = 'Performance RNN';
+  static +displayName = 'Music RNN';
   static +registryName = 'PerformanceRNNNode';
   static defaultProps = { stepsPerSecond: 100 };
   static description = (
@@ -90,7 +90,11 @@ export class PerformanceRNNNode extends NodeBase<
     switch (action) {
       case 'attack':
         if (synth instanceof Piano) {
-          synth.keyUp(note.toMidi(), time, velocity);
+          try {
+            synth.keyUp(note.toMidi(), time, velocity);
+          } catch (e) {
+            console.warn(e);
+          }
         } else {
           synth.triggerAttack(note, time, velocity);
         }

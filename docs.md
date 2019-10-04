@@ -733,7 +733,7 @@ A piano node
 Arpeggiate between the given notes in a number of patterns
   
 
-##### inputs (4)
+##### inputs (5)
 
 `notes`: `object` _complex_
 
@@ -750,6 +750,10 @@ A basic `string` type.
 `humanize`: `boolean` _primitive_
 
 Random variation +/-0.01s to the scheduled time. Or give it a time value which it will randomize by
+
+`probability`: `number` _primitive_
+
+probability that each iteration will play, [0,1]
   
 ##### outputs (2)
 
@@ -1047,15 +1051,15 @@ A color representation
 
 `r`: `number` _primitive_
 
-red channel
+red channel, [0,255]
 
 `g`: `number` _primitive_
 
-green channel
+green channel, [0,255]
 
 `b`: `number` _primitive_
 
-blue channel
+blue channel, [0,255]
   
 ##### outputs (2)
 
@@ -1338,7 +1342,7 @@ Logical equals over inputs
 
 
 
-## Performance RNN
+## Music RNN
 
 Sample an RNN model trained on the Yamaha e-Piano Competition dataset
   
@@ -1821,7 +1825,7 @@ A basic `boolean` type.
   
 ##### outputs (1)
 
-`out`: `date` _primitive_ default: `"2019-06-24T21:34:27.328Z"`
+`out`: `date` _primitive_ default: `"2019-10-04T05:19:10.273Z"`
 
 A basic `date` type.
   

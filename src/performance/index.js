@@ -103,6 +103,7 @@ export default class Performance {
       return;
     }
     this.initialized = true;
+    Tone.Transport.start();
     fetch(`${CHECKPOINT_URL}/weights_manifest.json`)
       .then(response => response.json())
       .then((manifest: tf.WeightsManifestConfig) => tf.io.loadWeights(manifest, CHECKPOINT_URL))
