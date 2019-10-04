@@ -14,6 +14,8 @@ You can think of it as an extension of Sol LeWitt's process art in the sense tha
 
 <br/><p align="center"><img src="eternal.png" alt="rnn-shot"></p><br/>
 
+<br/><p align="center"><img src="stephen.png" alt="stephen-shot"></p><br/>
+
 #### examples // myths
 
 There are several example graphs that can be loaded from within the app itself. `cmd|ctrl + e`; you may need to zoom out to fit some graphs `cmd + -`:
