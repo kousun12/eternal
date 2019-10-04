@@ -3,13 +3,11 @@
 <p align="center"><a href="https://kousun12.github.io/eternal">~~ demo ~~</a></p>
 <p align="center"><a href="https://github.com/kousun12/eternal/blob/master/docs.md">~~ node docs ~~</a></p>
 
-This project was created for gratuitous reasons; it’s an attempt to serve an aesthetic that I appreciate, over a medium which I feel is appropriate for its expression. 
+This project was created for gratuitous reasons; it serves an aesthetic that I appreciate, over a medium which I feel is appropriate for its expression. 
 
-Having spent a lot of time / mind in and around computers, my sense of aesthetics has something to do with not only the things-in-themselves, but their representations, specifically as information processes, i.e. programs. Complex phenomena which are beautiful but also succinctly describable have beauty in both perceptual and abstract senses. This project is one which allows one to describe audio/visual processes as programs, encoded as a visual graph. You can think of it as an extension of Sol LeWitt's process art or Brian Eno's idea of "music as gardening".
+Having spent a lot of time / mind in and around computers, my sense of aesthetics has something to do with not only the things-in-themselves, but their representations, specifically as information processes, i.e. programs. Seemingly complex phenomena which have succinct descriptions are especially beautiful to me. This project is one which allows one to describe audio/visual processes as programs, represented as a visual graph. 
 
-##### aside
-
-I've, since making this, discovered tools like max/msp / houdini & many more extremely well thought out versions of this as a tool. While I still like some aspects of this as a tool that those others do not have, note that _this defintely more of an art project than a product._ It was made to juxtapose representations with perceptions, and while you can probably make arbitrary things with it, you will find many other better supported tools that aren't created out of my specific interests. Nevertheless, enjoy. 
+You can think of it as an extension of Sol LeWitt's process art in the sense that it's goal is to decompose art into procedural descriptions. Or you can think of it as an extension of Brian Eno's idea of "music as gardening" in the sense that it gives you a computational garden to tend to.
 
 <br/><p align="center"><img src="nude.png" alt="nude-shot"></p><br/>
 
@@ -21,7 +19,7 @@ I've, since making this, discovered tools like max/msp / houdini & many more ext
 There are several example graphs that can be loaded from within the app itself. `cmd|ctrl + e`; you may need to zoom out to fit some graphs `cmd + -`:
 
 ###### [nude, eternally](https://kousun12.github.io/eternal?e=nude%2C%20eternally)
-this is radiohead, forever. `thom yorke` eternally over `EMaj7 - AMaj9 - G#m7`. don't get any big ideas. an indeterminate, irreducible arpeggio, in 78 nodes.
+this is radiohead, forever. thom yorke eternally over EMaj7 - AMaj9 - G#m7. don't get any big ideas. an indeterminate, irreducible arpeggio, in 78 nodes.
 <details>
   <summary>desc</summary>
   Demonstrates raw synths (sawtooth, sine, triangle), remote sound file loading, music chords, arpeggiators, transport time, raw fragment shaders in glsl. 
@@ -29,7 +27,7 @@ this is radiohead, forever. `thom yorke` eternally over `EMaj7 - AMaj9 - G#m7`. 
 
 
 ###### [in the gardens of eden](https://kousun12.github.io/eternal?e=in%20the%20gardens%20of%20eden)
-et in arcadia, eno. [`brian`](https://www.edge.org/conversation/brian_eno-composers-as-gardeners) plants his seeds as he dreams of aristotle's `prime mover`. along the tides in `C`s of entropy, `terry`'s decomposing soul fertilizes the lilies.
+et in arcadia, eno. [brian](https://www.edge.org/conversation/brian_eno-composers-as-gardeners) plants his seeds as he dreams of aristotle's prime mover. along the tides in C's of entropy, terry's decomposing soul fertilizes the lilies.
 <details>
   <summary>desc</summary>
   Demonstrates musical scheduling and delays, raw fragment shaders in glsl.
@@ -52,7 +50,7 @@ i do not know much about the gods<br>
 but i bet they sing aloud in the silence of space
 <details>
   <summary>desc</summary>
-  Demonstrates music scale / chroma, RNN model, raw fragment shaders in glsl.
+  Demonstrates music scale / chroma, RNN model, raw fragment shaders in glsl, MIDI device connections.
 </details>
 
 ###### [stephen wolfram](https://kousun12.github.io/eternal?e=stephen+wolfram)
@@ -72,24 +70,22 @@ and so on, until the ends.
 
 
 #### Development
-This might smell in some ways like consumer software, but you should understand it as an art project. While I believe that there's a place for something like this (a flow-based-programming inspired audio / visual creative tool), this has been made only as an aesthetic exploration; I don't intend to support it in any way, but you should feel at liberty to do with it what you please.
+This might smell in some ways like consumer software, but you should understand it as an art project. While I believe that there's a place for something like this (a node-based audio / visual creative tool in the browser), this has been made as an aesthetic exploration; I will support it out of personal interests, but I don't intend to support it for the general public.
 
-`npm start`
+`yarn start`
 
 Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Connect to the dev server from your browser @ [localhost:3000](http://localhost:3000).
 
 The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+You will also see any lint errors in the console. The repo has eslint and flowtype integrated. 
 
 `yarn build`
 
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Builds an optimized production static site to the `build` folder.<br>
 
 The build is minified and the filenames include the hashes
 
 `yarn deploy`
 
-Run the gh-pages deploy script
-
+gh-pages deploy script
