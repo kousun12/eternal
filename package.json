@@ -73,7 +73,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "predeploy": "yarn run build",
-    "deploy": "gh-pages -d build"
+    "deploy": "gh-pages -d build",
+    "flow": "./node_modules/.bin/flow check"
   },
   "eslintConfig": {
     "extends": "react-app"
