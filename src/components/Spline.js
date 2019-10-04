@@ -87,9 +87,9 @@ class Spline extends React.Component<P, S> {
     let pathString = this.bezierCurve(
       start.x, // start x
       start.y, // start y
-      start.x + dist * 0.25, // cp1 x
+      start.x + dist * 0.18, // cp1 x
       start.y, // cp1 y
-      end.x - dist * 0.75, // cp2 x
+      end.x - dist * 0.35, // cp2 x
       end.y, // cp2 y
       end.x, // end x
       end.y
