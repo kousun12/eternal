@@ -63,21 +63,21 @@ Stephen Wolfram is an operator that, when given a 1D cellular automata rule numb
 </details>
 
 ###### [kolmogorov's inferno](https://kousun12.github.io/eternal?e=shaders)
-It was preternaturally dark --
+It was preternaturally dark—
 
-You know what it's like in the shipyards of Venice,
-  how all winter workers boil the pitch
-  to caulk and patch up their leaky ships
+You know what it's like in the shipyards of Venice,<br>
+&nbsp;&nbsp;how all winter workers boil the pitch<br>
+&nbsp;&nbsp;to caulk and patch up their leaky ships<br>
 
-When storms keep them off the roughened seas:
-  one hammers out a new boat, one plugs
-  the cracked seams of an old sea-worn vessel,
-One strikes the stern, another bangs on the prow,
-  some make oars, others are braiding rope,
-  another repairs the main, someone the lug sail;
-Well, not with fire, but with immortal heat
-  a thick pitch is boiling down there and sticks
-  like glue to both banks of the river.
+When storms keep them off the roughened seas:<br>
+&nbsp;&nbsp;one hammers out a new boat, one plugs<br>
+&nbsp;&nbsp;the cracked seams of an old sea-worn vessel,<br>
+One strikes the stern, another bangs on the prow,<br>
+&nbsp;&nbsp;some make oars, others are braiding rope,<br>
+&nbsp;&nbsp;another repairs the main, someone the lug sail;<br>
+Well, not with fire, but with immortal heat<br>
+&nbsp;&nbsp;a thick pitch is boiling down there and sticks<br>
+&nbsp;&nbsp;like glue to both banks of the river.<br>
 <details>
   <summary>desc</summary>
   Demonstrates GLSL Fragment Shader and post render effects 
