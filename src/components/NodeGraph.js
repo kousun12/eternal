@@ -141,13 +141,16 @@ class NodeGraph extends React.Component<P, S> {
     this.forceUpdate();
   };
 
-  onNodeSelect = async (n: NodeInSpace) => {
+  onNodeSelect = (n: NodeInSpace) => {
     if (this.props.onNodeSelect) {
       this.props.onNodeSelect(n.node);
     }
     this._onNodeChange(n.node);
     const highlighted = uniqBy(this.state.highlighted.concat(n), 'node.id');
-    await this.setState({ highlighted });
+    if (highlighted.length > 1) {
+      this._onNodeChange(null);
+    }
+    this.setState({ highlighted });
   };
 
   onNodeDeselect = (n: NodeInSpace, all?: boolean) => {
