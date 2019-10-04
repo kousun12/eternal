@@ -546,7 +546,7 @@ export class NoisePassNode extends NodeBase<
         const threeN: ThreeNode = edge.to;
         const camera = threeN.state.base.camera;
         if (camera) {
-          this.effect = new NoiseEffect({ blendFunction: 5 });
+          this.effect = new NoiseEffect({});
           this.pass = new EffectPass(camera, this.effect);
           this.effect.blendMode.opacity.value = get(this, 'props.opacity', 0.21);
           threeN.addPass(this.pass);
