@@ -9,7 +9,7 @@ Having spent a lot of time / mind in and around computers, my sense of aesthetic
 
 You can think of it as an extension of Sol LeWitt's process art in the sense that it's goal is to decompose art into procedural descriptions. Or you can think of it as an extension of Brian Eno's idea of "music as gardening" in the sense that it gives you a computational garden to tend to.
 
-It's inspired by an abstract and pretty beautiful idea of a functional visual programming language, but importantly, it does not go all the way. It's less interested in a clean theoretical framework than it is in being a tool that is useful in exploring audio-visual interpretations of information processing. It's not nodes all the way down—though that'd be nice—but seemingly useful/interesting/general nodes some of the way down.    
+It's inspired by an abstract and pretty beautiful idea of a functional visual programming language, but importantly, it does not go all the way. It's less interested in a clean theoretical framework than it is in being a tool that is useful in exploring audio-visual interpretations of information processing. It's not strongly-typed nodes all the way down—though that'd be nice—but seemingly useful/interesting/general nodes some of the way down.    
 
 <br/><p align="center"><img src="nude.png" alt="nude-shot"></p><br/>
 
@@ -101,6 +101,9 @@ Runs the app in the development mode.<br>
 Connect to the dev server from your browser @ [localhost:3000](http://localhost:3000).
 
 The page will reload if you make edits.<br>
+
+The most important general classes you need to understand the project structure are [Graph](src/models/Graph.js), [NodeBase](src/models/NodeBase.js), and [AttributeType](src/models/AttributeType.js).
+
 You will also see any lint errors in the console. The repo has eslint and flowtype integrated. 
 
 `yarn build`
