@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React from 'react';
 import dispatcher from './../helpers/dispatcher';
 import ObjectAttributes from './../stores/ObjectAttributes';
@@ -21,7 +22,8 @@ export default class extends React.PureComponent {
             rjvId: rjvId,
             name: 'RESET',
           });
-        }}>
+        }}
+      >
         <span {...Theme(theme, 'validation-failure-label')}>{message}</span>
         <Clear {...Theme(theme, 'validation-failure-clear')} />
       </div>

@@ -1,3 +1,4 @@
+/* eslint-disable no-use-before-define */
 // @flow
 import {
   Clock,
@@ -116,7 +117,8 @@ export default class Base {
       depthTexture: true,
     });
     const renderer = composer.renderer;
-    const controls = new OrbitControls(this.camera, renderer.domElement);
+    // TODO enable this or not?
+    // const controls = new OrbitControls(this.camera, renderer.domElement);
     if (document.body) {
       document.body.appendChild(renderer.domElement);
     }

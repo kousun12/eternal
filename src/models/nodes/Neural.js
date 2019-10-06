@@ -109,6 +109,8 @@ export class PerformanceRNNNode extends NodeBase<
       case 'attackRelease':
         synth.triggerAttackRelease(note, '4n', time, velocity);
         break;
+      default:
+        break;
     }
   }
 

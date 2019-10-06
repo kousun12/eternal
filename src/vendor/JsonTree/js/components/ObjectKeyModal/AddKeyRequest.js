@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React from 'react';
 import dispatcher from './../../helpers/dispatcher';
 import ObjectAttributes from './../../stores/ObjectAttributes';

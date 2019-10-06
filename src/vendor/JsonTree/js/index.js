@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React from 'react';
 import { polyfill } from 'react-lifecycles-compat';
 import JsonViewer from './components/JsonViewer';

@@ -2,6 +2,7 @@
 
 import type { Node } from 'react';
 type TypeMetadata = { required: boolean };
+// eslint-disable-next-line no-use-before-define
 export type TypeMap = { [string]: TypeImpl };
 type EnumSchema = { [string]: string };
 type AttributeSchema = TypeMap | EnumSchema;

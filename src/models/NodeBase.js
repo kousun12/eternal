@@ -1,3 +1,4 @@
+/* eslint-disable no-use-before-define */
 // @flow
 
 import { type Node } from 'react';
@@ -6,21 +7,6 @@ import Edge from 'models/Edge';
 import { uuid } from 'helpers';
 import { TypeImpl, type TypeMap } from 'models/AttributeType';
 import { signatureFor } from 'components/util';
-export type AnyNode = NodeBase<any, any, any>;
-export type Schema = { input: TypeMap, output: TypeMap, state: TypeMap };
-
-// TODO - type these two
-export type Displayable = { title: string, type: TypeImpl, value: any };
-export type Changeable = Displayable & { onChange: (val: any) => void };
-export type ChangeListener = AnyNode => void;
-export type NodeSerialization<S> = {
-  id: string,
-  type: string,
-  x: number,
-  y: number,
-  state?: S,
-  title?: ?string,
-};
 
 export default class NodeBase<Val: Object, In: ?Object, Out: ?Object> {
   +id: string;
@@ -370,6 +356,7 @@ export default class NodeBase<Val: Object, In: ?Object, Out: ?Object> {
               console.error('error parsing', this.state[k], type.name, e);
             }
           }
+          return null;
         })
         .filter(p => p)
     );
@@ -418,3 +405,18 @@ export default class NodeBase<Val: Object, In: ?Object, Out: ?Object> {
     }
   }
 }
+
+export type AnyNode = NodeBase<any, any, any>;
+export type Schema = { input: TypeMap, output: TypeMap, state: TypeMap };
+// TODO - type these two
+export type Displayable = { title: string, type: TypeImpl, value: any };
+export type Changeable = Displayable & { onChange: (val: any) => void };
+export type ChangeListener = AnyNode => void;
+export type NodeSerialization<S> = {
+  id: string,
+  type: string,
+  x: number,
+  y: number,
+  state?: S,
+  title?: ?string,
+};

@@ -110,4 +110,19 @@ export default class Graph {
   static empty(): GraphSerialization {
     return { name: 'untitled', edges: [], nodes: [] };
   }
+
+  static fromFile(file: File, handler: GraphSerialization => void) {
+    const fileReader = new FileReader();
+    fileReader.onload = () => {
+      const result = fileReader.result;
+      if (typeof result === 'string') {
+        try {
+          handler(JSON.parse(result));
+        } catch (e) {
+          console.error('could not load graph', e);
+        }
+      }
+    };
+    fileReader.readAsText(file);
+  }
 }

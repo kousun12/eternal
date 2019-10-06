@@ -1,3 +1,4 @@
+/* eslint-disable */
 const toObj = ['gainnode', 'delaynode', 'midiinput', 'midioutput'];
 
 //returns a string "type" of input object

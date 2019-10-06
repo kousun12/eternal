@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React from 'react';
 import dispatcher from './../helpers/dispatcher';
 
@@ -98,7 +99,8 @@ export default class extends React.PureComponent {
         className="object-meta-data"
         onClick={e => {
           e.stopPropagation();
-        }}>
+        }}
+      >
         {/* size badge display */}
         {this.getObjectSize()}
         {/* copy to clipboard icon */}

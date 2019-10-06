@@ -4,15 +4,7 @@ import './boot';
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { get } from 'lodash';
-import {
-  Button,
-  Classes,
-  Dialog,
-  Hotkey,
-  Hotkeys,
-  HotkeysTarget,
-  setHotkeysDialogProps,
-} from '@blueprintjs/core';
+import { Hotkey, Hotkeys, HotkeysTarget, setHotkeysDialogProps } from '@blueprintjs/core';
 
 import 'font-awesome/css/font-awesome.css';
 import 'font-awesome/scss/font-awesome.scss';
@@ -36,6 +28,7 @@ import './docgen';
 import 'eternal.scss';
 import type { Pos } from 'types';
 import Toolbar from 'components/Toolbar';
+import LoadPrompt from 'components/dialogs/LoadPrompt';
 
 const welcomeGraph = require('models/examples/welcome.json');
 
@@ -82,6 +75,7 @@ class App extends Component<P, S> {
         this.setState({ promptLoad: name });
       }
     }
+
     this._setGraph(Graph.load(welcomeGraph));
 
     const hide = get(window.location.search.match(/[?&]h=(\d)&?/), 1);
@@ -109,9 +103,7 @@ class App extends Component<P, S> {
   };
 
   _setGraph = (graph: Graph) => {
-    if (this.state.graph) {
-      this.state.graph.dispose();
-    }
+    this.state.graph && this.state.graph.dispose();
     window['$node'] = null;
     this.setState({ graph: null }, () => {
       this.mostRecentNode = get(graph.nodes, [0, 'node']);
@@ -121,17 +113,10 @@ class App extends Component<P, S> {
     });
   };
 
-  _onSearch = () => {
-    if (!this.state.searchOpen) {
-      this.setState({ searchOpen: true });
-    }
-  };
+  _onSearch = () => !this.state.searchOpen && this.setState({ searchOpen: true });
 
-  _searchExamples = () => {
-    if (!this.state.searchingExamples) {
-      this.setState({ searchingExamples: true });
-    }
-  };
+  _searchExamples = () =>
+    !this.state.searchingExamples && this.setState({ searchingExamples: true });
 
   _exportJSON = (name: string) => {
     const { graph } = this.state;
@@ -139,24 +124,9 @@ class App extends Component<P, S> {
     this._closeSave();
   };
 
-  _loadJSON = () => {
-    this.fileUpload && this.fileUpload.openFileInput();
-  };
+  _loadJSON = () => this.fileUpload && this.fileUpload.openFileInput();
 
-  _onFileUpload = (file: File) => {
-    const fileReader = new FileReader();
-    fileReader.onload = () => {
-      const result = fileReader.result;
-      if (typeof result === 'string') {
-        try {
-          this._loadGraph(JSON.parse(result));
-        } catch (e) {
-          console.error('could not load graph', e);
-        }
-      }
-    };
-    fileReader.readAsText(file);
-  };
+  _onFileUpload = (file: File) => Graph.fromFile(file, this._loadGraph);
 
   _loadGraph = (json: GraphSerialization) => {
     const exId = get(window.location.search.match(/[?&]e=([\w-\d% +]+)&?/), 1);
@@ -171,11 +141,8 @@ class App extends Component<P, S> {
     window.location.search = `?e=${encodeURIComponent((json.name || '').replace(/ /g, '+'))}`;
   };
 
-  _reload = () => window.location.replace('/');
-
   _toggleDebug = () => {
     window['$debug'] = !window['$debug'];
-    console.log('debug mode', window['$debug']);
     this.setState({ visible: false }, () => this.setState({ visible: true }));
   };
 
@@ -199,9 +166,7 @@ class App extends Component<P, S> {
       this.nodeIndex = graph ? graph.nodes.findIndex(n => n.node.id === selectedNode.id) : 0;
       window['$node'] = selectedNode;
     }
-    if (this.state.searchingNodes) {
-      this._closeSearch();
-    }
+    this.state.searchingNodes && this._closeSearch();
   };
 
   _closeSearch = () =>
@@ -236,15 +201,12 @@ class App extends Component<P, S> {
     this._onNodeSelect(nodes[this.nodeIndex].node);
   };
 
-  _toggleInfo = () => {
-    if (this.state.selectedNode) {
-      this.setState({ selectedNode: null });
-    } else {
-      this.setState({ selectedNode: this.mostRecentNode });
-    }
-  };
+  _toggleInfo = () =>
+    this.setState({ selectedNode: this.state.selectedNode ? null : this.mostRecentNode });
 
-  _closeLoadPrompt = () => {
+  _reload = () => window.location.replace('/');
+
+  _closePrompt = () => {
     this.setState({ promptLoad: null });
     this._reload();
   };
@@ -260,6 +222,7 @@ class App extends Component<P, S> {
       searchingExamples,
       promptLoad,
     } = this.state;
+    const title = get(graph, 'name', '');
     return (
       <>
         <Toolbar
@@ -270,7 +233,7 @@ class App extends Component<P, S> {
           toggleDebug={this._toggleDebug}
           exportJSON={this._showSave}
           loadJSON={this._loadJSON}
-          title={get(graph, 'name', '')}
+          title={title}
           toggleInfo={this._toggleInfo}
           infoShowing={Boolean(selectedNode)}
         />
@@ -285,7 +248,7 @@ class App extends Component<P, S> {
         {selectedNode && <AttributePane node={selectedNode} />}
         {saveOpen && (
           <SaveDialog
-            initial={get(graph, 'name')}
+            initial={title}
             isOpen={saveOpen}
             handleClose={this._closeSave}
             saveFile={this._exportJSON}
@@ -306,23 +269,7 @@ class App extends Component<P, S> {
           onClose={this._closeSearch}
         />
         {promptLoad && (
-          <Dialog
-            canOutsideClickClose={false}
-            isOpen={promptLoad}
-            className="bp3-dark"
-            title="Load..."
-            onClose={this._closeLoadPrompt}
-          >
-            <div className={Classes.DIALOG_FOOTER}>
-              <div className={Classes.DIALOG_BODY}>
-                <p>you are about to load the example</p>
-                <p>~{promptLoad}~</p>
-              </div>
-              <div className={Classes.DIALOG_FOOTER_ACTIONS}>
-                <Button onClick={this._loadUrl}>👾 ok computer</Button>
-              </div>
-            </div>
-          </Dialog>
+          <LoadPrompt onClose={this._closePrompt} title={promptLoad} load={this._loadUrl} />
         )}
         <FileUpload onFile={this._onFileUpload} ref={r => (this.fileUpload = r)} />
       </>
@@ -336,14 +283,12 @@ class App extends Component<P, S> {
 
   // noinspection JSUnusedGlobalSymbols
   renderHotkeys() {
-    if (this.state.promptLoad) {
-      return (
-        <Hotkeys>
-          <Hotkey global combo="enter" label="Load Example" onKeyDown={this._loadUrl} />
-        </Hotkeys>
-      );
-    }
-    return (
+    // NB for some reason moving this to a component doesn't work
+    return this.state.promptLoad ? (
+      <Hotkeys>
+        <Hotkey global combo="enter" label="Load Example" onKeyDown={this._loadUrl} />
+      </Hotkeys>
+    ) : (
       <Hotkeys>
         <Hotkey
           global
@@ -376,18 +321,12 @@ class App extends Component<P, S> {
   }
 }
 
-const styles = {
-  toolSection: { flex: 1, display: 'flex' },
-  leftAlign: { justifyContent: 'flex-start' },
-  rightAlign: { justifyContent: 'flex-end' },
-};
-
 setHotkeysDialogProps({ className: 'bp3-dark', globalHotkeysGroup: 'Menu' });
 const AppWithHK = HotkeysTarget(App);
-
-document.addEventListener('DOMContentLoaded', () => {
+const render = () => {
   // $FlowIgnore
   ReactDOM.render(<AppWithHK className="bp3-dark" />, document.getElementById('eternal-root'));
-});
+};
+document.addEventListener('DOMContentLoaded', render);
 
 export default AppWithHK;

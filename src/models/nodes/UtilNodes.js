@@ -222,6 +222,7 @@ export class RegexReplace extends NodeBase<
     if (!prevProps || (newProps.regex !== prevProps.regex && newProps.regex)) {
       const parsed = newProps.regex.match(/\/(.+)\/(\w*)/);
       if (parsed) {
+        // eslint-disable-next-line no-unused-vars
         const [_, t, f] = parsed;
         this.re = new RegExp(t, f);
       } else {

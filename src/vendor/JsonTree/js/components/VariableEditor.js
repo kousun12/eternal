@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React from 'react';
 import AutosizeTextarea from 'react-textarea-autosize';
 
@@ -69,7 +70,8 @@ class VariableEditor extends React.PureComponent {
         <span
           {...Theme(theme, 'object-name')}
           className="object-key"
-          key={variable.name + '_' + namespace}>
+          key={variable.name + '_' + namespace}
+        >
           <span style={{ display: 'inline-block' }}>{variable.name}</span>
         </span>
         <span {...Theme(theme, 'colon')}>:</span>
@@ -98,7 +100,8 @@ class VariableEditor extends React.PureComponent {
       <div
         {...Theme(theme, 'objectKeyVal', overrideStyle)}
         className="variable-row"
-        key={variable.name}>
+        key={variable.name}
+      >
         {this.renderKey()}
         <div
           className="variable-value"
@@ -120,7 +123,8 @@ class VariableEditor extends React.PureComponent {
           }
           {...Theme(theme, 'variableValue', {
             cursor: onSelect === false ? 'default' : 'pointer',
-          })}>
+          })}
+        >
           {this.getValue(variable, editMode)}
         </div>
         {onEdit !== false && editMode === false ? this.getEditIcon() : null}
@@ -320,21 +324,24 @@ class VariableEditor extends React.PureComponent {
                 style={{
                   ...Theme(theme, 'brace').style,
                   cursor: 'default',
-                }}>
+                }}
+              >
                 {'{'}
               </span>
               <span
                 style={{
                   ...Theme(theme, 'ellipsis').style,
                   cursor: 'default',
-                }}>
+                }}
+              >
                 ...
               </span>
               <span
                 style={{
                   ...Theme(theme, 'brace').style,
                   cursor: 'default',
-                }}>
+                }}
+              >
                 {'}'}
               </span>
             </span>
@@ -346,21 +353,24 @@ class VariableEditor extends React.PureComponent {
                 style={{
                   ...Theme(theme, 'brace').style,
                   cursor: 'default',
-                }}>
+                }}
+              >
                 {'['}
               </span>
               <span
                 style={{
                   ...Theme(theme, 'ellipsis').style,
                   cursor: 'default',
-                }}>
+                }}
+              >
                 ...
               </span>
               <span
                 style={{
                   ...Theme(theme, 'brace').style,
                   cursor: 'default',
-                }}>
+                }}
+              >
                 {']'}
               </span>
             </span>

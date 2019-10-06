@@ -1158,5 +1158,5 @@ export class StartTransportNode extends NodeBase<{}, { transport: Tone.Transport
 function logConnect(f, to) {
   const fromName = f.constructor.name || f.__proto__.toString();
   const toName = to.constructor.name || to.__proto__.toString();
-  get(window, '$debug') && console.log('connect', fromName, toName);
+  get(window, '$logConnect') && console.log('connect', fromName, toName);
 }
