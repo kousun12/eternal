@@ -1,37 +1,40 @@
 // @flow
 
 import React from 'react';
-import { get, uniqBy, throttle } from 'lodash';
+import { connect } from 'react-redux';
+import { get, uniq, throttle, omit } from 'lodash';
 import Node from './Node';
-import Spline from './Spline';
-import SVGComponent from './SVGComponent';
-import type { NodeInSpace, Pos } from 'types';
 import Graph from 'models/Graph';
 import Edge from 'models/Edge';
-import type { AnyNode } from 'models/NodeBase';
 
-import { outOffset, inOffset } from './util';
 import { DraggableData } from 'react-draggable';
 import { Hotkey, Hotkeys, HotkeysTarget } from '@blueprintjs/core';
-type P = {
+import { selectedS, selSet as _selSet } from 'redux/ducks/graph';
+
+import type { NodeInSpace, Pos } from 'types';
+import type { AnyNode } from 'models/NodeBase';
+import AllEdges from 'components/AllEdges';
+
+type OP = {|
   graph: Graph,
-  paneId: ?string,
   onCreateEdge?: Edge => void,
   onDeleteEdge?: Edge => void,
   onNodeSelect?: AnyNode => void,
   onNodeDeselect?: (AnyNode, ?boolean) => void,
   onNodeSelectionChange?: (?AnyNode) => void,
   visible: boolean,
-};
+|};
+type SP = {| selected: { [string]: boolean }, selectCount: number |};
+type DP = {| selSet: (string[]) => void |};
+type P = {| ...SP, ...OP, ...DP |};
 
-type S = {
-  graph: Graph,
+type S = {|
+  nodes: NodeInSpace[],
   source: ?[string, number],
   dragging: boolean,
   mousePos: ?Pos,
-  highlighted: NodeInSpace[],
   moving: boolean,
-};
+|};
 
 type DragDirective = {
   nis: NodeInSpace,
@@ -43,11 +46,10 @@ class NodeGraph extends React.Component<P, S> {
   constructor(props: P) {
     super(props);
     this.state = {
-      graph: props.graph,
+      nodes: props.graph.nodes,
       source: null,
       mousePos: null,
       dragging: false,
-      highlighted: [],
       moving: false,
     };
   }
@@ -64,7 +66,9 @@ class NodeGraph extends React.Component<P, S> {
   }
 
   componentWillReceiveProps(nextProps: $ReadOnly<P>) {
-    this.setState({ graph: nextProps.graph });
+    if (this.props.graph !== nextProps.graph) {
+      this.setState({ nodes: nextProps.graph.nodes });
+    }
   }
 
   onMouseUp = () => {
@@ -72,10 +76,10 @@ class NodeGraph extends React.Component<P, S> {
   };
 
   onMouseMove = throttle((e: MouseEvent) => {
-    const { dragging, highlighted, mousePos, moving } = this.state;
-    const set = !mousePos || dragging || highlighted.length > 0;
+    const { dragging, mousePos, moving } = this.state;
+    const { selectCount } = this.props;
+    const set = !mousePos || dragging || selectCount > 0;
     if (moving) {
-      this.forceUpdate();
       return;
     }
     if (!set) return;
@@ -84,8 +88,13 @@ class NodeGraph extends React.Component<P, S> {
     this.setState({ mousePos: { x: e.clientX, y: e.clientY } });
   }, 18);
 
+  _getSelected = (): NodeInSpace[] => {
+    const { selected } = this.props;
+    return this.state.nodes.filter(nis => selected[nis.node.id]);
+  };
+
   onNodeStartMove = (started: NodeInSpace, data: DraggableData) => {
-    this.dragDirectives = this.state.highlighted.map(nis => ({
+    this.dragDirectives = this._getSelected().map(nis => ({
       nis,
       offset: { x: started.pos.x - nis.pos.x, y: started.pos.y - nis.pos.y },
     }));
@@ -99,14 +108,21 @@ class NodeGraph extends React.Component<P, S> {
 
   onNodeMove = (node: NodeInSpace, data: DraggableData) => {
     if (this.dragDirectives.length > 1) {
-      const ids = this.state.highlighted.map(nis => nis.node.id);
       this.dragDirectives.forEach(d => {
-        if (ids.includes(d.nis.node.id)) {
+        if (this.props.selected[d.nis.node.id]) {
           d.nis.pos = { x: data.x - d.offset.x, y: data.y - d.offset.y };
         }
       });
     }
+    const nodes = this.state.nodes.map(n => {
+      const fromD = this.dragDirectives.find(d => d.nis.node.id === n.node.id);
+      return fromD ? fromD.nis : n;
+    });
+    this.props.graph.setNodes(nodes);
+    this.setState({ nodes });
   };
+
+  _onNodeMoveT = throttle(this.onNodeMove, 20);
 
   onStartConnector = (id: string, outputIndex: number) => {
     const mousePos = get(window, 'event.clientX')
@@ -116,7 +132,8 @@ class NodeGraph extends React.Component<P, S> {
   };
 
   onCompleteConnector = (id: string, inIndex: number) => {
-    const { dragging, source, graph } = this.state;
+    const { dragging, source } = this.state;
+    const { graph } = this.props;
     if (dragging && source) {
       const [nodeId, outIdx] = source;
       let fromNode = graph.nodeWithId(nodeId);
@@ -137,7 +154,7 @@ class NodeGraph extends React.Component<P, S> {
     if (this.props.onDeleteEdge) {
       this.props.onDeleteEdge(edge);
     }
-    this.state.graph.removeEdge(edge);
+    this.props.graph.removeEdge(edge);
     this.forceUpdate();
   };
 
@@ -146,26 +163,25 @@ class NodeGraph extends React.Component<P, S> {
       this.props.onNodeSelect(n.node);
     }
     this._onNodeChange(n.node);
-    const highlighted = uniqBy(this.state.highlighted.concat(n), 'node.id');
+    const highlighted = uniq(Object.keys(this.props.selected).concat(n.node.id));
     if (highlighted.length > 1) {
       this._onNodeChange(null);
     }
-    this.setState({ highlighted });
+    this.props.selSet(highlighted);
   };
 
   onNodeDeselect = (n: NodeInSpace, all?: boolean) => {
     if (this.props.onNodeDeselect) {
       this.props.onNodeDeselect(n.node);
     }
-    const highlighted = all
-      ? []
-      : this.state.highlighted.filter(node => n.node.id !== node.node.id);
+    const highlighted = all ? [] : Object.keys(omit(this.props.selected, n.node.id));
     this._onNodeChange(null);
-    this.setState({ highlighted });
+    this.props.selSet(highlighted);
   };
 
   onDeleteNode = (n: AnyNode) => {
-    this.state.graph.removeNode(n);
+    this.props.graph.removeNode(n);
+    this.setState({ nodes: this.props.graph.nodes });
     this._onNodeChange(null);
   };
 
@@ -176,8 +192,8 @@ class NodeGraph extends React.Component<P, S> {
   };
 
   resetSize = () => {
-    const maxW = Math.max(...this.state.graph.nodes.map(nis => nis.pos.x));
-    const maxH = Math.max(...this.state.graph.nodes.map(nis => nis.pos.y));
+    const maxW = Math.max(...this.state.nodes.map(nis => nis.pos.x));
+    const maxH = Math.max(...this.state.nodes.map(nis => nis.pos.y));
     const elem = document.getElementById('eternal-root');
     if (elem) {
       elem.style.width = String(maxW + 300);
@@ -186,70 +202,39 @@ class NodeGraph extends React.Component<P, S> {
   };
 
   _drawEdges = () => {
-    const {
-      graph,
-      graph: { edges },
-      mousePos,
-      dragging,
-      source,
-      highlighted,
-    } = this.state;
-    const { visible, paneId } = this.props;
-    if (!visible) {
-      return null;
-    }
-    let activeSpline = null;
-    const nodeIds = highlighted.map(n => n.node.id);
-    if (paneId) nodeIds.push(paneId);
-    if (dragging && source) {
-      const [nodeId, outIdx] = source;
-      let src = graph.nodeWithIdF(nodeId);
-      activeSpline = <Spline start={outOffset(src.pos.x, src.pos.y, outIdx)} end={mousePos} />;
-    }
+    const { nodes, mousePos, dragging, source } = this.state;
+    const { visible, selected, graph } = this.props;
     return (
-      <SVGComponent height="100%" width="100%" ref="svgComponent">
-        {edges.map(e => {
-          const frm = graph.nodeWithIdF(e.from.id);
-          const to = graph.nodeWithIdF(e.to.id);
-          const highlighted = nodeIds.find(id => id === e.from.id || id === e.to.id);
-          return (
-            <Spline
-              highlighted={highlighted}
-              edge={e}
-              start={outOffset(frm.pos.x, frm.pos.y, frm.node.outKeys().indexOf(e.fromPort))}
-              end={inOffset(to.pos.x, to.pos.y, to.node.inKeys().indexOf(e.toPort))}
-              key={`${e.id}-spline`}
-              onRemove={() => this.handleRemoveConnector(e)}
-            />
-          );
-        })}
-        {activeSpline}
-      </SVGComponent>
+      <AllEdges
+        edges={get(graph, 'edges', [])}
+        nodes={nodes}
+        mousePos={mousePos}
+        dragging={dragging}
+        source={source}
+        visible={visible}
+        selected={selected}
+        onRemoveConnector={this.handleRemoveConnector}
+      />
     );
   };
 
   render() {
-    const {
-      graph: { nodes },
-      dragging,
-    } = this.state;
-    const { visible } = this.props;
-    const ids = this.state.highlighted.map(nis => nis.node.id);
+    const { nodes, dragging } = this.state;
+    const { visible, selected } = this.props;
     return (
       <div className={(dragging ? 'dragging' : '') + ' graph-root'}>
         {nodes.map((nis, i) => {
           return (
             <Node
-              selected={ids.includes(nis.node.id)}
+              selected={selected[nis.node.id]}
               visible={visible}
               pos={nis.pos}
               index={i}
               nis={nis}
-              inView={nis.node.id === this.props.paneId}
               key={`node-${nis.node.id}`}
               onNodeStart={this.onNodeStartMove}
               onNodeStop={this.onNodeStopMove}
-              onNodeMove={this.onNodeMove}
+              onNodeMove={this._onNodeMoveT}
               onStartConnector={this.onStartConnector}
               onCompleteConnector={this.onCompleteConnector}
               onNodeSelect={this.onNodeSelect}
@@ -264,18 +249,18 @@ class NodeGraph extends React.Component<P, S> {
   }
 
   _onCopy = () => {
-    const highlighted = this.state.graph.duplicate(this.state.highlighted);
-    this.setState({ highlighted });
+    const selected = this.props.graph.duplicate(this._getSelected()).map(nis => nis.node.id);
+    this.props.selSet(selected);
   };
 
   _selectAll = () => {
-    this.setState({ highlighted: this.state.graph.nodes });
+    this.props.selSet(this.state.nodes.map(nis => nis.node.id));
   };
 
   // noinspection JSUnusedGlobalSymbols
   renderHotkeys() {
-    const { highlighted } = this.state;
-    const showCopy = highlighted && highlighted.length > 0;
+    const { selectCount } = this.props;
+    const showCopy = selectCount > 0;
     return (
       <Hotkeys>
         {showCopy && (
@@ -293,4 +278,9 @@ class NodeGraph extends React.Component<P, S> {
   }
 }
 
-export default HotkeysTarget(NodeGraph);
+const dispatch = d => ({ selSet: id => d(_selSet(id)) });
+
+export default connect(
+  selectedS,
+  dispatch
+)(HotkeysTarget(NodeGraph));

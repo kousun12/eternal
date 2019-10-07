@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { AnchorButton, Tooltip } from '@blueprintjs/core';
+import { connect } from 'react-redux';
 
 type P = {
   loadExample: () => any,
@@ -15,7 +16,7 @@ type P = {
   toggleInfo: () => any,
   infoShowing: boolean,
 };
-export default ({
+const Toolbar = ({
   loadExample,
   insertNode,
   toggleVis,
@@ -89,6 +90,8 @@ export default ({
     </div>
   );
 };
+
+export default connect(s => ({ infoShowing: Boolean(s.graph.infoOpen) }))(Toolbar);
 
 const _showHotKeys = () => {
   document.dispatchEvent(

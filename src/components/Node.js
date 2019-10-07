@@ -10,13 +10,14 @@ import NodeOutputList from './NodeOutputList';
 import type { AnyNode } from 'models/NodeBase';
 import type { NodeInSpace, Pos } from 'types';
 import { Hotkey, Hotkeys, HotkeysTarget } from '@blueprintjs/core';
-import { throttle, get } from 'lodash';
+import { get } from 'lodash';
+import { connect } from 'react-redux';
 
 type P = {
   index: number,
   nis: NodeInSpace,
   pos: Pos,
-  inView: boolean,
+  infoShowing: boolean,
   onNodeStart: (NodeInSpace, DraggableData) => void,
   onNodeStop: (NodeInSpace, DraggableData) => void,
   onNodeMove: (NodeInSpace, DraggableData) => void,
@@ -111,8 +112,8 @@ class Node extends React.Component<P, S> {
 
   // noinspection JSUnusedGlobalSymbols
   handleClickOutside = event => {
-    const { selected, inView } = this.props;
-    const ignore = !selected && !inView;
+    const { selected, infoShowing } = this.props;
+    const ignore = !selected && !infoShowing;
     if (event.metaKey || event.shiftKey || ignore) {
       return;
     }
@@ -122,9 +123,9 @@ class Node extends React.Component<P, S> {
   };
 
   render() {
-    const { selected, inView, visible, pos } = this.props;
+    const { selected, infoShowing, visible, pos } = this.props;
     const { node } = this.props.nis;
-    const sel = inView ? 'in-view' : selected ? 'selected' : '';
+    const sel = infoShowing ? 'in-view' : selected ? 'selected' : '';
     let nodeClass = 'node' + (sel ? ` ${sel} ignore-react-onclickoutside` : '');
     if (!visible) {
       return null;
@@ -167,7 +168,7 @@ class Node extends React.Component<P, S> {
 
   // noinspection JSUnusedGlobalSymbols
   renderHotkeys() {
-    const show = this.props.selected || this.props.inView;
+    const show = this.props.selected || this.props.infoShowing;
     if (!show) {
       return <Hotkeys />;
     }
@@ -185,4 +186,6 @@ class Node extends React.Component<P, S> {
   }
 }
 
-export default onClickOutside(HotkeysTarget(Node));
+export default connect((s, op) => ({
+  infoShowing: Boolean(s.graph.infoOpen === get(op, 'nis.node.id')),
+}))(onClickOutside(HotkeysTarget(Node)));

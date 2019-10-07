@@ -5,6 +5,7 @@ import type { AnyNode, Changeable, Displayable } from 'models/NodeBase';
 import JsonTree from 'vendor/JsonTree/js';
 import InfoPopup from 'components/AttributePane/InfoPopup';
 import { Hotkey, Hotkeys, HotkeysTarget, PopoverInteractionKind } from '@blueprintjs/core';
+import NodeBase from 'models/NodeBase';
 
 const Types = window.Types;
 
@@ -31,7 +32,7 @@ class AttributePane extends Component<P, S> {
   }
 
   componentDidMount() {
-    this._setListener(this.props.node);
+    this.props.node && this._setListener(this.props.node);
   }
 
   componentDidUpdate(oldProps: P) {
@@ -141,10 +142,15 @@ class AttributePane extends Component<P, S> {
   };
 
   render() {
+    if (!this.props.node) {
+      return null;
+    }
     const { fullDocs } = this.state;
     return (
       <div className="attribute-pane ignore-react-onclickoutside">
-        <h3 className="pane-header">{this.props.node.name()}</h3>
+        <h3 className="pane-header">
+          {this.props.node.title || NodeBase.nameFrom(this.props.node.constructor)}
+        </h3>
         {this._signature()}
         {this._description()}
         <div className="attr-doc-toggle" onClick={this._toggleDocs}>

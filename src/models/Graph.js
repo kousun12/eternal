@@ -46,6 +46,11 @@ export default class Graph {
     return nis;
   };
 
+  setNodes: (NodeInSpace[]) => Graph = nodes => {
+    this.nodes = nodes;
+    return this;
+  };
+
   removeNode: AnyNode => Graph = node => {
     node.inputs.forEach(this.removeEdge);
     node.outputs.forEach(this.removeEdge);

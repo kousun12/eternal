@@ -23,7 +23,7 @@ export const TT = {
     ),
 };
 
-export class ContextDestinationNode extends NodeBase<{}, {}, { node: AudioNode }> {
+export class ContextDestinationNode extends NodeBase<{}, {}, { node: Tone.AudioNode }> {
   static +displayName = 'Context Destination';
   static +registryName = 'ContextDestinationNode';
   static description = <span>The current context destination</span>;

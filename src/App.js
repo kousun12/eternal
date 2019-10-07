@@ -2,7 +2,7 @@
 
 import './boot';
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
+import { connect } from 'react-redux';
 import { get } from 'lodash';
 import { Hotkey, Hotkeys, HotkeysTarget, setHotkeysDialogProps } from '@blueprintjs/core';
 
@@ -29,14 +29,14 @@ import 'eternal.scss';
 import type { Pos } from 'types';
 import Toolbar from 'components/Toolbar';
 import LoadPrompt from 'components/dialogs/LoadPrompt';
+import { setInfoOpen as _setInfoOpen, showNode } from 'redux/ducks/graph';
 
 const welcomeGraph = require('models/examples/welcome.json');
 
-type P = {};
+type P = { setInfoOpen: (?string) => void, showNode: ?string };
 type S = {
   graph: ?Graph,
   searchOpen: boolean,
-  selectedNode: ?AnyNode,
   saveOpen: boolean,
   searchingNodes: boolean,
   searchingExamples: boolean,
@@ -57,7 +57,6 @@ class App extends Component<P, S> {
     super(p);
     this.state = {
       searchOpen: false,
-      selectedNode: null,
       saveOpen: false,
       graph: null,
       searchingNodes: false,
@@ -108,8 +107,8 @@ class App extends Component<P, S> {
     this.setState({ graph: null }, () => {
       this.mostRecentNode = get(graph.nodes, [0, 'node']);
       const readme = graph.nodes.find(nis => nis.node.title === 'README');
-      const selectedNode = readme ? readme.node : null;
-      this.setState({ graph, selectedNode }, () => (window['$graph'] = graph));
+      this.props.setInfoOpen(readme ? readme.node.id : null);
+      this.setState({ graph }, () => (window['$graph'] = graph));
     });
   };
 
@@ -158,13 +157,13 @@ class App extends Component<P, S> {
   };
 
   _onNodeSelect = (node: ?AnyNode) => {
-    const selectedNode = node;
     const { graph } = this.state;
-    this.setState({ selectedNode, visible: false }, () => this.setState({ visible: true }));
-    if (selectedNode) {
-      this.mostRecentNode = selectedNode;
-      this.nodeIndex = graph ? graph.nodes.findIndex(n => n.node.id === selectedNode.id) : 0;
-      window['$node'] = selectedNode;
+    this.props.setInfoOpen(get(node, 'id', null));
+    const _node = node;
+    if (_node) {
+      this.mostRecentNode = _node;
+      this.nodeIndex = graph ? graph.nodes.findIndex(n => n.node.id === _node.id) : 0;
+      window['$node'] = node;
     }
     this.state.searchingNodes && this._closeSearch();
   };
@@ -186,7 +185,7 @@ class App extends Component<P, S> {
   };
 
   _nextNode = () => {
-    if (!this.state.selectedNode) return;
+    if (!this.props.showNode) return;
     const nodes = get(this.state.graph, 'nodes', []);
     if (nodes.length < 2) return;
     this.nodeIndex = (this.nodeIndex + 1) % nodes.length;
@@ -194,7 +193,7 @@ class App extends Component<P, S> {
   };
 
   _prevNode = () => {
-    if (!this.state.selectedNode) return;
+    if (!this.props.showNode) return;
     const nodes = get(this.state.graph, 'nodes', []);
     if (nodes.length < 2) return;
     this.nodeIndex = (((this.nodeIndex - 1) % nodes.length) + nodes.length) % nodes.length;
@@ -202,7 +201,7 @@ class App extends Component<P, S> {
   };
 
   _toggleInfo = () =>
-    this.setState({ selectedNode: this.state.selectedNode ? null : this.mostRecentNode });
+    this.props.setInfoOpen(this.props.showNode ? null : get(this.mostRecentNode, 'id'));
 
   _reload = () => window.location.replace('/');
 
@@ -213,7 +212,6 @@ class App extends Component<P, S> {
 
   render() {
     const {
-      selectedNode,
       graph,
       searchOpen,
       saveOpen,
@@ -222,7 +220,11 @@ class App extends Component<P, S> {
       searchingExamples,
       promptLoad,
     } = this.state;
+    const { showNode } = this.props;
     const title = get(graph, 'name', '');
+    const inPane = get(graph, 'nodes', [])
+      .map(nis => nis.node)
+      .find(n => n.id === showNode);
     return (
       <>
         <Toolbar
@@ -235,17 +237,11 @@ class App extends Component<P, S> {
           loadJSON={this._loadJSON}
           title={title}
           toggleInfo={this._toggleInfo}
-          infoShowing={Boolean(selectedNode)}
         />
         {graph && (
-          <NodeGraph
-            visible={visible}
-            graph={graph}
-            onNodeSelectionChange={this._onNodeSelect}
-            paneId={get(selectedNode, 'id')}
-          />
+          <NodeGraph visible={visible} graph={graph} onNodeSelectionChange={this._onNodeSelect} />
         )}
-        {selectedNode && <AttributePane node={selectedNode} />}
+        <AttributePane node={inPane} />
         {saveOpen && (
           <SaveDialog
             initial={title}
@@ -323,10 +319,7 @@ class App extends Component<P, S> {
 
 setHotkeysDialogProps({ className: 'bp3-dark', globalHotkeysGroup: 'Menu' });
 const AppWithHK = HotkeysTarget(App);
-const render = () => {
-  // $FlowIgnore
-  ReactDOM.render(<AppWithHK className="bp3-dark" />, document.getElementById('eternal-root'));
-};
-document.addEventListener('DOMContentLoaded', render);
-
-export default AppWithHK;
+export default connect(
+  showNode,
+  d => ({ setInfoOpen: n => d(_setInfoOpen(n)) })
+)(AppWithHK);

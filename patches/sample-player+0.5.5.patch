@@ -1,0 +1,13 @@
+diff --git a/node_modules/sample-player/lib/player.js b/node_modules/sample-player/lib/player.js
+index df50ad1..d19fbb1 100644
+--- a/node_modules/sample-player/lib/player.js
++++ b/node_modules/sample-player/lib/player.js
+@@ -136,7 +136,7 @@ function SamplePlayer (ac, source, options) {
+    */
+   player.connect = function (dest) {
+     connected = true
+-    out.connect(dest)
++    Tone.connect(out, dest)
+     return player
+   }
+ 
