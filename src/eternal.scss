@@ -81,6 +81,7 @@ body {
   border: 2px solid #333333;
   user-select: none;
   cursor: pointer;
+  z-index: 11;
 }
 
 .node.selected, .node.in-view {

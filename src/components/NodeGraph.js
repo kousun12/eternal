@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { connect } from 'react-redux';
-import { get, uniq, throttle, omit } from 'lodash';
+import { get, uniq, throttle, omit, fromPairs } from 'lodash';
 import Node from './Node';
 import Graph from 'models/Graph';
 import Edge from 'models/Edge';
@@ -42,7 +42,7 @@ type DragDirective = {
 };
 
 class NodeGraph extends React.Component<P, S> {
-  dragDirectives: DragDirective[] = [];
+  dragDirectives: { [string]: DragDirective } = {};
   constructor(props: P) {
     super(props);
     this.state = {
@@ -94,31 +94,37 @@ class NodeGraph extends React.Component<P, S> {
   };
 
   onNodeStartMove = (started: NodeInSpace, data: DraggableData) => {
-    this.dragDirectives = this._getSelected().map(nis => ({
-      nis,
-      offset: { x: started.pos.x - nis.pos.x, y: started.pos.y - nis.pos.y },
-    }));
+    this.dragDirectives = fromPairs(
+      this._getSelected().map(nis => [
+        nis.node.id,
+        {
+          nis,
+          offset: { x: started.pos.x - nis.pos.x, y: started.pos.y - nis.pos.y },
+        },
+      ])
+    );
     this.setState({ moving: true });
   };
 
   onNodeStopMove = (node: NodeInSpace, data: DraggableData) => {
     this.onNodeMove(node, data);
+    const nodes = this.state.nodes.map(n => get(this.dragDirectives, [n.node.id, 'nis'], n));
+    this.props.graph.setNodes(nodes);
+    this.dragDirectives = {};
     this.setState({ moving: false });
   };
 
   onNodeMove = (node: NodeInSpace, data: DraggableData) => {
-    if (this.dragDirectives.length > 1) {
-      this.dragDirectives.forEach(d => {
+    // $FlowIgnore
+    const vals: DragDirective[] = Object.values(this.dragDirectives);
+    if (vals.length > 1) {
+      vals.forEach(d => {
         if (this.props.selected[d.nis.node.id]) {
           d.nis.pos = { x: data.x - d.offset.x, y: data.y - d.offset.y };
         }
       });
     }
-    const nodes = this.state.nodes.map(n => {
-      const fromD = this.dragDirectives.find(d => d.nis.node.id === n.node.id);
-      return fromD ? fromD.nis : n;
-    });
-    this.props.graph.setNodes(nodes);
+    const nodes = this.state.nodes.map(n => get(this.dragDirectives, [n.node.id, 'nis'], n));
     this.setState({ nodes });
   };
 

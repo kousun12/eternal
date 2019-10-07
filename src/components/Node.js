@@ -133,36 +133,38 @@ class Node extends React.Component<P, S> {
 
     const name = node.name();
     return (
-      <div onClick={this.handleClick} onDoubleClick={this._selectNode}>
-        <Draggable
-          defaultPosition={pos}
-          position={this.dragging ? undefined : pos}
-          handle=".node"
-          onStart={this.handleDragStart}
-          onStop={this.handleDragStop}
-          onDrag={this.handleDrag}
+      <Draggable
+        defaultPosition={pos}
+        position={this.dragging ? undefined : pos}
+        handle=".node"
+        onStart={this.handleDragStart}
+        onStop={this.handleDragStop}
+        onDrag={this.handleDrag}
+      >
+        <div
+          className={nodeClass}
+          onClick={this.handleClick}
+          onDoubleClick={this._selectNode}
         >
-          <div className={nodeClass} style={{ zIndex: 11 }}>
-            <header className="node-header">
-              <span className="node-title">{name}</span>
-            </header>
-            <div className="node-content">
-              <NodeInputList
-                connected={node.connectedInputKeys()}
-                items={node.inKeys()}
-                display={node.constructor.displayInKeys()}
-                onCompleteConnector={this.onCompleteConnector}
-              />
-              <NodeOutputList
-                connected={node.connectedOutputKeys()}
-                items={node.outKeys()}
-                display={node.constructor.displayOutKeys()}
-                onStartConnector={this.onStartConnector}
-              />
-            </div>
+          <header className="node-header">
+            <span className="node-title">{name}</span>
+          </header>
+          <div className="node-content">
+            <NodeInputList
+              connected={node.connectedInputKeys()}
+              items={node.inKeys()}
+              display={node.constructor.displayInKeys()}
+              onCompleteConnector={this.onCompleteConnector}
+            />
+            <NodeOutputList
+              connected={node.connectedOutputKeys()}
+              items={node.outKeys()}
+              display={node.constructor.displayOutKeys()}
+              onStartConnector={this.onStartConnector}
+            />
           </div>
-        </Draggable>
-      </div>
+        </div>
+      </Draggable>
     );
   }
 
