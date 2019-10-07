@@ -4,15 +4,15 @@ import React from 'react';
 import { AnchorButton, Tooltip } from '@blueprintjs/core';
 
 type P = {
-  loadExample: () => void,
-  insertNode: () => void,
-  toggleVis: () => void,
+  loadExample: () => any,
+  insertNode: () => any,
+  toggleVis: () => any,
   graphVisible: boolean,
-  toggleDebug: () => void,
-  exportJSON: () => void,
-  loadJSON: () => void,
+  toggleDebug: () => any,
+  exportJSON: () => any,
+  loadJSON: () => any,
   title: string,
-  toggleInfo: () => void,
+  toggleInfo: () => any,
   infoShowing: boolean,
 };
 export default ({

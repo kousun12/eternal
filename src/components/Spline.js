@@ -100,8 +100,6 @@ class Spline extends React.Component<P, S> {
       <g>
         <path className="connector-click-area" d={pathString} onClick={this.handleClick} />
         <path className={cls} d={pathString} onClick={this.handleClick} ref={r => (this.el = r)} />
-        <circle className="spline-start" cx={start.x} cy={start.y} r={4} />
-        {/*<circle className="spline-end" cx={end.x} cy={end.y} r={4} />*/}
         {selected ? <TrashIcon position={position} onClick={this.handleRemove} /> : null}
       </g>
     );

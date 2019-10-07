@@ -67,6 +67,8 @@ body {
 }
 
 .node {
+  display: flex;
+  flex-direction: column;
   min-width: $node-width;
   max-width: $node-width;
   width: $node-width;
@@ -76,18 +78,14 @@ body {
   -moz-box-shadow: 6px 6px 28px -2px rgba(0, 0, 0, 0.4);
   box-shadow: 6px 6px 28px -2px rgba(0, 0, 0, 0.4);
   background-color: rgba(0, 0, 0, 0.88);
-  border: 1px solid #666;
+  border: 2px solid #333333;
   user-select: none;
+  cursor: pointer;
 }
 
-.node.selected {
-  border: 1px solid #dadada;
-  box-shadow: 0 0 8px 3px #a3a3a3;
-}
-
-.node.in-view {
-  border: 1px solid white;
-  box-shadow: 0 0 8px 3px #bbb;
+.node.selected, .node.in-view {
+  border: 2px solid #dadada;
+  box-shadow: 0 0 8px 1px #494949;
 }
 
 .node-content {
@@ -102,7 +100,6 @@ body {
 
 .node-header {
   font-family: Monaco, "Source Code Pro", monospace, sans-serif;
-  cursor: all-scroll;
   background: rgba(76, 170, 77, 0.1);
   border-top-left-radius: 6px;
   border-top-right-radius: 6px;
@@ -176,6 +173,10 @@ body {
   opacity: 1;
 }
 
+.node-content li {
+  height: 22px;
+}
+
 .nodeInputWrapper {
   float: left;
   margin-right: 10px;
@@ -227,6 +228,7 @@ body {
   background: transparent;
   box-sizing: border-box;
 }
+
 .nodeInputList li span.hover {
   color: white;
 }
@@ -347,6 +349,7 @@ $attrs-pad-sides: 16px;
   color: #4caa4d;
   padding: 8px $attrs-pad-sides;
 }
+
 .attr-doc-toggle:hover {
   color: #5ad65b;
 }
@@ -427,13 +430,16 @@ $attrs-pad-sides: 16px;
 
 .react-json-view {
   font-size: 12px;
+
   .copy-to-clipboard-container {
     vertical-align: top;
     display: none;
   }
+
   .click-to-add {
     display: none;
   }
+
   .click-to-remove {
     display: none;
   }
@@ -446,6 +452,7 @@ $attrs-pad-sides: 16px;
     outline: none;
     flex: 1;
   }
+
   .variable-value {
     width: 100%;
   }
@@ -455,9 +462,11 @@ $attrs-pad-sides: 16px;
       & > .copy-to-clipboard-container {
         display: inline-block;
       }
+
       & > .click-to-add {
         display: inline-block;
       }
+
       & > .click-to-remove {
         display: inline-block;
       }
@@ -476,6 +485,7 @@ $attrs-pad-sides: 16px;
     &:hover .click-to-remove {
       display: inline-block;
     }
+
     &:hover .click-to-edit {
       visibility: visible;
     }

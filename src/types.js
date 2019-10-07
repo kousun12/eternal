@@ -1,6 +1,6 @@
 // @flow
 
-import type NodeBase from 'models/NodeBase';
+import type { AnyNode } from 'models/NodeBase';
 
 export type Pos = {
   x: number,
@@ -14,6 +14,6 @@ export type Pos3 = {
 };
 
 export type NodeInSpace = {
-  node: NodeBase<any, any, any>,
+  node: AnyNode,
   pos: Pos,
 };

@@ -3,8 +3,8 @@ import React, { type Node } from 'react';
 import type { Pos } from 'types';
 import type { AnyNode } from 'models/NodeBase';
 
-window.$eTop = 49;
-window.$eHeight = 20.91;
+window.$eTop = 51;
+window.$eHeight = 22;
 window.$eInL = 0;
 window.$eOutL = 198;
 

@@ -61,11 +61,11 @@ class Node extends React.Component<P, S> {
     });
   };
 
-  handleDrag = throttle((event, data: DraggableData) => {
+  handleDrag = (event, data: DraggableData) => {
     this.props.onNodeMove(this.props.nis, data);
     this.props.nis.pos = { x: data.x, y: data.y };
     this.dragData = data;
-  }, 30);
+  };
 
   onStartConnector = index => {
     this.props.onStartConnector(this.props.nis.node.id, index);
@@ -125,7 +125,7 @@ class Node extends React.Component<P, S> {
     const { selected, inView, visible, pos } = this.props;
     const { node } = this.props.nis;
     const sel = inView ? 'in-view' : selected ? 'selected' : '';
-    let nodeClass = 'node-container node' + (sel ? ` ${sel} ignore-react-onclickoutside` : '');
+    let nodeClass = 'node' + (sel ? ` ${sel} ignore-react-onclickoutside` : '');
     if (!visible) {
       return null;
     }
@@ -136,10 +136,11 @@ class Node extends React.Component<P, S> {
         <Draggable
           defaultPosition={pos}
           position={this.dragging ? undefined : pos}
-          handle=".node-container"
+          handle=".node"
           onStart={this.handleDragStart}
           onStop={this.handleDragStop}
-          onDrag={this.handleDrag}>
+          onDrag={this.handleDrag}
+        >
           <div className={nodeClass} style={{ zIndex: 11 }}>
             <header className="node-header">
               <span className="node-title">{name}</span>

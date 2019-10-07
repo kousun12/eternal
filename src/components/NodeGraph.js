@@ -82,7 +82,7 @@ class NodeGraph extends React.Component<P, S> {
     e.stopPropagation();
     e.preventDefault();
     this.setState({ mousePos: { x: e.clientX, y: e.clientY } });
-  }, 50);
+  }, 18);
 
   onNodeStartMove = (started: NodeInSpace, data: DraggableData) => {
     this.dragDirectives = this.state.highlighted.map(nis => ({
