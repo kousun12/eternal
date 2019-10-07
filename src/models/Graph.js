@@ -1,5 +1,5 @@
 //@flow
-import { get, flatten, uniqBy } from 'lodash';
+import {get, flatten, uniqBy, fromPairs} from 'lodash';
 import Edge from 'models/Edge';
 import NodeBase from 'models/NodeBase';
 import type { NodeInSpace, Pos } from 'types';
@@ -17,6 +17,7 @@ export default class Graph {
   id: string;
   name: string = 'untitled';
   nodes: NodeInSpace[] = [];
+  _nodesById: {[string]: NodeInSpace } = {};
   edges: Edge[] = [];
 
   constructor(nodes?: NodeInSpace[] = [], edges?: Edge[] = [], name?: string = 'untitled') {
@@ -28,7 +29,7 @@ export default class Graph {
     this.name = name;
   }
 
-  nodeWithId: string => ?NodeInSpace = id => this.nodes.find(n => n.node.id === id);
+  nodeWithId: string => ?NodeInSpace = id => this._nodesById[id]
 
   nodeWithIdF: string => NodeInSpace = id => {
     const n = this.nodeWithId(id);
@@ -41,6 +42,7 @@ export default class Graph {
 
   addNode: (AnyNode, Pos) => NodeInSpace = (node, pos) => {
     const nis = { node, pos };
+    this._nodesById[node.id] = nis;
     this.nodes.push(nis);
     node.onAddToGraph();
     return nis;
@@ -48,6 +50,7 @@ export default class Graph {
 
   setNodes: (NodeInSpace[]) => Graph = nodes => {
     this.nodes = nodes;
+    this._nodesById = fromPairs(nodes.map(n => [n.node.id, n]));
     return this;
   };
 
@@ -55,7 +58,7 @@ export default class Graph {
     node.inputs.forEach(this.removeEdge);
     node.outputs.forEach(this.removeEdge);
     node.willBeRemoved();
-    this.nodes = this.nodes.filter(n => n.node.id !== node.id);
+    this.setNodes(this.nodes.filter(n => n.node.id !== node.id));
     return this;
   };
 
@@ -99,6 +102,7 @@ export default class Graph {
     this.nodes.map(n => n.node).forEach(this.removeNode);
     this.edges = [];
     this.nodes = [];
+    this._nodesById = {};
     if (get(window, '$graph.id') === this.id) {
       window['$graph'] = null;
     }

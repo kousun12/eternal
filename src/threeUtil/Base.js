@@ -203,7 +203,7 @@ export default class Base {
     uniforms.u_resolution.value.y = this.renderer.domElement.height;
     this.camera.aspect = width / height;
     this.camera.updateProjectionMatrix();
-  }, 60);
+  }, 18);
 
   _makeRenderer = (antialias: boolean = true) => {
     const r = new WebGLRenderer({ antialias, alpha: true });

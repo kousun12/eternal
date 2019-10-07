@@ -23,23 +23,21 @@ type P = {
   onNodeMove: (NodeInSpace, DraggableData) => void,
   onStartConnector: (string, number) => void,
   onCompleteConnector: (string, number) => void,
-  onNodeSelect?: NodeInSpace => void,
+  onNodeSelect?: (NodeInSpace, ?number) => void,
   onNodeDeselect?: (NodeInSpace, boolean) => void,
   onDelete?: AnyNode => void,
   visible: boolean,
   selected: boolean,
 };
-type S = { clickOutsideEnabled: boolean };
 const MoveBufferPx = 4;
 
-class Node extends React.Component<P, S> {
+class Node extends React.Component<P> {
   dragStart: ?Pos;
   dragging: boolean = false;
   dragData: ?DraggableData = null;
 
   constructor(props) {
     super(props);
-    this.state = { clickOutsideEnabled: true };
   }
 
   _onDelete = () => {
@@ -79,7 +77,7 @@ class Node extends React.Component<P, S> {
 
   _selectNode = () => {
     if (this.props.onNodeSelect) {
-      this.props.onNodeSelect(this.props.nis);
+      this.props.onNodeSelect(this.props.nis, this.props.index);
     }
   };
 
@@ -141,11 +139,7 @@ class Node extends React.Component<P, S> {
         onStop={this.handleDragStop}
         onDrag={this.handleDrag}
       >
-        <div
-          className={nodeClass}
-          onClick={this.handleClick}
-          onDoubleClick={this._selectNode}
-        >
+        <div className={nodeClass} onClick={this.handleClick} onDoubleClick={this._selectNode}>
           <header className="node-header">
             <span className="node-title">{name}</span>
           </header>

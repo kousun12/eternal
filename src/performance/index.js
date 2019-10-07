@@ -120,7 +120,7 @@ export default class Performance {
         this.resetRnn();
       })
       .then(() => {
-        setTimeout(this.resetRnnRepeatedly, RESET_RNN_FREQUENCY_MS);
+        setTimeout(() => this.resetRnnRepeatedly(), RESET_RNN_FREQUENCY_MS);
       });
     this.refreshConditioning();
   };
@@ -323,9 +323,10 @@ export default class Performance {
     }
     throw new Error(`Could not decode index: ${index}`);
   };
+
   resetRnnRepeatedly = () => {
     if (this.stopped) return;
     if (this.modelReady) this.resetRnn();
-    this.intervalId = setTimeout(this.resetRnnRepeatedly, RESET_RNN_FREQUENCY_MS);
+    this.intervalId = setTimeout(() => this.resetRnnRepeatedly(), RESET_RNN_FREQUENCY_MS);
   };
 }

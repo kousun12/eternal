@@ -107,11 +107,12 @@ class App extends Component<P, S> {
     this.setState({ graph: null }, () => {
       this.mostRecentNode = get(graph.nodes, [0, 'node']);
       const readme = graph.nodes.find(nis => nis.node.title === 'README');
-      this.props.setInfoOpen(readme ? readme.node.id : null);
+      this._setInfoOpen(readme ? readme.node.id : null);
       this.setState({ graph }, () => (window['$graph'] = graph));
     });
   };
 
+  _setInfoOpen = (id: ?string) => this.props.showNode !== id && this.props.setInfoOpen(id);
   _onSearch = () => !this.state.searchOpen && this.setState({ searchOpen: true });
 
   _searchExamples = () =>
@@ -156,13 +157,14 @@ class App extends Component<P, S> {
     this._insertPos = null;
   };
 
-  _onNodeSelect = (node: ?AnyNode) => {
-    const { graph } = this.state;
-    this.props.setInfoOpen(get(node, 'id', null));
+  _onNodeSelect = (node: ?AnyNode, idx?: number) => {
+    this._setInfoOpen(get(node, 'id', null));
     const _node = node;
     if (_node) {
       this.mostRecentNode = _node;
-      this.nodeIndex = graph ? graph.nodes.findIndex(n => n.node.id === _node.id) : 0;
+      if (typeof idx === 'number') {
+        this.nodeIndex = idx;
+      }
       window['$node'] = node;
     }
     this.state.searchingNodes && this._closeSearch();
@@ -222,9 +224,7 @@ class App extends Component<P, S> {
     } = this.state;
     const { showNode } = this.props;
     const title = get(graph, 'name', '');
-    const inPane = get(graph, 'nodes', [])
-      .map(nis => nis.node)
-      .find(n => n.id === showNode);
+    const inPane = showNode && graph ? get(graph.nodeWithId(showNode), 'node', null) : null;
     return (
       <>
         <Toolbar

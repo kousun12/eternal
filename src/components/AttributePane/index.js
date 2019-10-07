@@ -14,7 +14,6 @@ type S = { fullDocs: boolean };
 
 class AttributePane extends Component<P, S> {
   state = { fullDocs: true };
-
   listener: ?string;
 
   renderHotkeys() {

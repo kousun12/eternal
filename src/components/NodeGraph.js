@@ -21,7 +21,7 @@ type OP = {|
   onDeleteEdge?: Edge => void,
   onNodeSelect?: AnyNode => void,
   onNodeDeselect?: (AnyNode, ?boolean) => void,
-  onNodeSelectionChange?: (?AnyNode) => void,
+  onNodeSelectionChange?: (?AnyNode, ?number) => void,
   visible: boolean,
 |};
 type SP = {| selected: { [string]: boolean }, selectCount: number |};
@@ -33,7 +33,6 @@ type S = {|
   source: ?[string, number],
   dragging: boolean,
   mousePos: ?Pos,
-  moving: boolean,
 |};
 
 type DragDirective = {
@@ -43,6 +42,7 @@ type DragDirective = {
 
 class NodeGraph extends React.Component<P, S> {
   dragDirectives: { [string]: DragDirective } = {};
+  moving: boolean = false;
   constructor(props: P) {
     super(props);
     this.state = {
@@ -50,7 +50,6 @@ class NodeGraph extends React.Component<P, S> {
       source: null,
       mousePos: null,
       dragging: false,
-      moving: false,
     };
   }
 
@@ -76,10 +75,10 @@ class NodeGraph extends React.Component<P, S> {
   };
 
   onMouseMove = throttle((e: MouseEvent) => {
-    const { dragging, mousePos, moving } = this.state;
+    const { dragging, mousePos } = this.state;
     const { selectCount } = this.props;
     const set = !mousePos || dragging || selectCount > 0;
-    if (moving) {
+    if (this.moving) {
       return;
     }
     if (!set) return;
@@ -103,7 +102,7 @@ class NodeGraph extends React.Component<P, S> {
         },
       ])
     );
-    this.setState({ moving: true });
+    this.moving = true;
   };
 
   onNodeStopMove = (node: NodeInSpace, data: DraggableData) => {
@@ -111,7 +110,7 @@ class NodeGraph extends React.Component<P, S> {
     const nodes = this.state.nodes.map(n => get(this.dragDirectives, [n.node.id, 'nis'], n));
     this.props.graph.setNodes(nodes);
     this.dragDirectives = {};
-    this.setState({ moving: false });
+    this.moving = false;
   };
 
   onNodeMove = (node: NodeInSpace, data: DraggableData) => {
@@ -127,8 +126,6 @@ class NodeGraph extends React.Component<P, S> {
     const nodes = this.state.nodes.map(n => get(this.dragDirectives, [n.node.id, 'nis'], n));
     this.setState({ nodes });
   };
-
-  _onNodeMoveT = throttle(this.onNodeMove, 20);
 
   onStartConnector = (id: string, outputIndex: number) => {
     const mousePos = get(window, 'event.clientX')
@@ -164,14 +161,15 @@ class NodeGraph extends React.Component<P, S> {
     this.forceUpdate();
   };
 
-  onNodeSelect = (n: NodeInSpace) => {
+  onNodeSelect = (n: NodeInSpace, idx?: number) => {
     if (this.props.onNodeSelect) {
       this.props.onNodeSelect(n.node);
     }
-    this._onNodeChange(n.node);
     const highlighted = uniq(Object.keys(this.props.selected).concat(n.node.id));
     if (highlighted.length > 1) {
       this._onNodeChange(null);
+    } else {
+      this._onNodeChange(n.node, idx);
     }
     this.props.selSet(highlighted);
   };
@@ -191,9 +189,9 @@ class NodeGraph extends React.Component<P, S> {
     this._onNodeChange(null);
   };
 
-  _onNodeChange = (n: ?AnyNode) => {
+  _onNodeChange = (n: ?AnyNode, idx?: number) => {
     if (this.props.onNodeSelectionChange) {
-      this.props.onNodeSelectionChange(n);
+      this.props.onNodeSelectionChange(n, idx);
     }
   };
 
@@ -240,7 +238,7 @@ class NodeGraph extends React.Component<P, S> {
               key={`node-${nis.node.id}`}
               onNodeStart={this.onNodeStartMove}
               onNodeStop={this.onNodeStopMove}
-              onNodeMove={this._onNodeMoveT}
+              onNodeMove={this.onNodeMove}
               onStartConnector={this.onStartConnector}
               onCompleteConnector={this.onCompleteConnector}
               onNodeSelect={this.onNodeSelect}
