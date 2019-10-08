@@ -6,6 +6,7 @@ import { get, uniq, throttle, omit, fromPairs } from 'lodash';
 import Node from './Node';
 import Graph from 'models/Graph';
 import Edge from 'models/Edge';
+import { GPU, type Kernel } from 'gpu.js';
 
 import { DraggableData } from 'react-draggable';
 import { Hotkey, Hotkeys, HotkeysTarget } from '@blueprintjs/core';
@@ -40,9 +41,13 @@ type DragDirective = {
   offset: Pos,
 };
 
+const gpu = new GPU({ mode: 'cpu' });
+
 class NodeGraph extends React.Component<P, S> {
   dragDirectives: { [string]: DragDirective } = {};
   moving: boolean = false;
+  kernel: ?Kernel = null;
+  dragSelected: NodeInSpace[] = [];
   constructor(props: P) {
     super(props);
     this.state = {
@@ -56,6 +61,8 @@ class NodeGraph extends React.Component<P, S> {
   componentDidMount() {
     document.addEventListener('mousemove', this.onMouseMove);
     document.addEventListener('mouseup', this.onMouseUp);
+    window.cpuTotal = 0;
+    window.gpuTotal = 0;
   }
 
   componentWillUnmount() {
@@ -93,8 +100,26 @@ class NodeGraph extends React.Component<P, S> {
   };
 
   onNodeStartMove = (started: NodeInSpace, data: DraggableData) => {
+    this.dragSelected = this._getSelected();
+    const offsets = this.dragSelected.map(nis => [
+      started.pos.x - nis.pos.x,
+      started.pos.y - nis.pos.y,
+    ]);
+    this.kernel = gpu.createKernel(
+      function(x, y) {
+        return [
+          x - this.constants.offsets[this.thread.x][0],
+          y - this.constants.offsets[this.thread.x][1],
+        ];
+      },
+      {
+        constants: { offsets },
+        output: [offsets.length],
+      }
+    );
+
     this.dragDirectives = fromPairs(
-      this._getSelected().map(nis => [
+      this.dragSelected.map(nis => [
         nis.node.id,
         {
           nis,
@@ -103,14 +128,6 @@ class NodeGraph extends React.Component<P, S> {
       ])
     );
     this.moving = true;
-  };
-
-  onNodeStopMove = (node: NodeInSpace, data: DraggableData) => {
-    this.onNodeMove(node, data);
-    const nodes = this.state.nodes.map(n => get(this.dragDirectives, [n.node.id, 'nis'], n));
-    this.props.graph.setNodes(nodes);
-    this.dragDirectives = {};
-    this.moving = false;
   };
 
   onNodeMove = (node: NodeInSpace, data: DraggableData) => {
@@ -123,8 +140,43 @@ class NodeGraph extends React.Component<P, S> {
         }
       });
     }
-    const nodes = this.state.nodes.map(n => get(this.dragDirectives, [n.node.id, 'nis'], n));
+    const t0 = performance.now();
+    const r0 = vals.map(d => [data.x - d.offset.x, data.y - d.offset.y]);
+    const t1 = performance.now();
+
+    const t2 = performance.now();
+    const r = this.kernel && this.kernel(data.x, data.y);
+    const t3 = performance.now();
+
+    const updated = fromPairs(
+      this.dragSelected.map((nis, i) => [nis.node.id, { x: r[i][0], y: r[i][1] }])
+    );
+    const cpuTime = t1 - t0;
+    const gpuTime = t3 - t2;
+    console.log('cpu', cpuTime);
+    console.log('gpu', gpuTime);
+    if (cpuTime < gpuTime) {
+      const diff = gpuTime - cpuTime;
+      console.log(`cpu faster by ${diff}`);
+      window.cpuTotal += diff;
+    } else {
+      const diff = cpuTime - gpuTime;
+      console.log(`gpu faster by ${diff}`);
+      window.gpuTotal += diff;
+    }
+
+    console.log('****************************');
+    const nodes = this.state.nodes.map(n => get(updated, [n.node.id, 'nis'], n));
     this.setState({ nodes });
+  };
+
+  onNodeStopMove = (node: NodeInSpace, data: DraggableData) => {
+    this.onNodeMove(node, data);
+    const nodes = this.state.nodes.map(n => get(this.dragDirectives, [n.node.id, 'nis'], n));
+    this.props.graph.setNodes(nodes);
+    this.dragDirectives = {};
+    this.moving = false;
+    this.dragSelected = [];
   };
 
   onStartConnector = (id: string, outputIndex: number) => {
