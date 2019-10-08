@@ -36,10 +36,6 @@ class Node extends React.Component<P> {
   dragging: boolean = false;
   dragData: ?DraggableData = null;
 
-  constructor(props) {
-    super(props);
-  }
-
   _onDelete = () => {
     this.props.onDelete && this.props.onDelete(this.props.nis.node);
   };
