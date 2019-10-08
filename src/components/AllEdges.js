@@ -7,6 +7,7 @@ import SVGComponent from 'components/SVGComponent';
 import Spline from 'components/Spline';
 import type { NodeInSpace, Pos } from 'types';
 import type Edge from 'models/Edge';
+import { addVec } from 'utils/vector';
 
 type P = {
   nodes: NodeInSpace[],
@@ -18,6 +19,7 @@ type P = {
   selected: { [string]: boolean },
   onRemoveConnector: Edge => void,
   edges: Edge[],
+  pan: Pos,
 };
 const AllEdges = ({
   nodes,
@@ -29,13 +31,14 @@ const AllEdges = ({
   selected,
   onRemoveConnector,
   edges,
+  pan,
 }: P) => {
   if (!visible) {
     return null;
   }
   let activeSpline = null;
   const nodeIds = paneId ? { ...selected, [paneId]: true } : selected;
-  const byId = fromPairs(nodes.map(n => [n.node.id, n]));
+  const byId = fromPairs(nodes.map(n => [n.node.id, n])); // TODO memoize up a level
   if (dragging && source) {
     const [nodeId, outIdx] = source;
     let src = byId[nodeId];
@@ -46,15 +49,14 @@ const AllEdges = ({
       {edges.map(e => {
         const frm = byId[e.from.id];
         const to = byId[e.to.id];
-        const highlighted = nodeIds[e.from.id] || nodeIds[e.to.id];
-        const start = outOffset(frm.pos.x, frm.pos.y, frm.node.outKeys().indexOf(e.fromPort));
-        const end = inOffset(to.pos.x, to.pos.y, to.node.inKeys().indexOf(e.toPort));
+        const outIdx = frm.node.outKeys().indexOf(e.fromPort);
+        const inIdx = to.node.inKeys().indexOf(e.toPort);
         return (
           <Spline
-            highlighted={highlighted}
+            highlighted={nodeIds[e.from.id] || nodeIds[e.to.id]}
             edge={e}
-            start={start}
-            end={end}
+            start={addVec(outOffset(frm.pos.x, frm.pos.y, outIdx), pan)}
+            end={addVec(inOffset(to.pos.x, to.pos.y, inIdx), pan)}
             key={`${e.id}-spline`}
             onRemove={() => onRemoveConnector(e)}
           />

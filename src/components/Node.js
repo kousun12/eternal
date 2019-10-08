@@ -28,6 +28,8 @@ type P = {
   onDelete?: AnyNode => void,
   visible: boolean,
   selected: boolean,
+  scale?: ?number,
+  positionOffset?: Pos | typeof undefined,
 };
 const MoveBufferPx = 4;
 
@@ -117,7 +119,7 @@ class Node extends React.Component<P> {
   };
 
   render() {
-    const { selected, infoShowing, visible, pos } = this.props;
+    const { selected, infoShowing, visible, pos, scale, positionOffset } = this.props;
     const { node } = this.props.nis;
     const sel = infoShowing ? 'in-view' : selected ? 'selected' : '';
     let nodeClass = 'node' + (sel ? ` ${sel} ignore-react-onclickoutside` : '');
@@ -134,6 +136,8 @@ class Node extends React.Component<P> {
         onStart={this.handleDragStart}
         onStop={this.handleDragStop}
         onDrag={this.handleDrag}
+        scale={scale || 1}
+        positionOffset={positionOffset}
       >
         <div className={nodeClass} onClick={this.handleClick} onDoubleClick={this._selectNode}>
           <header className="node-header">

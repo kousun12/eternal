@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 export default class SVGComponent extends Component {
   render() {
     return (
-      <svg style={{ position: 'absolute' }} {...this.props} ref="svg">
+      <svg {...this.props}>
         {this.props.children}
       </svg>
     );

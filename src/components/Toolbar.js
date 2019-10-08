@@ -91,7 +91,8 @@ const Toolbar = ({
   );
 };
 
-export default connect(s => ({ infoShowing: Boolean(s.graph.infoOpen) }))(Toolbar);
+
+export default connect(s => ({ infoShowing: Boolean(s.graph.infoOpen) }))( Toolbar );
 
 const _showHotKeys = () => {
   document.dispatchEvent(
@@ -100,7 +101,7 @@ const _showHotKeys = () => {
 };
 
 const styles = {
-  toolSection: { flex: 1, display: 'flex' },
+  toolSection: { flex: 1, display: 'flex', alignItems: 'center' },
   leftAlign: { justifyContent: 'flex-start' },
   rightAlign: { justifyContent: 'flex-end' },
 };

@@ -14,19 +14,12 @@ body {
   height: 100vh;
   overflow: hidden;
   margin: auto;
-  background: linear-gradient(90deg, $bg-color ($dot-space - $dot-size), transparent 1%) center,
-  linear-gradient($bg-color ($dot-space - $dot-size), transparent 1%) center,
-  $dot-color;
-  background-size: $dot-space $dot-space;
 }
 
 .body::-webkit-scrollbar, html::-webkit-scrollbar {
   display: none;
 }
 
-.bp3-portal {
-  font-family: Monaco, "Source Code Pro", monospace, sans-serif;
-}
 
 #eternal-root {
   position: absolute;
@@ -41,6 +34,27 @@ body {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-font-smoothing: antialiased;
+}
+
+.graph-root {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background:
+          linear-gradient(90deg, $bg-color ($dot-space - $dot-size), transparent 1%) center,
+          linear-gradient($bg-color ($dot-space - $dot-size), transparent 1%) center, $dot-color;
+  background-size: $dot-space $dot-space;
+}
+
+.graph-scalable {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.graph-scalable svg {
+  position: absolute;
+  overflow: visible;
 }
 
 .graph-title {
@@ -285,10 +299,6 @@ body {
   border-color: #333333;
 }
 
-.bp3-menu-item.bp3-intent-primary.bp3-active {
-  background-color: rgba(0, 0, 0, 0.3) !important;
-}
-
 // ATTRIBUTE PANE STYLES
 
 $attrs-pad-sides: 16px;
@@ -297,15 +307,6 @@ $attrs-pad-sides: 16px;
   outline: none !important;
 }
 
-.bp3-popover.bp3-dark .bp3-popover-content {
-  background: rgba(75, 75, 75, 1) !important;
-  font-size: 12px;
-  padding: 12px !important;
-}
-
-.bp3-popover-arrow-fill {
-  fill: rgba(75, 75, 75, 1) !important;
-}
 
 .pane-header {
   padding-left: $attrs-pad-sides;
@@ -491,5 +492,26 @@ $attrs-pad-sides: 16px;
       visibility: visible;
     }
   }
+}
+
+// BluePrint Overrides
+.bp3-menu-item.bp3-intent-primary.bp3-active {
+  background-color: rgba(0, 0, 0, 0.3) !important;
+}
+
+.bp3-portal { font-family: Monaco, "Source Code Pro", monospace, sans-serif; }
+
+.bp3-popover.bp3-dark .bp3-popover-content {
+  background: rgba(75, 75, 75, 1) !important;
+  font-size: 12px;
+  padding: 12px !important;
+}
+
+.bp3-popover-arrow-fill {
+  fill: rgba(75, 75, 75, 1) !important;
+}
+
+.bp3-html-select select {
+  color: #a7a7a7;
 }
 
