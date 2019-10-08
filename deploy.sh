@@ -13,6 +13,7 @@ if [ -d ".git" ]; then
 	  version=${release:-minor}
     yarn version --"$version"
     yarn deploy
+    git push --tags
 	else
 		echo "Git status dirty"
 		exit 1
