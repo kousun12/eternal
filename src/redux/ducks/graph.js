@@ -29,14 +29,17 @@ const infoOpenSlice = createSlice({
   reducers: { setInfoOpen: (infoOpen: ?string, a: PA<?string>) => a.payload },
 });
 
-export const zooms = range([0.1, 2], 0.1, 1);
-const defView = { pan: { x: 0, y: 0 }, zoom: zooms.indexOf(1) };
+export const zooms = range([10, 200], 10, 0);
+const defView = { pan: { x: 0, y: 0 }, zoom: zooms.indexOf(100) };
 
 // NB using immer to update state, which looks like mutation but is actually not
 const viewSlice = createSlice({
   slice: 'view',
   initialState: defView,
   reducers: {
+    setScale: (v: ViewState, a: PA<number>) => {
+      v.zoom = a.payload;
+    },
     zoomIn: (v: ViewState) => {
       v.zoom = Math.min(zooms.length - 1, v.zoom + 1);
     },
@@ -44,7 +47,7 @@ const viewSlice = createSlice({
       v.zoom = Math.max(0, v.zoom - 1);
     },
     zoomReset: (v: ViewState) => {
-      v.zoom = zooms.indexOf(1);
+      v.zoom = zooms.indexOf(100);
     },
     setPan: (v: ViewState, a: PA<Pos>) => {
       v.pan = a.payload;
@@ -57,14 +60,17 @@ export const selectedS = (s: State) => ({
   selectCount: s.graph.selected.length,
 });
 
-export type SelectedView = {| pan: Pos, scale: number |}
-export const selectView = (s: State): SelectedView => ({ pan: s.graph.view.pan, scale: zooms[s.graph.view.zoom] });
+export type SelectedView = {| pan: Pos, scale: number |};
+export const selectView = (s: State): SelectedView => ({
+  pan: s.graph.view.pan,
+  scale: zooms[s.graph.view.zoom] / 100,
+});
 
 export const showNode = (s: State) => ({ showNode: s.graph.infoOpen });
 
 export const { selAppend, selRemove, selSet } = selectedSlice.actions;
 export const { setInfoOpen } = infoOpenSlice.actions;
-export const { zoomIn, zoomOut, zoomReset, setPan } = viewSlice.actions;
+export const { zoomIn, zoomOut, zoomReset, setPan, setScale } = viewSlice.actions;
 
 export default combineReducers({
   selected: selectedSlice.reducer,

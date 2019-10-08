@@ -91,8 +91,7 @@ const Toolbar = ({
   );
 };
 
-
-export default connect(s => ({ infoShowing: Boolean(s.graph.infoOpen) }))( Toolbar );
+export default connect(s => ({ infoShowing: Boolean(s.graph.infoOpen) }))(Toolbar);
 
 const _showHotKeys = () => {
   document.dispatchEvent(

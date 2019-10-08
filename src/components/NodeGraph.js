@@ -3,6 +3,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { createSelector } from 'redux-starter-kit';
+import { DraggableCore } from 'react-draggable';
 import { get, uniq, throttle, omit, fromPairs } from 'lodash';
 import Node from './Node';
 import Graph from 'models/Graph';
@@ -59,6 +60,7 @@ class NodeGraph extends React.Component<P, S> {
   dragDirectives: { [string]: DragDirective } = {};
   moving: boolean = false;
   timeoutId: ?TimeoutID = null;
+  deltaY: number = 0;
   constructor(props: P) {
     super(props);
     this.state = { nodes: props.graph.nodes, source: null, mousePos: null, dragging: false };
@@ -81,6 +83,18 @@ class NodeGraph extends React.Component<P, S> {
       this.setState({ nodes: nextProps.graph.nodes });
     }
   }
+
+  onScroll = (e: WheelEvent) => {
+    this.deltaY += e.deltaY;
+    const thresh = 20;
+    if (this.deltaY > thresh) {
+      this.props.zoomIn();
+      this.deltaY = 0;
+    } else if (this.deltaY < -thresh) {
+      this.props.zoomOut();
+      this.deltaY = 0;
+    }
+  };
 
   onMouseUp = () => {
     this.timeoutId = setTimeout(() => this.setState({ dragging: false }), 1);
@@ -207,47 +221,63 @@ class NodeGraph extends React.Component<P, S> {
     }
   };
 
+  _onCanvasStart = (e: Event, data: DraggableData) => {};
+  _onCanvasStop = (e: Event, data: DraggableData) => {};
+  _onCanvasDrag = (e: Event, data: DraggableData) => {
+    if (!this.moving) {
+      const { setPan, pan, scale } = this.props;
+      setPan(addVec(pan, scaleVec({ x: data.deltaX, y: data.deltaY }, 1 / scale)));
+    }
+  };
+
   render() {
     const { nodes, dragging, source, mousePos } = this.state;
     const { visible, selected, scale, pan, graph } = this.props;
     return (
-      <div className={(dragging ? 'dragging' : '') + ' graph-root'}>
-        <div className="graph-scalable" style={this._rootStyle()}>
-          {nodes.map((nis, i) => {
-            return (
-              <Node
-                selected={selected[nis.node.id]}
-                visible={visible}
-                pos={nis.pos}
-                index={i}
-                nis={nis}
-                key={`node-${nis.node.id}`}
-                onNodeStart={this.onNodeStartMove}
-                onNodeStop={this.onNodeStopMove}
-                onNodeMove={this.onNodeMove}
-                onStartConnector={this.onStartConnector}
-                onCompleteConnector={this.onCompleteConnector}
-                onNodeSelect={this.onNodeSelect}
-                onNodeDeselect={this.onNodeDeselect}
-                onDelete={this.onDeleteNode}
-                scale={scale}
-                positionOffset={pan}
-              />
-            );
-          })}
-          <AllEdges
-            edges={get(graph, 'edges', [])}
-            nodes={nodes}
-            mousePos={mousePos}
-            dragging={dragging}
-            source={source}
-            visible={visible}
-            selected={selected}
-            onRemoveConnector={this.handleRemoveConnector}
-            pan={pan}
-          />
+      <DraggableCore
+        onDrag={this._onCanvasDrag}
+        scale={scale}
+        onStart={this._onCanvasStart}
+        onStop={this._onCanvasStop}
+      >
+        <div className={(dragging ? 'dragging' : '') + ' graph-root'} onWheel={this.onScroll}>
+          <div className="graph-scalable" style={this._rootStyle()}>
+            {nodes.map((nis, i) => {
+              return (
+                <Node
+                  selected={selected[nis.node.id]}
+                  visible={visible}
+                  pos={nis.pos}
+                  index={i}
+                  nis={nis}
+                  key={`node-${nis.node.id}`}
+                  onNodeStart={this.onNodeStartMove}
+                  onNodeStop={this.onNodeStopMove}
+                  onNodeMove={this.onNodeMove}
+                  onStartConnector={this.onStartConnector}
+                  onCompleteConnector={this.onCompleteConnector}
+                  onNodeSelect={this.onNodeSelect}
+                  onNodeDeselect={this.onNodeDeselect}
+                  onDelete={this.onDeleteNode}
+                  scale={scale}
+                  positionOffset={pan}
+                />
+              );
+            })}
+            <AllEdges
+              edges={get(graph, 'edges', [])}
+              nodes={nodes}
+              mousePos={mousePos}
+              dragging={dragging}
+              source={source}
+              visible={visible}
+              selected={selected}
+              onRemoveConnector={this.handleRemoveConnector}
+              pan={pan}
+            />
+          </div>
         </div>
-      </div>
+      </DraggableCore>
     );
   }
 

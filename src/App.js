@@ -30,6 +30,7 @@ import type { Pos } from 'types';
 import Toolbar from 'components/Toolbar';
 import LoadPrompt from 'components/dialogs/LoadPrompt';
 import { setInfoOpen as _setInfoOpen, showNode } from 'redux/ducks/graph';
+import Zoomer from 'components/Zoomer';
 
 const welcomeGraph = require('models/examples/welcome.json');
 
@@ -242,6 +243,7 @@ class App extends Component<P, S> {
           <NodeGraph visible={visible} graph={graph} onNodeSelectionChange={this._onNodeSelect} />
         )}
         <AttributePane node={inPane} />
+        <Zoomer />
         {saveOpen && (
           <SaveDialog
             initial={title}
