@@ -43,6 +43,7 @@ type DragDirective = {
 class NodeGraph extends React.Component<P, S> {
   dragDirectives: { [string]: DragDirective } = {};
   moving: boolean = false;
+  timeoutId: ?TimeoutID = null;
   constructor(props: P) {
     super(props);
     this.state = {
@@ -62,6 +63,7 @@ class NodeGraph extends React.Component<P, S> {
     this.onMouseMove.cancel();
     document.removeEventListener('mousemove', this.onMouseMove);
     document.removeEventListener('mouseup', this.onMouseUp);
+    this.timeoutId && clearTimeout(this.timeoutId);
   }
 
   componentWillReceiveProps(nextProps: $ReadOnly<P>) {
@@ -71,7 +73,7 @@ class NodeGraph extends React.Component<P, S> {
   }
 
   onMouseUp = () => {
-    setTimeout(() => this.setState({ dragging: false }), 1);
+    this.timeoutId = setTimeout(() => this.setState({ dragging: false }), 1);
   };
 
   onMouseMove = throttle((e: MouseEvent) => {

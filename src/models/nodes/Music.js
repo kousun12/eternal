@@ -2,15 +2,15 @@
 import React from 'react';
 import { get } from 'lodash';
 import { Chord, Scale } from 'tonal';
-import * as Key from 'tonal-key'
+import * as Key from 'tonal-key';
 import { chroma } from 'tonal-pcset';
 import { transpose } from 'tonal-distance';
 import NodeBase from 'models/NodeBase';
 import Edge from 'models/Edge';
 const Types = window.Types;
-window.Chord = Chord
-window.Key = Key
-window.Scale = Scale
+// window.Chord = Chord;
+// window.Key = Key;
+// window.Scale = Scale;
 
 export class ScaleNode extends NodeBase<
   {},
@@ -28,12 +28,12 @@ export class ScaleNode extends NodeBase<
           ' See the name param info for possible scale names.'
       ),
       name: Types.string.desc(
-        <dirom>
+        <div>
           <p>The name of the scale. Possible values:</p>
           <p>
             <code>{Scale.names().join(', ')}</code>
           </p>
-        </dirom>
+        </div>
       ),
     },
     output: {
@@ -72,12 +72,12 @@ export class ChordNode extends NodeBase<
           ' See the name param info for recognized chord names.'
       ),
       name: Types.string.desc(
-        <dirom>
+        <div>
           <p>The name of the chord. Recognized names:</p>
           <p>
             <code>{Chord.names().join(', ')}</code>
           </p>
-        </dirom>
+        </div>
       ),
     },
     output: {
@@ -100,19 +100,13 @@ export class ChordNode extends NodeBase<
   onInputChange = (edge: Edge, change: Object) => this.outKeys();
 }
 
-export class KeyTriadsNode extends NodeBase<
-  {},
-  { key: string },
-  { notes: string[] }
-  > {
+export class KeyTriadsNode extends NodeBase<{}, { key: string }, { notes: string[] }> {
   static +displayName = 'Key Triads';
   static +registryName = 'KeyTriadsNode';
   static description = <span>Triads For a Key</span>;
   static schema = {
     input: {
-      key: Types.string.desc(
-        'The name of the key (a tonic + a mode), e.g. C major, Db dorian'
-      ),
+      key: Types.string.desc('The name of the key (a tonic + a mode), e.g. C major, Db dorian'),
     },
     output: {
       notes: Types.object.desc('Triad lead-sheet symbols for this key'),
@@ -124,7 +118,7 @@ export class KeyTriadsNode extends NodeBase<
     if (!get(this.props, 'key')) {
       return { notes: [] };
     }
-    return {notes: Key.triads(this.props.key)};
+    return { notes: Key.triads(this.props.key) };
   };
 
   onInputChange = (edge: Edge, change: Object) => this.outKeys();
