@@ -150,16 +150,16 @@ body {
   stroke-width: 15;
 }
 
-.connector-click-area:hover + .connector,
-.connector:hover {
-  stroke: white;
-  cursor: pointer;
+.connector.selected {
+  stroke: $graph-yellow;
   stroke-width: 6;
 }
 
-.connector.selected {
-  stroke: $graph-yellow;
-  stroke-width: 8;
+.connector-click-area:hover + .connector,
+.connector:hover {
+  stroke: #d5d5d5;
+  cursor: pointer;
+  stroke-width: 4;
 }
 
 .connector.highlight {
