@@ -15,7 +15,7 @@ if [ -d ".git" ]; then
 	changes=$(git status --porcelain)
 	if [ -z "${changes}" ]; then
 	  version=${$release:-minor}
-    echo "--${version}"
+    echo "$version"
 #    yarn deploy
 	else
 		echo "Git status dirty"
