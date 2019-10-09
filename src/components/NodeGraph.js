@@ -221,8 +221,6 @@ class NodeGraph extends React.Component<P, S> {
     }
   };
 
-  _onCanvasStart = (e: Event, data: DraggableData) => {};
-  _onCanvasStop = (e: Event, data: DraggableData) => {};
   _onCanvasDrag = (e: Event, data: DraggableData) => {
     if (!this.moving) {
       const { setPan, pan, scale } = this.props;
@@ -237,8 +235,6 @@ class NodeGraph extends React.Component<P, S> {
       <DraggableCore
         onDrag={this._onCanvasDrag}
         scale={scale}
-        onStart={this._onCanvasStart}
-        onStop={this._onCanvasStop}
       >
         <div id='graph-root' className={(dragging ? 'dragging' : '')} onWheel={this.onScroll}>
           <div className="graph-scalable" style={this._rootStyle()}>

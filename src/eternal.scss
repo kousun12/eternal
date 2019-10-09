@@ -9,6 +9,8 @@ $graph-red: #ac445c;
 $graph-teal: #3e9688;
 $graph-yellow: #c1b827;
 $connector-color: #606060;
+$pane-border: #4c4e4f;
+$toolbar-height: 65px;
 
 body {
   width: 100vw;
@@ -71,13 +73,14 @@ body {
   flex-direction: row;
   align-items: center;
   width: 100%;
-  border-bottom: 1px solid #4c4e4f;
+  border-bottom: 1px solid $pane-border;
   color: #888888;
   padding: 12px 20px;
   margin: 0;
-  z-index: 20;
+  z-index: 13;
   text-align: right;
   background-color: rgba(20, 20, 20, 0.88);
+  height: $toolbar-height;
 }
 
 .node {
@@ -98,9 +101,18 @@ body {
   z-index: 11;
 }
 
+.node:hover {
+  background-color: rgba(0, 0, 0, 1);
+  -webkit-box-shadow: 6px 6px 28px -2px rgba(0, 0, 0, 0.8);
+  -moz-box-shadow: 6px 6px 28px -2px rgba(0, 0, 0, 0.8);
+  box-shadow: 6px 6px 28px -2px rgba(0, 0, 0, 0.8);
+  z-index: 12;
+}
+
 .node.selected, .node.in-view {
   border: 2px solid #dadada;
   box-shadow: 0 0 8px 1px #494949;
+  z-index: 14;
 }
 
 .node-content {
@@ -328,21 +340,35 @@ $attrs-pad-sides: 16px;
 
 .attribute-pane {
   color: #888888;
-  width: 400px;
-  height: 100%;
+  height: calc(100vh - #{$toolbar-height});
   position: fixed;
+  min-width: 80px;
+  max-width: 85vw;
+  overflow-x: hidden;
   right: 0;
-  z-index: 12;
-  margin-top: 64px;
+  z-index: 14;
+  top: $toolbar-height;
   -webkit-box-shadow: -3px 0px 20px 3px rgba(0, 0, 0, 0.3);
   -moz-box-shadow: -3px 0px 20px 3px rgba(0, 0, 0, 0.3);
   box-shadow: -3px 0px 20px 3px rgba(0, 0, 0, 0.3);
   background-color: rgba(38, 39, 40, 1);
-  overflow: auto;
+  overflow-y: auto;
+  border-left: 1px solid $pane-border;
 }
 
 .attribute-pane::-webkit-scrollbar {
   display: none;
+}
+
+#attr-pane-resizer {
+  width: 16px;
+  height: calc(100vh - #{$toolbar-height});
+  position: absolute;
+  cursor: col-resize;
+  top: 0;
+  left: 0;
+  background: transparent;
+
 }
 
 .attr-title {
@@ -372,6 +398,7 @@ $attrs-pad-sides: 16px;
 .attr-doc {
   margin-top: 6px;
   margin-bottom: 8px;
+  font-size: 12px;
 }
 
 .attr-last {

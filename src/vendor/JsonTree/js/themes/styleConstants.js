@@ -26,14 +26,14 @@ export default {
 
   keyValPaddingTop: '3px',
   keyValPaddingBottom: '3px',
-  keyValPaddingRight: '5px',
+  keyValPaddingRight: 0,
   keyValBorderLeft: '1px solid',
   keyValBorderHover: '2px solid',
   keyValPaddingHover: '3px 5px 3px 4px',
 
   pushedContentMarginLeft: '6px',
 
-  variableValuePaddingRight: '6px',
+  variableValuePaddingRight: 0,
 
   nullFontSize: '11px',
   nullFontWeight: 'bold',
