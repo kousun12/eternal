@@ -184,7 +184,6 @@ export class SoundFontPlayerNode extends NodeBase<
     const { midiDevice, soundFont } = this.props;
     if (soundFont && midiDevice && !this.listening.includes(midiDevice.id)) {
       soundFont.listenToMidi(midiDevice);
-      console.log('listen', midiDevice.name, soundFont);
       this.listening.push(midiDevice.id);
     }
   };

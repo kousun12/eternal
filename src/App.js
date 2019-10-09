@@ -30,6 +30,7 @@ import type { Pos } from 'types';
 import Toolbar from 'components/Toolbar';
 import LoadPrompt from 'components/dialogs/LoadPrompt';
 import { setInfoOpen as _setInfoOpen, showNode } from 'redux/ducks/graph';
+import Zoomer from 'components/Zoomer';
 
 const welcomeGraph = require('models/examples/welcome.json');
 
@@ -67,29 +68,28 @@ class App extends Component<P, S> {
   }
 
   componentDidMount() {
+    let showWelcome = true;
     const exId = get(window.location.search.match(/[?&]e=([\w-\d% +]+)&?/), 1);
     if (exId) {
       const name = decodeURIComponent(exId).replace(/\+/g, ' ');
-      if (examples.find(e => e.name === name)) {
-        this.setState({ promptLoad: name });
+      const exFromUrl = examples.find(e => e.name === name);
+      if (exFromUrl) {
+        showWelcome = false;
+        if (process.env.NODE_ENV === 'development') {
+          this._loadUrl(exFromUrl);
+        } else {
+          this.setState({ promptLoad: name });
+        }
       }
     }
-
-    this._setGraph(Graph.load(welcomeGraph));
+    showWelcome && this._setGraph(Graph.load(welcomeGraph));
 
     const hide = get(window.location.search.match(/[?&]h=(\d)&?/), 1);
-    if (typeof hide === 'string') {
-      const visible = hide === '0';
-      this.setState({ visible });
-    }
+    typeof hide === 'string' && this.setState({ visible: hide === '0' });
 
     const debug = get(window.location.search.match(/[?&]d=(\d)&?/), 1);
-    if (typeof debug === 'string') {
-      if (debug === '1') {
-        this._toggleDebug();
-      }
-    }
-    window['$debug'] = true;
+    typeof debug === 'string' && debug === '1' && this._toggleDebug();
+
     document.addEventListener('mousemove', this._onMouseMove);
   }
 
@@ -177,11 +177,12 @@ class App extends Component<P, S> {
   _showNodeSearch = () => this.setState({ searchingNodes: true });
   _toggleGraph = () => this.setState({ visible: !this.state.visible });
 
-  _loadUrl = () => {
+  _loadUrl = (example?: GraphSerialization) => {
     const { promptLoad } = this.state;
-    if (promptLoad) {
-      const serialization = examples.find(e => e.name === promptLoad);
-      serialization && this._setGraph(Graph.load(serialization));
+    const exJson = Graph.serialization(example);
+    if (promptLoad || exJson) {
+      const json = exJson || examples.find(e => e.name === promptLoad);
+      json && this._setGraph(Graph.load(json));
     }
     this.setState({ promptLoad: null });
   };
@@ -242,6 +243,7 @@ class App extends Component<P, S> {
           <NodeGraph visible={visible} graph={graph} onNodeSelectionChange={this._onNodeSelect} />
         )}
         <AttributePane node={inPane} />
+        <Zoomer />
         {saveOpen && (
           <SaveDialog
             initial={title}

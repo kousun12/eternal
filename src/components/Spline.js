@@ -5,6 +5,7 @@ import onClickOutside from 'react-onclickoutside';
 import TrashIcon from './TrashIcon';
 import type { Pos } from 'types';
 import Edge from 'models/Edge';
+import { Hotkey, Hotkeys, HotkeysTarget } from '@blueprintjs/core';
 
 type P = {
   start: Pos,
@@ -67,6 +68,10 @@ class Spline extends React.Component<P, S> {
 
   // noinspection JSUnusedGlobalSymbols
   handleClickOutside = e => {
+    let { selected } = this.state;
+    if (!selected) {
+      return;
+    }
     this.setState({ selected: false });
     if (this.props.onClickOutside) {
       this.props.onClickOutside(e);
@@ -112,6 +117,25 @@ class Spline extends React.Component<P, S> {
   distance(a, b) {
     return Math.sqrt((b[0] - a[0]) ** 2 + (b[1] - a[1]) ** 2);
   }
+
+  // noinspection JSUnusedGlobalSymbols
+  renderHotkeys() {
+    let { selected } = this.state;
+    if (!selected) {
+      return <Hotkeys />;
+    }
+    return (
+      <Hotkeys>
+        <Hotkey
+          group="Edge Actions"
+          combo="backspace"
+          label="Delete edge"
+          global={true}
+          onKeyDown={this.handleRemove}
+        />
+      </Hotkeys>
+    );
+  }
 }
 
-export default onClickOutside(Spline);
+export default onClickOutside(HotkeysTarget(Spline));

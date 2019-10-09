@@ -1,6 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { get, throttle } from 'lodash';
+import { DraggableCore } from 'react-draggable';
 import type { AnyNode, Changeable, Displayable } from 'models/NodeBase';
 import JsonTree from 'vendor/JsonTree/js';
 import InfoPopup from 'components/AttributePane/InfoPopup';
@@ -10,12 +11,13 @@ import NodeBase from 'models/NodeBase';
 const Types = window.Types;
 
 type P = { node: AnyNode };
-type S = { fullDocs: boolean };
+type S = { fullDocs: boolean, width: number };
 
 class AttributePane extends Component<P, S> {
-  state = { fullDocs: true };
+  state = { fullDocs: true, width: 400 };
   listener: ?string;
 
+  // noinspection JSUnusedGlobalSymbols
   renderHotkeys() {
     return (
       <Hotkeys>
@@ -136,17 +138,17 @@ class AttributePane extends Component<P, S> {
     });
   };
 
-  _toggleDocs = () => {
-    this.setState({ fullDocs: !this.state.fullDocs });
-  };
+  _toggleDocs = () => this.setState({ fullDocs: !this.state.fullDocs });
+
+  _onResize = (e: MouseEvent) => this.setState({ width: window.innerWidth - e.clientX });
 
   render() {
     if (!this.props.node) {
       return null;
     }
-    const { fullDocs } = this.state;
+    const { fullDocs, width } = this.state;
     return (
-      <div className="attribute-pane ignore-react-onclickoutside">
+      <div className="attribute-pane ignore-react-onclickoutside" style={{ width }}>
         <h3 className="pane-header">
           {this.props.node.title || NodeBase.nameFrom(this.props.node.constructor)}
         </h3>
@@ -157,6 +159,9 @@ class AttributePane extends Component<P, S> {
         </div>
         <hr />
         <div className="attr-list">{this._changeables()}</div>
+        <DraggableCore onDrag={this._onResize}>
+          <div id="attr-pane-resizer" />
+        </DraggableCore>
       </div>
     );
   }

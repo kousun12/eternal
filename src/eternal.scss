@@ -1,13 +1,16 @@
 $bg-color: #1b1c1d;
 $dot-color: #4c4e4f;
 $dot-size: 0.1rem;
-$dot-space: 3rem;
+$dot-space: 2rem;
 $node-width: 198px;
 $primary-graph-color: #4caa4d;
 $secondary-graph-color: #883e96;
 $graph-red: #ac445c;
 $graph-teal: #3e9688;
 $graph-yellow: #c1b827;
+$connector-color: #606060;
+$pane-border: #4c4e4f;
+$toolbar-height: 65px;
 
 body {
   width: 100vw;
@@ -15,8 +18,7 @@ body {
   overflow: hidden;
   margin: auto;
   background: linear-gradient(90deg, $bg-color ($dot-space - $dot-size), transparent 1%) center,
-  linear-gradient($bg-color ($dot-space - $dot-size), transparent 1%) center,
-  $dot-color;
+  linear-gradient($bg-color ($dot-space - $dot-size), transparent 1%) center, $dot-color;
   background-size: $dot-space $dot-space;
 }
 
@@ -24,9 +26,6 @@ body {
   display: none;
 }
 
-.bp3-portal {
-  font-family: Monaco, "Source Code Pro", monospace, sans-serif;
-}
 
 #eternal-root {
   position: absolute;
@@ -43,6 +42,23 @@ body {
   -moz-font-smoothing: antialiased;
 }
 
+#graph-root {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.graph-scalable {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.graph-scalable svg {
+  position: absolute;
+  overflow: visible;
+}
+
 .graph-title {
   font-family: Monaco, "Source Code Pro", monospace, sans-serif;
   color: #a5a5a5;
@@ -57,13 +73,14 @@ body {
   flex-direction: row;
   align-items: center;
   width: 100%;
-  border-bottom: 1px solid #4c4e4f;
+  border-bottom: 1px solid $pane-border;
   color: #888888;
   padding: 12px 20px;
   margin: 0;
-  z-index: 20;
+  z-index: 13;
   text-align: right;
   background-color: rgba(20, 20, 20, 0.88);
+  height: $toolbar-height;
 }
 
 .node {
@@ -84,9 +101,18 @@ body {
   z-index: 11;
 }
 
+.node:hover {
+  background-color: rgba(0, 0, 0, 1);
+  -webkit-box-shadow: 6px 6px 28px -2px rgba(0, 0, 0, 0.8);
+  -moz-box-shadow: 6px 6px 28px -2px rgba(0, 0, 0, 0.8);
+  box-shadow: 6px 6px 28px -2px rgba(0, 0, 0, 0.8);
+  z-index: 12;
+}
+
 .node.selected, .node.in-view {
   border: 2px solid #dadada;
   box-shadow: 0 0 8px 1px #494949;
+  z-index: 14;
 }
 
 .node-content {
@@ -114,7 +140,7 @@ body {
 
 .connector {
   fill: none;
-  stroke: #606060;
+  stroke: $connector-color;
   stroke-width: 3;
   -webkit-box-shadow: 6px 6px 28px -2px rgba(0, 0, 0, 0.75);
   -moz-box-shadow: 6px 6px 28px -2px rgba(0, 0, 0, 0.75);
@@ -135,16 +161,16 @@ body {
   stroke-width: 15;
 }
 
-.connector-click-area:hover + .connector,
-.connector:hover {
-  stroke: white;
-  cursor: pointer;
+.connector.selected {
+  stroke: $graph-yellow;
   stroke-width: 6;
 }
 
-.connector.selected {
-  stroke: $graph-yellow;
-  stroke-width: 8;
+.connector-click-area:hover + .connector,
+.connector:hover {
+  stroke: #d5d5d5;
+  cursor: pointer;
+  stroke-width: 4;
 }
 
 .connector.highlight {
@@ -285,8 +311,11 @@ body {
   border-color: #333333;
 }
 
-.bp3-menu-item.bp3-intent-primary.bp3-active {
-  background-color: rgba(0, 0, 0, 0.3) !important;
+.zoomer {
+  position: absolute;
+  bottom: 20px;
+  left: 32px;
+  width: 225px;
 }
 
 // ATTRIBUTE PANE STYLES
@@ -297,15 +326,6 @@ $attrs-pad-sides: 16px;
   outline: none !important;
 }
 
-.bp3-popover.bp3-dark .bp3-popover-content {
-  background: rgba(75, 75, 75, 1) !important;
-  font-size: 12px;
-  padding: 12px !important;
-}
-
-.bp3-popover-arrow-fill {
-  fill: rgba(75, 75, 75, 1) !important;
-}
 
 .pane-header {
   padding-left: $attrs-pad-sides;
@@ -320,21 +340,35 @@ $attrs-pad-sides: 16px;
 
 .attribute-pane {
   color: #888888;
-  width: 400px;
-  height: 100%;
+  height: calc(100vh - #{$toolbar-height});
   position: fixed;
+  min-width: 80px;
+  max-width: 85vw;
+  overflow-x: hidden;
   right: 0;
-  z-index: 12;
-  margin-top: 64px;
+  z-index: 14;
+  top: $toolbar-height;
   -webkit-box-shadow: -3px 0px 20px 3px rgba(0, 0, 0, 0.3);
   -moz-box-shadow: -3px 0px 20px 3px rgba(0, 0, 0, 0.3);
   box-shadow: -3px 0px 20px 3px rgba(0, 0, 0, 0.3);
   background-color: rgba(38, 39, 40, 1);
-  overflow: auto;
+  overflow-y: auto;
+  border-left: 1px solid $pane-border;
 }
 
 .attribute-pane::-webkit-scrollbar {
   display: none;
+}
+
+#attr-pane-resizer {
+  width: 16px;
+  height: calc(100vh - #{$toolbar-height});
+  position: absolute;
+  cursor: col-resize;
+  top: 0;
+  left: 0;
+  background: transparent;
+
 }
 
 .attr-title {
@@ -364,6 +398,7 @@ $attrs-pad-sides: 16px;
 .attr-doc {
   margin-top: 6px;
   margin-bottom: 8px;
+  font-size: 12px;
 }
 
 .attr-last {
@@ -492,4 +527,37 @@ $attrs-pad-sides: 16px;
     }
   }
 }
+
+// BluePrint Overrides
+.bp3-menu-item.bp3-intent-primary.bp3-active {
+  background-color: rgba(0, 0, 0, 0.3) !important;
+}
+
+.bp3-portal {
+  font-family: Monaco, "Source Code Pro", monospace, sans-serif;
+}
+
+.bp3-popover.bp3-dark .bp3-popover-content {
+  background: rgba(75, 75, 75, 1) !important;
+  font-size: 12px;
+  padding: 12px !important;
+}
+
+.bp3-popover-arrow-fill {
+  fill: rgba(75, 75, 75, 1) !important;
+}
+
+.bp3-slider-track {
+  background: $connector-color;
+}
+
+.bp3-slider-label {
+  color: $connector-color;
+}
+
+.bp3-slider-handle .bp3-slider-label {
+  background: $connector-color !important;
+  color: #b7b7b7 !important;
+}
+
 

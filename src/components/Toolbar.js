@@ -100,7 +100,7 @@ const _showHotKeys = () => {
 };
 
 const styles = {
-  toolSection: { flex: 1, display: 'flex' },
+  toolSection: { flex: 1, display: 'flex', alignItems: 'center' },
   leftAlign: { justifyContent: 'flex-start' },
   rightAlign: { justifyContent: 'flex-end' },
 };

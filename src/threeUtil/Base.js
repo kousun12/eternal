@@ -13,8 +13,8 @@ import { throttle } from 'lodash';
 import OrbitControls from 'orbit-controls-es6';
 import Stats from 'threeUtil/Stats';
 import { EffectComposer, RenderPass } from 'postprocessing';
-const THREE = require('three');
-window.THREE = THREE;
+// const THREE = require('three');
+// window.THREE = THREE;
 
 type Renderable = EffectComposer | WebGLRenderer;
 export type UpdateSignal = $Keys<typeof Base.Signals>;
@@ -119,10 +119,10 @@ export default class Base {
     const renderer = composer.renderer;
     // TODO enable this or not?
     // const controls = new OrbitControls(this.camera, renderer.domElement);
+    renderer.domElement.style.visibility = 'hidden';
     if (document.body) {
       document.body.appendChild(renderer.domElement);
     }
-    renderer.domElement.style.visibility = 'hidden';
     composer.reset();
     this.load(() => {
       const renderPass = new RenderPass(this.scene, this.camera);

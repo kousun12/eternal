@@ -2,6 +2,8 @@
 
 import React from 'react';
 import { connect } from 'react-redux';
+import { createSelector } from 'redux-starter-kit';
+import { DraggableCore } from 'react-draggable';
 import { get, uniq, throttle, omit, fromPairs } from 'lodash';
 import Node from './Node';
 import Graph from 'models/Graph';
@@ -10,11 +12,22 @@ import { GPU, type Kernel } from 'gpu.js';
 
 import { DraggableData } from 'react-draggable';
 import { Hotkey, Hotkeys, HotkeysTarget } from '@blueprintjs/core';
-import { selectedS, selSet as _selSet } from 'redux/ducks/graph';
+import {
+  selectedS,
+  selectView,
+  selSet as _selSet,
+  zoomIn as _zIn,
+  zoomOut as _zOut,
+  zoomReset as _zReset,
+  setPan as _setPan,
+} from 'redux/ducks/graph';
 
 import type { NodeInSpace, Pos } from 'types';
 import type { AnyNode } from 'models/NodeBase';
 import AllEdges from 'components/AllEdges';
+import type { SelectedView } from 'redux/ducks/graph';
+import { addVec, scaleVec, subVec, unitVec } from 'utils/vector';
+import type { Direction } from 'utils/vector';
 
 type OP = {|
   graph: Graph,
@@ -25,10 +38,16 @@ type OP = {|
   onNodeSelectionChange?: (?AnyNode, ?number) => void,
   visible: boolean,
 |};
-type SP = {| selected: { [string]: boolean }, selectCount: number |};
-type DP = {| selSet: (string[]) => void |};
-type P = {| ...SP, ...OP, ...DP |};
+type SP = {| selected: { [string]: boolean }, selectCount: number, ...SelectedView |};
+type DP = {|
+  selSet: (string[]) => void,
+  zoomIn: () => void,
+  zoomOut: () => void,
+  zoomReset: () => void,
+  setPan: Pos => void,
+|};
 
+type P = {| ...SP, ...OP, ...DP |};
 type S = {|
   nodes: NodeInSpace[],
   source: ?[string, number],
@@ -36,10 +55,7 @@ type S = {|
   mousePos: ?Pos,
 |};
 
-type DragDirective = {
-  nis: NodeInSpace,
-  offset: Pos,
-};
+type DragDirective = {| nis: NodeInSpace, offset: Pos |};
 
 const gpu = new GPU({ mode: 'cpu' });
 
@@ -48,14 +64,11 @@ class NodeGraph extends React.Component<P, S> {
   moving: boolean = false;
   kernel: ?Kernel = null;
   dragSelected: NodeInSpace[] = [];
+  timeoutId: ?TimeoutID = null;
+  deltaY: number = 0;
   constructor(props: P) {
     super(props);
-    this.state = {
-      nodes: props.graph.nodes,
-      source: null,
-      mousePos: null,
-      dragging: false,
-    };
+    this.state = { nodes: props.graph.nodes, source: null, mousePos: null, dragging: false };
   }
 
   componentDidMount() {
@@ -69,6 +82,7 @@ class NodeGraph extends React.Component<P, S> {
     this.onMouseMove.cancel();
     document.removeEventListener('mousemove', this.onMouseMove);
     document.removeEventListener('mouseup', this.onMouseUp);
+    this.timeoutId && clearTimeout(this.timeoutId);
   }
 
   componentWillReceiveProps(nextProps: $ReadOnly<P>) {
@@ -77,22 +91,40 @@ class NodeGraph extends React.Component<P, S> {
     }
   }
 
-  onMouseUp = () => {
-    setTimeout(() => this.setState({ dragging: false }), 1);
+  onScroll = (e: WheelEvent) => {
+    this.deltaY += e.deltaY;
+    const thresh = 30;
+    if (this.deltaY > thresh) {
+      this.props.zoomIn();
+      this.deltaY = 0;
+    } else if (this.deltaY < -thresh) {
+      this.props.zoomOut();
+      this.deltaY = 0;
+    }
   };
 
-  onMouseMove = throttle((e: MouseEvent) => {
-    const { dragging, mousePos } = this.state;
-    const { selectCount } = this.props;
-    const set = !mousePos || dragging || selectCount > 0;
+  onMouseUp = () => {
+    this.timeoutId = setTimeout(() => this.setState({ dragging: false }), 1);
+  };
+
+  onMouseMove = (e: MouseEvent) => {
     if (this.moving) {
       return;
     }
-    if (!set) return;
+    const { dragging, mousePos } = this.state;
+    const { selectCount } = this.props;
+    const set = !mousePos || dragging || selectCount > 0;
+    if (!set) {
+      return;
+    }
+    this._debouncedSetMouse(e);
+  };
+
+  _debouncedSetMouse = throttle((e: MouseEvent) => {
     e.stopPropagation();
     e.preventDefault();
     this.setState({ mousePos: { x: e.clientX, y: e.clientY } });
-  }, 18);
+  }, 20);
 
   _getSelected = (): NodeInSpace[] => {
     const { selected } = this.props;
@@ -136,7 +168,7 @@ class NodeGraph extends React.Component<P, S> {
     if (vals.length > 1) {
       vals.forEach(d => {
         if (this.props.selected[d.nis.node.id]) {
-          d.nis.pos = { x: data.x - d.offset.x, y: data.y - d.offset.y };
+          d.nis.pos = subVec(data, d.offset);
         }
       });
     }
@@ -247,75 +279,84 @@ class NodeGraph extends React.Component<P, S> {
     }
   };
 
-  resetSize = () => {
-    const maxW = Math.max(...this.state.nodes.map(nis => nis.pos.x));
-    const maxH = Math.max(...this.state.nodes.map(nis => nis.pos.y));
-    const elem = document.getElementById('eternal-root');
-    if (elem) {
-      elem.style.width = String(maxW + 300);
-      elem.style.height = String(maxH + 500);
+  _onCanvasDrag = (e: Event, data: DraggableData) => {
+    if (!this.moving) {
+      const { setPan, pan, scale } = this.props;
+      setPan(addVec(pan, scaleVec({ x: data.deltaX, y: data.deltaY }, 1 / scale)));
     }
   };
 
-  _drawEdges = () => {
-    const { nodes, mousePos, dragging, source } = this.state;
-    const { visible, selected, graph } = this.props;
-    return (
-      <AllEdges
-        edges={get(graph, 'edges', [])}
-        nodes={nodes}
-        mousePos={mousePos}
-        dragging={dragging}
-        source={source}
-        visible={visible}
-        selected={selected}
-        onRemoveConnector={this.handleRemoveConnector}
-      />
-    );
-  };
-
   render() {
-    const { nodes, dragging } = this.state;
-    const { visible, selected } = this.props;
+    const { nodes, dragging, source, mousePos } = this.state;
+    const { visible, selected, scale, pan, graph } = this.props;
     return (
-      <div className={(dragging ? 'dragging' : '') + ' graph-root'}>
-        {nodes.map((nis, i) => {
-          return (
-            <Node
-              selected={selected[nis.node.id]}
+      <DraggableCore onDrag={this._onCanvasDrag} scale={scale}>
+        <div id="graph-root" className={dragging ? 'dragging' : ''} onWheel={this.onScroll}>
+          <div className="graph-scalable" style={this._rootStyle()}>
+            {nodes.map((nis, i) => {
+              return (
+                <Node
+                  selected={selected[nis.node.id]}
+                  visible={visible}
+                  pos={nis.pos}
+                  index={i}
+                  nis={nis}
+                  key={`node-${nis.node.id}`}
+                  onNodeStart={this.onNodeStartMove}
+                  onNodeStop={this.onNodeStopMove}
+                  onNodeMove={this.onNodeMove}
+                  onStartConnector={this.onStartConnector}
+                  onCompleteConnector={this.onCompleteConnector}
+                  onNodeSelect={this.onNodeSelect}
+                  onNodeDeselect={this.onNodeDeselect}
+                  onDelete={this.onDeleteNode}
+                  scale={scale}
+                  positionOffset={pan}
+                />
+              );
+            })}
+            <AllEdges
+              edges={get(graph, 'edges', [])}
+              nodes={nodes}
+              mousePos={mousePos}
+              dragging={dragging}
+              source={source}
               visible={visible}
-              pos={nis.pos}
-              index={i}
-              nis={nis}
-              key={`node-${nis.node.id}`}
-              onNodeStart={this.onNodeStartMove}
-              onNodeStop={this.onNodeStopMove}
-              onNodeMove={this.onNodeMove}
-              onStartConnector={this.onStartConnector}
-              onCompleteConnector={this.onCompleteConnector}
-              onNodeSelect={this.onNodeSelect}
-              onNodeDeselect={this.onNodeDeselect}
-              onDelete={this.onDeleteNode}
+              selected={selected}
+              onRemoveConnector={this.handleRemoveConnector}
+              pan={pan}
             />
-          );
-        })}
-        {this._drawEdges()}
-      </div>
+          </div>
+        </div>
+      </DraggableCore>
     );
   }
+
+  _rootStyle = () => {
+    return { transform: `scale(${this.props.scale})` };
+  };
 
   _onCopy = () => {
     const selected = this.props.graph.duplicate(this._getSelected()).map(nis => nis.node.id);
     this.props.selSet(selected);
   };
 
-  _selectAll = () => {
-    this.props.selSet(this.state.nodes.map(nis => nis.node.id));
+  _selectAll = () => this.props.selSet(this.state.nodes.map(nis => nis.node.id));
+
+  _pan = (dir: Direction) => {
+    const { setPan, pan, scale } = this.props;
+    const move = scaleVec(unitVec(dir), (1 / scale) * 30);
+    setPan(addVec(pan, move));
   };
+
+  _panR = () => this._pan('right');
+  _panL = () => this._pan('left');
+  _panD = () => this._pan('down');
+  _panU = () => this._pan('up');
 
   // noinspection JSUnusedGlobalSymbols
   renderHotkeys() {
-    const { selectCount } = this.props;
+    const { selectCount, zoomIn, zoomOut, zoomReset } = this.props;
     const showCopy = selectCount > 0;
     return (
       <Hotkeys>
@@ -329,14 +370,31 @@ class NodeGraph extends React.Component<P, S> {
           />
         )}
         <Hotkey global combo="shift + meta + a" label="Select All" onKeyDown={this._selectAll} />
+        <Hotkey global combo="alt + =" label="Zoom in" onKeyDown={zoomIn} group="View" />
+        <Hotkey global combo="alt + -" label="Zoom out" onKeyDown={zoomOut} group="View" />
+        <Hotkey global combo="alt + 0" label="Zoom reset" onKeyDown={zoomReset} group="View" />
+        <Hotkey global combo="right" label="Pan right" onKeyDown={this._panR} group="View" />
+        <Hotkey global combo="left" label="Pan left" onKeyDown={this._panL} group="View" />
+        <Hotkey global combo="down" label="Pan down" onKeyDown={this._panD} group="View" />
+        <Hotkey global combo="up" label="Pan up" onKeyDown={this._panU} group="View" />
       </Hotkeys>
     );
   }
 }
 
-const dispatch = d => ({ selSet: id => d(_selSet(id)) });
+const select = createSelector(
+  [selectedS, selectView],
+  (selected, view) => ({ ...selected, ...view })
+);
+const dispatch = d => ({
+  selSet: id => d(_selSet(id)),
+  zoomIn: () => d(_zIn()),
+  zoomOut: () => d(_zOut()),
+  zoomReset: () => d(_zReset()),
+  setPan: (pos: Pos) => d(_setPan(pos)),
+});
 
 export default connect(
-  selectedS,
+  select,
   dispatch
 )(HotkeysTarget(NodeGraph));
