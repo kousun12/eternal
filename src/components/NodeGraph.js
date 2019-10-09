@@ -86,7 +86,7 @@ class NodeGraph extends React.Component<P, S> {
 
   onScroll = (e: WheelEvent) => {
     this.deltaY += e.deltaY;
-    const thresh = 20;
+    const thresh = 30;
     if (this.deltaY > thresh) {
       this.props.zoomIn();
       this.deltaY = 0;
@@ -100,18 +100,24 @@ class NodeGraph extends React.Component<P, S> {
     this.timeoutId = setTimeout(() => this.setState({ dragging: false }), 1);
   };
 
-  onMouseMove = throttle((e: MouseEvent) => {
-    const { dragging, mousePos } = this.state;
-    const { selectCount } = this.props;
-    const set = !mousePos || dragging || selectCount > 0;
+  onMouseMove = (e: MouseEvent) => {
     if (this.moving) {
       return;
     }
-    if (!set) return;
+    const { dragging, mousePos } = this.state;
+    const { selectCount } = this.props;
+    const set = !mousePos || dragging || selectCount > 0;
+    if (!set) {
+      return;
+    }
+    this._debouncedSetMouse(e);
+  };
+
+  _debouncedSetMouse = throttle((e: MouseEvent) => {
     e.stopPropagation();
     e.preventDefault();
     this.setState({ mousePos: { x: e.clientX, y: e.clientY } });
-  }, 18);
+  }, 20);
 
   _getSelected = (): NodeInSpace[] => {
     const { selected } = this.props;
@@ -232,11 +238,8 @@ class NodeGraph extends React.Component<P, S> {
     const { nodes, dragging, source, mousePos } = this.state;
     const { visible, selected, scale, pan, graph } = this.props;
     return (
-      <DraggableCore
-        onDrag={this._onCanvasDrag}
-        scale={scale}
-      >
-        <div id='graph-root' className={(dragging ? 'dragging' : '')} onWheel={this.onScroll}>
+      <DraggableCore onDrag={this._onCanvasDrag} scale={scale}>
+        <div id="graph-root" className={dragging ? 'dragging' : ''} onWheel={this.onScroll}>
           <div className="graph-scalable" style={this._rootStyle()}>
             {nodes.map((nis, i) => {
               return (

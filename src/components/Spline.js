@@ -68,6 +68,10 @@ class Spline extends React.Component<P, S> {
 
   // noinspection JSUnusedGlobalSymbols
   handleClickOutside = e => {
+    let { selected } = this.state;
+    if (!selected) {
+      return;
+    }
     this.setState({ selected: false });
     if (this.props.onClickOutside) {
       this.props.onClickOutside(e);

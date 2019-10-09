@@ -1,5 +1,5 @@
 //@flow
-import {get, flatten, uniqBy, fromPairs} from 'lodash';
+import { get, flatten, uniqBy, fromPairs } from 'lodash';
 import Edge from 'models/Edge';
 import NodeBase from 'models/NodeBase';
 import type { NodeInSpace, Pos } from 'types';
@@ -17,7 +17,7 @@ export default class Graph {
   id: string;
   name: string = 'untitled';
   nodes: NodeInSpace[] = [];
-  _nodesById: {[string]: NodeInSpace } = {};
+  _nodesById: { [string]: NodeInSpace } = {};
   edges: Edge[] = [];
 
   constructor(nodes?: NodeInSpace[] = [], edges?: Edge[] = [], name?: string = 'untitled') {
@@ -29,7 +29,7 @@ export default class Graph {
     this.name = name;
   }
 
-  nodeWithId: string => ?NodeInSpace = id => this._nodesById[id]
+  nodeWithId: string => ?NodeInSpace = id => this._nodesById[id];
 
   nodeWithIdF: string => NodeInSpace = id => {
     const n = this.nodeWithId(id);
@@ -118,6 +118,10 @@ export default class Graph {
 
   static empty(): GraphSerialization {
     return { name: 'untitled', edges: [], nodes: [] };
+  }
+
+  static serialization(frm: any): ?GraphSerialization {
+    return typeof frm === 'object' && frm.edges && frm.nodes ? frm : null;
   }
 
   static fromFile(file: File, handler: GraphSerialization => void) {

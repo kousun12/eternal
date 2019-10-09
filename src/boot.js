@@ -6,3 +6,4 @@ import 'models/types';
 import 'models/nodes';
 
 window.Tone = Tone;
+window['$debug'] = true;
