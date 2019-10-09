@@ -11,7 +11,6 @@ type P = {
   start: Pos,
   end: Pos,
   onClick?: (SyntheticMouseEvent<>) => void,
-  onClickOutside?: (SyntheticMouseEvent<>) => void,
   onRemove?: (SyntheticMouseEvent<>) => void,
   edge: ?Edge,
   highlighted?: boolean,
@@ -67,15 +66,11 @@ class Spline extends React.Component<P, S> {
   };
 
   // noinspection JSUnusedGlobalSymbols
-  handleClickOutside = e => {
-    let { selected } = this.state;
-    if (!selected) {
+  handleClickOutside = event => {
+    if (!this.state.selected || event.metaKey || event.shiftKey) {
       return;
     }
     this.setState({ selected: false });
-    if (this.props.onClickOutside) {
-      this.props.onClickOutside(e);
-    }
   };
 
   handleRemove = e => {

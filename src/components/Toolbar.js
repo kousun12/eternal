@@ -1,8 +1,10 @@
 // @flow
 
 import React from 'react';
+import { createSelector } from 'redux-starter-kit';
 import { AnchorButton, Tooltip } from '@blueprintjs/core';
 import { connect } from 'react-redux';
+import { selectInfoOpen } from 'redux/ducks/graph';
 
 type P = {
   loadExample: () => any,
@@ -91,7 +93,12 @@ const Toolbar = ({
   );
 };
 
-export default connect(s => ({ infoShowing: Boolean(s.graph.infoOpen) }))(Toolbar);
+const selector = createSelector(
+  [selectInfoOpen],
+  i => ({ infoShowing: Boolean(i) })
+);
+
+export default connect(selector)(Toolbar);
 
 const _showHotKeys = () => {
   document.dispatchEvent(

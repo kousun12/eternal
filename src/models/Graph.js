@@ -1,11 +1,12 @@
 //@flow
-import { get, flatten, uniqBy, fromPairs } from 'lodash';
+import { get, flatten, uniqBy, fromPairs, mapValues } from 'lodash';
 import Edge from 'models/Edge';
 import NodeBase from 'models/NodeBase';
 import type { NodeInSpace, Pos } from 'types';
 import type { AnyNode, NodeSerialization } from 'models/NodeBase';
 import type { EdgeSerialization } from 'models/Edge';
 import { uuid } from 'helpers';
+import type { PosMemo } from 'redux/ducks/graph';
 
 export type GraphSerialization = {
   name?: string,
@@ -53,6 +54,19 @@ export default class Graph {
     this._nodesById = fromPairs(nodes.map(n => [n.node.id, n]));
     return this;
   };
+
+  updatePositions = (pos: PosMemo) => {
+    this.nodes.forEach(nis => {
+      const p = pos[nis.node.id];
+      if (p) {
+        nis.pos = p;
+      }
+    });
+  };
+
+  nodeIds = (): string[] => Object.keys(this._nodesById);
+
+  nodePositions = (): PosMemo => mapValues(this._nodesById, 'pos');
 
   removeNode: AnyNode => Graph = node => {
     node.inputs.forEach(this.removeEdge);

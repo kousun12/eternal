@@ -1,23 +1,22 @@
 // @flow
 
 import React from 'react';
+import { get } from 'lodash';
+import { connect } from 'react-redux';
+import { createSelector } from 'redux-starter-kit';
 import onClickOutside from 'react-onclickoutside';
-
 import Draggable, { type DraggableEventHandler, type DraggableData } from 'react-draggable';
-
 import NodeInputList from './NodeInputList';
 import NodeOutputList from './NodeOutputList';
 import type { AnyNode } from 'models/NodeBase';
 import type { NodeInSpace, Pos } from 'types';
 import { Hotkey, Hotkeys, HotkeysTarget } from '@blueprintjs/core';
-import { get } from 'lodash';
-import { connect } from 'react-redux';
+import { selectPositions, selectInfoOpen } from 'redux/ducks/graph';
 
-type P = {
+type SP = {| pos: Pos, infoShowing: boolean |};
+type OP = {|
   index: number,
   nis: NodeInSpace,
-  pos: Pos,
-  infoShowing: boolean,
   onNodeStart: (NodeInSpace, DraggableData) => void,
   onNodeStop: (NodeInSpace, DraggableData) => void,
   onNodeMove: (NodeInSpace, DraggableData) => void,
@@ -30,13 +29,12 @@ type P = {
   selected: boolean,
   scale?: ?number,
   positionOffset?: Pos | typeof undefined,
-};
+|};
+type P = {| ...SP, ...OP |};
 const MoveBufferPx = 4;
 
 class Node extends React.Component<P> {
   dragStart: ?Pos;
-  dragging: boolean = false;
-  dragData: ?DraggableData = null;
 
   _onDelete = () => {
     this.props.onDelete && this.props.onDelete(this.props.nis.node);
@@ -45,14 +43,10 @@ class Node extends React.Component<P> {
   handleDragStart = (event, data: DraggableData) => {
     this.dragStart = { x: event.clientX, y: event.clientY };
     this.props.onNodeStart(this.props.nis, data);
-    this.dragging = true;
   };
 
   handleDragStop: DraggableEventHandler = (event, data: DraggableData) => {
     this.props.onNodeStop(this.props.nis, data);
-    this.props.nis.pos = { x: data.x, y: data.y };
-    this.dragging = false;
-    this.dragData = null;
     setTimeout(() => {
       this.dragStart = null;
     });
@@ -60,8 +54,6 @@ class Node extends React.Component<P> {
 
   handleDrag = (event, data: DraggableData) => {
     this.props.onNodeMove(this.props.nis, data);
-    this.props.nis.pos = { x: data.x, y: data.y };
-    this.dragData = data;
   };
 
   onStartConnector = index => {
@@ -130,8 +122,7 @@ class Node extends React.Component<P> {
     const name = node.name();
     return (
       <Draggable
-        defaultPosition={pos}
-        position={this.dragging ? undefined : pos}
+        position={pos}
         handle=".node"
         onStart={this.handleDragStart}
         onStop={this.handleDragStop}
@@ -182,6 +173,20 @@ class Node extends React.Component<P> {
   }
 }
 
-export default connect((s, op) => ({
-  infoShowing: Boolean(s.graph.infoOpen === get(op, 'nis.node.id')),
-}))(onClickOutside(HotkeysTarget(Node)));
+const getInfoShowing = (s, op) => Boolean(s.graph.infoOpen === op.nis.node.id);
+const getPos = (s, op) => s.graph.nodePos[op.nis.node.id];
+
+const makeSelectCreator = () => {
+  return createSelector(
+    [getPos, getInfoShowing],
+    (pos, infoShowing) => ({ pos, infoShowing })
+  );
+};
+
+const makeSelect = () => {
+  const selector = makeSelectCreator();
+  const select = (s, op) => selector(s, op);
+  return select;
+};
+
+export default connect(makeSelect)(onClickOutside(HotkeysTarget(Node)));

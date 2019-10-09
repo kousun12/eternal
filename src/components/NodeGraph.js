@@ -4,7 +4,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { createSelector } from 'redux-starter-kit';
 import { DraggableCore } from 'react-draggable';
-import { get, uniq, throttle, omit, fromPairs } from 'lodash';
+import { get, uniq, throttle, omit, fromPairs, mapValues } from 'lodash';
 import Node from './Node';
 import Graph from 'models/Graph';
 import Edge from 'models/Edge';
@@ -19,12 +19,13 @@ import {
   zoomOut as _zOut,
   zoomReset as _zReset,
   setPan as _setPan,
+  updatePos as _updatePos,
 } from 'redux/ducks/graph';
 
 import type { NodeInSpace, Pos } from 'types';
 import type { AnyNode } from 'models/NodeBase';
 import AllEdges from 'components/AllEdges';
-import type { SelectedView } from 'redux/ducks/graph';
+import type { PosMemo, SelectedView } from 'redux/ducks/graph';
 import { addVec, scaleVec, subVec, unitVec } from 'utils/vector';
 import type { Direction } from 'utils/vector';
 
@@ -44,31 +45,28 @@ type DP = {|
   zoomOut: () => void,
   zoomReset: () => void,
   setPan: Pos => void,
+  updatePos: PosMemo => void,
 |};
 
 type P = {| ...SP, ...OP, ...DP |};
 type S = {|
-  nodes: NodeInSpace[],
   source: ?[string, number],
   dragging: boolean,
   mousePos: ?Pos,
 |};
 
-type DragDirective = {| nis: NodeInSpace, offset: Pos |};
-
 class NodeGraph extends React.Component<P, S> {
-  dragDirectives: { [string]: DragDirective } = {};
+  dragOffsets: PosMemo = {};
   moving: boolean = false;
   timeoutId: ?TimeoutID = null;
   deltaY: number = 0;
-  constructor(props: P) {
-    super(props);
-    this.state = { nodes: props.graph.nodes, source: null, mousePos: null, dragging: false };
-  }
+  state = { source: null, mousePos: null, dragging: false };
 
   componentDidMount() {
     document.addEventListener('mousemove', this.onMouseMove);
     document.addEventListener('mouseup', this.onMouseUp);
+    const { graph } = this.props;
+    graph && this._setPosFromGraph();
   }
 
   componentWillUnmount() {
@@ -80,9 +78,7 @@ class NodeGraph extends React.Component<P, S> {
 
   componentDidUpdate(prevProps) {
     const { graph } = this.props;
-    if (graph && graph !== prevProps.graph) {
-      this.setState({ nodes: graph.nodes });
-    }
+    graph && graph !== prevProps.graph && this._setPosFromGraph();
   }
 
   onScroll = (e: WheelEvent) => {
@@ -121,43 +117,32 @@ class NodeGraph extends React.Component<P, S> {
   }, 20);
 
   _getSelected = (): NodeInSpace[] => {
-    const { selected } = this.props;
-    return this.state.nodes.filter(nis => selected[nis.node.id]);
+    const { selected, graph } = this.props;
+    return graph.nodes.filter(nis => selected[nis.node.id]);
   };
 
-  onNodeStartMove = (started: NodeInSpace, data: DraggableData) => {
-    this.dragDirectives = fromPairs(
-      this._getSelected().map(nis => [
-        nis.node.id,
-        {
-          nis,
-          offset: { x: started.pos.x - nis.pos.x, y: started.pos.y - nis.pos.y },
-        },
-      ])
+  onNodeStartMove = (started: NodeInSpace) => {
+    this.dragOffsets = fromPairs(
+      this._getSelected()
+        .map(nis => [nis.node.id, subVec(started.pos, nis.pos)])
+        .concat([[started.node.id, { x: 0, y: 0 }]])
     );
     this.moving = true;
   };
 
   onNodeStopMove = (node: NodeInSpace, data: DraggableData) => {
     this.onNodeMove(node, data);
-    const nodes = this.state.nodes.map(n => get(this.dragDirectives, [n.node.id, 'nis'], n));
-    this.props.graph.setNodes(nodes);
-    this.dragDirectives = {};
+    const { graph } = this.props;
+    const updates = mapValues(this.dragOffsets, offset => subVec(data, offset));
+    graph.updatePositions(updates);
+    this._setPosFromGraph();
+    this.dragOffsets = {};
     this.moving = false;
   };
 
   onNodeMove = (node: NodeInSpace, data: DraggableData) => {
-    // $FlowIgnore
-    const vals: DragDirective[] = Object.values(this.dragDirectives);
-    if (vals.length > 1) {
-      vals.forEach(d => {
-        if (this.props.selected[d.nis.node.id]) {
-          d.nis.pos = subVec(data, d.offset);
-        }
-      });
-    }
-    const nodes = this.state.nodes.map(n => get(this.dragDirectives, [n.node.id, 'nis'], n));
-    this.setState({ nodes });
+    const updates = mapValues(this.dragOffsets, offset => subVec(data, offset));
+    this.props.updatePos(updates);
   };
 
   onStartConnector = (id: string, outputIndex: number) => {
@@ -218,8 +203,12 @@ class NodeGraph extends React.Component<P, S> {
 
   onDeleteNode = (n: AnyNode) => {
     this.props.graph.removeNode(n);
-    this.setState({ nodes: this.props.graph.nodes });
+    this._setPosFromGraph();
     this._onNodeChange(null);
+  };
+
+  _setPosFromGraph = () => {
+    this.props.updatePos(this.props.graph.nodePositions());
   };
 
   _onNodeChange = (n: ?AnyNode, idx?: number) => {
@@ -236,18 +225,17 @@ class NodeGraph extends React.Component<P, S> {
   };
 
   render() {
-    const { nodes, dragging, source, mousePos } = this.state;
+    const { dragging, source, mousePos } = this.state;
     const { visible, selected, scale, pan, graph } = this.props;
     return (
       <DraggableCore onDrag={this._onCanvasDrag} scale={scale}>
         <div id="graph-root" className={dragging ? 'dragging' : ''} onWheel={this.onScroll}>
           <div className="graph-scalable" style={this._rootStyle()}>
-            {nodes.map((nis, i) => {
+            {graph.nodes.map((nis, i) => {
               return (
                 <Node
                   selected={selected[nis.node.id]}
                   visible={visible}
-                  pos={nis.pos}
                   index={i}
                   nis={nis}
                   key={`node-${nis.node.id}`}
@@ -266,7 +254,6 @@ class NodeGraph extends React.Component<P, S> {
             })}
             <AllEdges
               edges={get(graph, 'edges', [])}
-              nodes={nodes}
               mousePos={mousePos}
               dragging={dragging}
               source={source}
@@ -274,6 +261,7 @@ class NodeGraph extends React.Component<P, S> {
               selected={selected}
               onRemoveConnector={this.handleRemoveConnector}
               pan={pan}
+              graph={graph}
             />
           </div>
         </div>
@@ -290,7 +278,7 @@ class NodeGraph extends React.Component<P, S> {
     this.props.selSet(selected);
   };
 
-  _selectAll = () => this.props.selSet(this.state.nodes.map(nis => nis.node.id));
+  _selectAll = () => this.props.selSet(this.props.graph.nodeIds());
 
   _pan = (dir: Direction) => {
     const { setPan, pan, scale } = this.props;
@@ -341,6 +329,7 @@ const dispatch = d => ({
   zoomOut: () => d(_zOut()),
   zoomReset: () => d(_zReset()),
   setPan: (pos: Pos) => d(_setPan(pos)),
+  updatePos: (pos: PosMemo) => d(_updatePos(pos)),
 });
 
 export default connect(

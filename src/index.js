@@ -5,7 +5,6 @@ import { Provider } from 'react-redux';
 import store from './redux/rootStore';
 
 import * as serviceWorker from './serviceWorker';
-
 serviceWorker.unregister();
 
 const render = () => {

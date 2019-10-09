@@ -1,26 +1,29 @@
 // @flow
 
-import { combineReducers, createSlice, type PayloadAction as PA } from 'redux-starter-kit';
+import {
+  combineReducers,
+  createSlice,
+  type PayloadAction as PA,
+  createSelector,
+} from 'redux-starter-kit';
 import { fromPairs } from 'lodash';
 import type { State } from 'redux/types';
 import { range } from 'utils/array';
 import type { Pos } from 'types';
 
 type ViewState = {| zoom: number, pan: Pos |};
+export type PosMemo = { [string]: Pos };
 export type GraphState = {|
   selected: string[],
   infoOpen: ?string,
   view: ViewState,
+  nodePos: PosMemo,
 |};
 
 const selectedSlice = createSlice({
   slice: 'selected',
   initialState: [],
-  reducers: {
-    selAppend: (selected: string[], a: PA<string[]>) => selected.concat(a.payload),
-    selRemove: (selected: string[], a: PA<string>) => selected.filter(n => n !== a.payload),
-    selSet: (selected: string[], a: PA<string[]>) => a.payload,
-  },
+  reducers: { selSet: (selected: string[], a: PA<string[]>) => a.payload },
 });
 
 const infoOpenSlice = createSlice({
@@ -55,6 +58,12 @@ const viewSlice = createSlice({
   },
 });
 
+const nodePosSlice = createSlice({
+  slice: 'nodePos',
+  initialState: {},
+  reducers: { updatePos: (memo: PosMemo, a: PA<PosMemo>) => ({ ...memo, ...a.payload }) },
+});
+
 export const selectedS = (s: State) => ({
   selected: fromPairs(s.graph.selected.map(id => [id, true])),
   selectCount: s.graph.selected.length,
@@ -66,14 +75,22 @@ export const selectView = (s: State): SelectedView => ({
   scale: zooms[s.graph.view.zoom] / 100,
 });
 
-export const showNode = (s: State) => ({ showNode: s.graph.infoOpen });
+export const selectInfoOpen = (s: State) => s.graph.infoOpen;
+export const selectPositions = (s: State) => s.graph.nodePos;
 
-export const { selAppend, selRemove, selSet } = selectedSlice.actions;
+export const showNode = createSelector(
+  [selectInfoOpen],
+  showNode => ({ showNode })
+);
+
+export const { selSet } = selectedSlice.actions;
 export const { setInfoOpen } = infoOpenSlice.actions;
 export const { zoomIn, zoomOut, zoomReset, setPan, setScale } = viewSlice.actions;
+export const { updatePos } = nodePosSlice.actions;
 
 export default combineReducers({
   selected: selectedSlice.reducer,
   infoOpen: infoOpenSlice.reducer,
   view: viewSlice.reducer,
+  nodePos: nodePosSlice.reducer,
 });
