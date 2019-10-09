@@ -240,7 +240,7 @@ class NodeGraph extends React.Component<P, S> {
         onStart={this._onCanvasStart}
         onStop={this._onCanvasStop}
       >
-        <div className={(dragging ? 'dragging' : '') + ' graph-root'} onWheel={this.onScroll}>
+        <div id='graph-root' className={(dragging ? 'dragging' : '')} onWheel={this.onScroll}>
           <div className="graph-scalable" style={this._rootStyle()}>
             {nodes.map((nis, i) => {
               return (

@@ -29,7 +29,7 @@ const infoOpenSlice = createSlice({
   reducers: { setInfoOpen: (infoOpen: ?string, a: PA<?string>) => a.payload },
 });
 
-export const zooms = range([10, 200], 10, 0);
+export const zooms = range([5, 205], 5, 0);
 const defView = { pan: { x: 0, y: 0 }, zoom: zooms.indexOf(100) };
 
 // NB using immer to update state, which looks like mutation but is actually not

@@ -14,7 +14,7 @@ const Zoomer = ({ zoom, setScale }: P) => {
         min={0}
         max={zooms.length - 1}
         stepSize={1}
-        labelStepSize={5}
+        labelStepSize={10}
         onChange={setScale}
         value={zoom}
         labelRenderer={v => `${zooms[v] / 100}x`}
