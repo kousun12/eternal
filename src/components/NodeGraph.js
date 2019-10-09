@@ -78,9 +78,10 @@ class NodeGraph extends React.Component<P, S> {
     this.timeoutId && clearTimeout(this.timeoutId);
   }
 
-  componentWillReceiveProps(nextProps: $ReadOnly<P>) {
-    if (this.props.graph !== nextProps.graph) {
-      this.setState({ nodes: nextProps.graph.nodes });
+  componentDidUpdate(prevProps) {
+    const { graph } = this.props;
+    if (graph && graph !== prevProps.graph) {
+      this.setState({ nodes: graph.nodes });
     }
   }
 
