@@ -11,7 +11,7 @@ import NodeOutputList from './NodeOutputList';
 import type { AnyNode } from 'models/NodeBase';
 import type { NodeInSpace, Pos } from 'types';
 import { Hotkey, Hotkeys, HotkeysTarget } from '@blueprintjs/core';
-import { selectPositions, selectInfoOpen } from 'redux/ducks/graph';
+import { subVec } from 'utils/vector';
 
 type SP = {| pos: Pos, infoShowing: boolean |};
 type OP = {|
@@ -111,8 +111,8 @@ class Node extends React.Component<P> {
   };
 
   render() {
-    const { selected, infoShowing, visible, pos, scale, positionOffset } = this.props;
-    const { node } = this.props.nis;
+    const { selected, infoShowing, visible, pos, scale, positionOffset, nis } = this.props;
+    const { node } = nis;
     const sel = infoShowing ? 'in-view' : selected ? 'selected' : '';
     let nodeClass = 'node' + (sel ? ` ${sel} ignore-react-onclickoutside` : '');
     if (!visible) {
@@ -122,7 +122,7 @@ class Node extends React.Component<P> {
     const name = node.name();
     return (
       <Draggable
-        position={pos}
+        position={pos || nis.pos}
         handle=".node"
         onStart={this.handleDragStart}
         onStop={this.handleDragStop}
@@ -176,6 +176,21 @@ class Node extends React.Component<P> {
 const getInfoShowing = (s, op) => Boolean(s.graph.infoOpen === op.nis.node.id);
 const getPos = (s, op) => s.graph.nodePos[op.nis.node.id];
 
+const offset = (s, op) => {
+  return (
+    s.graph.dragging.start &&
+    subVec(s.graph.dragging.start, op.nis.pos)
+  );
+};
+
+const data = s => s.graph.dragging.data;
+const _makeSelectCreator = () => {
+  return createSelector(
+    [offset, data, getInfoShowing],
+    (off, data, infoShowing) => ({ pos: (data && off && subVec(data, off)), infoShowing })
+  );
+};
+
 const makeSelectCreator = () => {
   return createSelector(
     [getPos, getInfoShowing],
@@ -189,4 +204,10 @@ const makeSelect = () => {
   return select;
 };
 
-export default connect(makeSelect)(onClickOutside(HotkeysTarget(Node)));
+const _makeSelect = () => {
+  const selector = _makeSelectCreator();
+  const select = (s, op) => selector(s, op);
+  return select;
+};
+
+export default connect(_makeSelect)(onClickOutside(HotkeysTarget(Node)));

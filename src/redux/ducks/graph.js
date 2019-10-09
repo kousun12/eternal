@@ -18,6 +18,7 @@ export type GraphState = {|
   infoOpen: ?string,
   view: ViewState,
   nodePos: PosMemo,
+  dragging: { start: ?Pos, data: ?Pos },
 |};
 
 const selectedSlice = createSlice({
@@ -64,6 +65,19 @@ const nodePosSlice = createSlice({
   reducers: { updatePos: (memo: PosMemo, a: PA<PosMemo>) => ({ ...memo, ...a.payload }) },
 });
 
+const draggingSlice = createSlice({
+  slice: 'dragging',
+  initialState: { start: null, data: null },
+  reducers: {
+    setStart: (dragging, a: PA<Pos>) => {
+      dragging.start = a.payload;
+    },
+    setData: (dragging, a: PA<Pos>) => {
+      dragging.data = a.payload;
+    },
+  },
+});
+
 export const selectedS = (s: State) => ({
   selected: fromPairs(s.graph.selected.map(id => [id, true])),
   selectCount: s.graph.selected.length,
@@ -78,6 +92,8 @@ export const selectView = (s: State): SelectedView => ({
 export const selectInfoOpen = (s: State) => s.graph.infoOpen;
 export const selectPositions = (s: State) => s.graph.nodePos;
 
+export const selPos = (s: State) => s.graph.dragging;
+
 export const showNode = createSelector(
   [selectInfoOpen],
   showNode => ({ showNode })
@@ -87,10 +103,12 @@ export const { selSet } = selectedSlice.actions;
 export const { setInfoOpen } = infoOpenSlice.actions;
 export const { zoomIn, zoomOut, zoomReset, setPan, setScale } = viewSlice.actions;
 export const { updatePos } = nodePosSlice.actions;
+export const { setStart, setData } = draggingSlice.actions;
 
 export default combineReducers({
   selected: selectedSlice.reducer,
   infoOpen: infoOpenSlice.reducer,
   view: viewSlice.reducer,
   nodePos: nodePosSlice.reducer,
+  dragging: draggingSlice.reducer,
 });

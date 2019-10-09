@@ -20,6 +20,8 @@ import {
   zoomReset as _zReset,
   setPan as _setPan,
   updatePos as _updatePos,
+  setData as _setData,
+  setStart as _setStart,
 } from 'redux/ducks/graph';
 
 import type { NodeInSpace, Pos } from 'types';
@@ -46,6 +48,8 @@ type DP = {|
   zoomReset: () => void,
   setPan: Pos => void,
   updatePos: PosMemo => void,
+  setDData: (?Pos) => void,
+  setDStart: (?Pos) => void,
 |};
 
 type P = {| ...SP, ...OP, ...DP |};
@@ -122,27 +126,31 @@ class NodeGraph extends React.Component<P, S> {
   };
 
   onNodeStartMove = (started: NodeInSpace) => {
-    this.dragOffsets = fromPairs(
-      this._getSelected()
-        .map(nis => [nis.node.id, subVec(started.pos, nis.pos)])
-        .concat([[started.node.id, { x: 0, y: 0 }]])
-    );
+    this.props.setDStart(started.pos);
+    // this.dragOffsets = fromPairs(
+    //   this._getSelected()
+    //     .map(nis => [nis.node.id, subVec(started.pos, nis.pos)])
+    //     .concat([[started.node.id, { x: 0, y: 0 }]])
+    // );
     this.moving = true;
   };
 
   onNodeStopMove = (node: NodeInSpace, data: DraggableData) => {
     this.onNodeMove(node, data);
     const { graph } = this.props;
-    const updates = mapValues(this.dragOffsets, offset => subVec(data, offset));
-    graph.updatePositions(updates);
-    this._setPosFromGraph();
+    // const updates = mapValues(this.dragOffsets, offset => subVec(data, offset));
+    // graph.updatePositions(updates);
+    // this._setPosFromGraph();
+    this.props.setDStart(null);
+    this.props.setDData(null);
     this.dragOffsets = {};
     this.moving = false;
   };
 
   onNodeMove = (node: NodeInSpace, data: DraggableData) => {
-    const updates = mapValues(this.dragOffsets, offset => subVec(data, offset));
-    this.props.updatePos(updates);
+    this.props.setDData({ x: data.x, y: data.y });
+    // const updates = mapValues(this.dragOffsets, offset => subVec(data, offset));
+    // this.props.updatePos(updates);
   };
 
   onStartConnector = (id: string, outputIndex: number) => {
@@ -330,6 +338,8 @@ const dispatch = d => ({
   zoomReset: () => d(_zReset()),
   setPan: (pos: Pos) => d(_setPan(pos)),
   updatePos: (pos: PosMemo) => d(_updatePos(pos)),
+  setDStart: (pos: ?Pos) => d(_setStart(pos)),
+  setDData: (pos: ?Pos) => d(_setData(pos)),
 });
 
 export default connect(
