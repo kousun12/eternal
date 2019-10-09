@@ -16,7 +16,7 @@ export default class NodeInputListItem extends Component<P, S> {
     this.state = { hover: false };
   }
 
-  onMouseUp = (e: SyntheticEvent<*>) => {
+  onMouseUp = (e: MouseEvent) => {
     e.stopPropagation();
     e.preventDefault();
     this.props.onMouseUp(this.props.index);
@@ -30,7 +30,7 @@ export default class NodeInputListItem extends Component<P, S> {
     this.setState({ hover: false });
   };
 
-  noop(e: SyntheticEvent<*>) {
+  noop = (e: MouseEvent) => {
     e.stopPropagation();
     e.preventDefault();
   }

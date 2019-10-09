@@ -1,34 +1,44 @@
 // @flow
 import React from 'react';
+import type { DraggableData } from 'react-draggable';
+import { DraggableCore } from 'react-draggable';
+import type { Pos } from 'types';
 
 type P = {
   index: number,
-  onMouseDown: number => void,
+  onMouseDown: (number, MouseEvent, DraggableData) => void,
   item: string,
   filled: boolean,
+  scale: number,
+  positionOffset: Pos | typeof undefined,
 };
 
 export default class NodeOutputListItem extends React.Component<P> {
-  onMouseDown(e: SyntheticEvent<*>) {
+  onMouseDown = (e: MouseEvent, data: DraggableData) => {
     e.stopPropagation();
     e.preventDefault();
-    this.props.onMouseDown(this.props.index);
-  }
+    this.props.onMouseDown(this.props.index, e, data);
+  };
 
-  noop(e: SyntheticEvent<*>) {
+  noop = (e: MouseEvent) => {
     e.stopPropagation();
     e.preventDefault();
-  }
+  };
 
   render() {
-    const { filled, item } = this.props;
+    const { filled, item, scale, positionOffset } = this.props;
     const modifier = filled ? '' : ' unconnected';
     return (
-      <li onMouseDown={e => this.onMouseDown(e)}>
-        <span onClick={e => this.noop(e)}>
-          {item} <i className={`fa fa-circle${modifier}`} />
-        </span>
-      </li>
+      <DraggableCore
+        onStart={this.onMouseDown}
+        offsetParent={document.getElementById('graph-scalable')}
+      >
+        <li>
+          <span onClick={e => this.noop(e)}>
+            {item} <i className={`fa fa-circle${modifier}`} />
+          </span>
+        </li>
+      </DraggableCore>
     );
   }
 }

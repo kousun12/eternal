@@ -8,12 +8,11 @@ import Spline from 'components/Spline';
 import { selectInfoOpen, selectPositions } from 'redux/ducks/graph';
 import type { Pos } from 'types';
 import type Edge from 'models/Edge';
-import { addVec } from 'utils/vector';
+import { addVec, scaleVec, subVec } from 'utils/vector';
 import type { PosMemo } from 'redux/ducks/graph';
 import type Graph from 'models/Graph';
 
 type P = {
-  mousePos: ?Pos,
   dragging: boolean,
   source: ?[string, number],
   visible: boolean,
@@ -24,10 +23,10 @@ type P = {
   pan: Pos,
   positions: PosMemo,
   graph: Graph,
+  scaleInverse: number,
 };
 const AllEdges = ({
   positions,
-  mousePos,
   dragging,
   source,
   visible,
@@ -37,30 +36,38 @@ const AllEdges = ({
   edges,
   pan,
   graph,
+  scaleInverse,
 }: P) => {
   if (!visible) {
     return null;
   }
   let activeSpline = null;
-  const nodeIds = paneId ? { ...selected, [paneId]: true } : selected;
-  // const byId = fromPairs(nodes.map(n => [n.node.id, n])); // TODO memoize up a level
+  const mousePos = null;
   if (dragging && source) {
     const [nodeId, outIdx] = source;
-    let src = positions[nodeId];
-    activeSpline = <Spline start={outOffset(src.x, src.y, outIdx)} end={mousePos} />;
+    let src = positions[nodeId] || graph.nodeWithIdF(nodeId).pos;
+    const start = addVec(outOffset(src.x, src.y, outIdx), pan);
+    const end = mousePos;
+    activeSpline = <Spline start={start} end={end} />;
   }
   return (
     <SVGComponent height="100%" width="100%">
       {edges.map(e => {
-        const _out = graph.nodeWithIdF(e.from.id);
-        const outIdx = _out.node.outKeys().indexOf(e.fromPort);
-        const _in = graph.nodeWithIdF(e.to.id);
-        const inIdx = _in.node.inKeys().indexOf(e.toPort);
-        const frm = positions[e.from.id] || _out.pos;
-        const to = positions[e.to.id] || _in.pos;
+        const [fromId, toId] = [e.from.id, e.to.id];
+        const [i, o] = [graph.nodeWithIdF(toId), graph.nodeWithIdF(fromId)];
+
+        const outIdx = o.node.constructor.outKeyIndex(e.fromPort);
+        const inIdx = i.node.constructor.inKeyIndex(e.toPort);
+
+        const frm = positions[e.from.id] || o.pos;
+        const to = positions[e.to.id] || i.pos;
         return (
           <Spline
-            highlighted={nodeIds[e.from.id] || nodeIds[e.to.id]}
+            highlighted={
+              selected[fromId] ||
+              selected[toId] ||
+              (paneId && (fromId === paneId || toId === paneId))
+            }
             edge={e}
             start={addVec(outOffset(frm.x, frm.y, outIdx), pan)}
             end={addVec(inOffset(to.x, to.y, inIdx), pan)}

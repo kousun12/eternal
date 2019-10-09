@@ -9,7 +9,7 @@ import Node from './Node';
 import Graph from 'models/Graph';
 import Edge from 'models/Edge';
 
-import { DraggableData } from 'react-draggable';
+import type { DraggableData } from 'react-draggable';
 import { Hotkey, Hotkeys, HotkeysTarget } from '@blueprintjs/core';
 import {
   selectedS,
@@ -52,7 +52,6 @@ type P = {| ...SP, ...OP, ...DP |};
 type S = {|
   source: ?[string, number],
   dragging: boolean,
-  mousePos: ?Pos,
 |};
 
 class NodeGraph extends React.Component<P, S> {
@@ -60,7 +59,7 @@ class NodeGraph extends React.Component<P, S> {
   moving: boolean = false;
   timeoutId: ?TimeoutID = null;
   deltaY: number = 0;
-  state = { source: null, mousePos: null, dragging: false };
+  state = { source: null, dragging: false };
 
   componentDidMount() {
     document.addEventListener('mousemove', this.onMouseMove);
@@ -101,9 +100,9 @@ class NodeGraph extends React.Component<P, S> {
     if (this.moving) {
       return;
     }
-    const { dragging, mousePos } = this.state;
+    const { dragging } = this.state;
     const { selectCount } = this.props;
-    const set = !mousePos || dragging || selectCount > 0;
+    const set = dragging || selectCount > 0;
     if (!set) {
       return;
     }
@@ -113,7 +112,6 @@ class NodeGraph extends React.Component<P, S> {
   _debouncedSetMouse = throttle((e: MouseEvent) => {
     e.stopPropagation();
     e.preventDefault();
-    this.setState({ mousePos: { x: e.clientX, y: e.clientY } });
   }, 20);
 
   _getSelected = (): NodeInSpace[] => {
@@ -145,11 +143,8 @@ class NodeGraph extends React.Component<P, S> {
     this.props.updatePos(updates);
   };
 
-  onStartConnector = (id: string, outputIndex: number) => {
-    const mousePos = get(window, 'event.clientX')
-      ? { x: window.event.clientX, y: window.event.clientY }
-      : this.state.mousePos;
-    this.setState({ mousePos, dragging: true, source: [id, outputIndex] });
+  onStartConnector = (id: string, outputIndex: number, e: MouseEvent, d: DraggableData) => {
+    this.setState({ dragging: true, source: [id, outputIndex] });
   };
 
   onCompleteConnector = (id: string, inIndex: number) => {
@@ -219,14 +214,14 @@ class NodeGraph extends React.Component<P, S> {
 
   _onCanvasDrag = (e: Event, data: DraggableData) => {
     if (!this.moving) {
-      const { setPan, pan, scale } = this.props;
-      setPan(addVec(pan, scaleVec({ x: data.deltaX, y: data.deltaY }, 1 / scale)));
+      const { setPan, pan, scaleInverse } = this.props;
+      setPan(addVec(pan, scaleVec({ x: data.deltaX, y: data.deltaY }, scaleInverse)));
     }
   };
 
   render() {
-    const { dragging, source, mousePos } = this.state;
-    const { visible, selected, scale, pan, graph } = this.props;
+    const { dragging, source } = this.state;
+    const { visible, selected, scale, pan, graph, scaleInverse } = this.props;
     return (
       <DraggableCore onDrag={this._onCanvasDrag} scale={scale}>
         <div id="graph-root" className={dragging ? 'dragging' : ''} onWheel={this.onScroll}>
@@ -254,13 +249,13 @@ class NodeGraph extends React.Component<P, S> {
             })}
             <AllEdges
               edges={get(graph, 'edges', [])}
-              mousePos={mousePos}
               dragging={dragging}
               source={source}
               visible={visible}
               selected={selected}
               onRemoveConnector={this.handleRemoveConnector}
               pan={pan}
+              scaleInverse={scaleInverse}
               graph={graph}
             />
           </div>
@@ -281,8 +276,8 @@ class NodeGraph extends React.Component<P, S> {
   _selectAll = () => this.props.selSet(this.props.graph.nodeIds());
 
   _pan = (dir: Direction) => {
-    const { setPan, pan, scale } = this.props;
-    const move = scaleVec(unitVec(dir), (1 / scale) * 30);
+    const { setPan, pan, scaleInverse } = this.props;
+    const move = scaleVec(unitVec(dir), scaleInverse * 30);
     setPan(addVec(pan, move));
   };
 

@@ -10,8 +10,7 @@ import { Hotkey, Hotkeys, HotkeysTarget } from '@blueprintjs/core';
 type P = {
   start: Pos,
   end: Pos,
-  onClick?: (SyntheticMouseEvent<>) => void,
-  onRemove?: (SyntheticMouseEvent<>) => void,
+  onRemove?: () => void,
   edge: ?Edge,
   highlighted?: boolean,
 };
@@ -20,10 +19,7 @@ type S = { selected: boolean, position: Pos };
 
 class Spline extends React.Component<P, S> {
   el: ?Element;
-  state = {
-    selected: false,
-    position: { x: 0, y: 0 },
-  };
+  state = { selected: false, position: { x: 0, y: 0 } };
   listeningOnEdge: string;
 
   handleClick = e => {
@@ -31,10 +27,6 @@ class Spline extends React.Component<P, S> {
       selected: !this.state.selected,
       position: { x: e.clientX, y: e.clientY },
     });
-
-    if (this.props.onClick) {
-      this.props.onClick(e);
-    }
   };
 
   componentDidMount() {
@@ -73,11 +65,9 @@ class Spline extends React.Component<P, S> {
     this.setState({ selected: false });
   };
 
-  handleRemove = e => {
+  handleRemove = () => {
     this.setState({ selected: false });
-    if (this.props.onRemove) {
-      this.props.onRemove(e);
-    }
+    this.props.onRemove && this.props.onRemove();
   };
 
   render() {

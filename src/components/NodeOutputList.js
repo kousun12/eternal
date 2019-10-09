@@ -2,20 +2,21 @@
 import React from 'react';
 
 import NodeOutputListItem from './NodeOutputListItem';
+import type { Pos } from 'types';
+import { DraggableData } from 'react-draggable';
 
 type P = {
-  onStartConnector: number => void,
+  onStartConnector: (number, MouseEvent, DraggableData) => void,
   items: string[],
   connected: string[],
   display: string[],
+  scale: number,
+  positionOffset: Pos | typeof undefined,
 };
-export default class NodeOutputList extends React.Component<P> {
-  onMouseDown = (i: number) => {
-    this.props.onStartConnector(i);
-  };
 
+export default class NodeOutputList extends React.Component<P> {
   render() {
-    const { items, connected, display } = this.props;
+    const { items, connected, display, scale, positionOffset, onStartConnector } = this.props;
     return (
       <div className="nodeOutputWrapper">
         <ul className="nodeOutputList">
@@ -23,10 +24,12 @@ export default class NodeOutputList extends React.Component<P> {
             return (
               <NodeOutputListItem
                 filled={connected.includes(item)}
-                onMouseDown={this.onMouseDown}
+                onMouseDown={onStartConnector}
                 key={`item-${i}`}
                 index={i}
                 item={display[i]}
+                scale={scale}
+                positionOffset={positionOffset}
               />
             );
           })}

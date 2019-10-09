@@ -370,20 +370,62 @@ export default class NodeBase<Val: Object, In: ?Object, Out: ?Object> {
     return NodeBase.load(serial);
   }
 
+  static +_inKeys: string[];
   static inKeys(): string[] {
-    return Object.keys(this.schema.input);
+    if (this._inKeys) {
+      return this._inKeys;
+    }
+    (this: any)._inKeys = Object.keys(this.schema.input);
+    return this._inKeys;
   }
 
+  static +_inKeyIdxMap: { [string]: number };
+  static inKeyIndex(key: string): number {
+    if (this._inKeyIdxMap) {
+      return this._inKeyIdxMap[key];
+    }
+    (this: any)._inKeyIdxMap = fromPairs(this.inKeys().map((k, i) => [k, i]));
+    return this._inKeyIdxMap[key];
+  }
+
+  static +_outKeys: string[];
   static outKeys(): string[] {
-    return Object.keys(this.schema.output);
+    if (this._outKeys) {
+      return this._outKeys;
+    }
+    (this: any)._outKeys = Object.keys(this.schema.output);
+    return this._outKeys;
   }
 
+  static +_outKeyIdxMap: { [string]: number };
+  static outKeyIndex(key: string): number {
+    if (this._outKeyIdxMap) {
+      return this._outKeyIdxMap[key];
+    }
+    (this: any)._outKeyIdxMap = fromPairs(this.outKeys().map((k, i) => [k, i]));
+    return this._outKeyIdxMap[key];
+  }
+
+  static +_displayInKeys: string[];
   static displayInKeys(): string[] {
-    return Object.keys(this.schema.input).map(k => (this.shortNames[k] ? this.shortNames[k] : k));
+    if (this._displayInKeys) {
+      return this._displayInKeys;
+    }
+    (this: any)._displayInKeys = Object.keys(this.schema.input).map(k =>
+      this.shortNames[k] ? this.shortNames[k] : k
+    );
+    return this._displayInKeys;
   }
 
+  static +_displayOutKeys: string[];
   static displayOutKeys(): string[] {
-    return Object.keys(this.schema.output).map(k => (this.shortNames[k] ? this.shortNames[k] : k));
+    if (this._displayOutKeys) {
+      return this._displayOutKeys;
+    }
+    (this: any)._displayOutKeys = Object.keys(this.schema.output).map(k =>
+      this.shortNames[k] ? this.shortNames[k] : k
+    );
+    return this._displayOutKeys;
   }
 
   static initializeState(): Object {

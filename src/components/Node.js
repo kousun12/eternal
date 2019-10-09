@@ -11,7 +11,6 @@ import NodeOutputList from './NodeOutputList';
 import type { AnyNode } from 'models/NodeBase';
 import type { NodeInSpace, Pos } from 'types';
 import { Hotkey, Hotkeys, HotkeysTarget } from '@blueprintjs/core';
-import { selectPositions, selectInfoOpen } from 'redux/ducks/graph';
 
 type SP = {| pos: Pos, infoShowing: boolean |};
 type OP = {|
@@ -20,7 +19,7 @@ type OP = {|
   onNodeStart: (NodeInSpace, DraggableData) => void,
   onNodeStop: (NodeInSpace, DraggableData) => void,
   onNodeMove: (NodeInSpace, DraggableData) => void,
-  onStartConnector: (string, number) => void,
+  onStartConnector: (string, number, e: MouseEvent, d: DraggableData) => void,
   onCompleteConnector: (string, number) => void,
   onNodeSelect?: (NodeInSpace, ?number) => void,
   onNodeDeselect?: (NodeInSpace, boolean) => void,
@@ -40,24 +39,24 @@ class Node extends React.Component<P> {
     this.props.onDelete && this.props.onDelete(this.props.nis.node);
   };
 
-  handleDragStart = (event, data: DraggableData) => {
+  handleDragStart = (event: MouseEvent, data: DraggableData) => {
     this.dragStart = { x: event.clientX, y: event.clientY };
     this.props.onNodeStart(this.props.nis, data);
   };
 
-  handleDragStop: DraggableEventHandler = (event, data: DraggableData) => {
+  handleDragStop: DraggableEventHandler = (event: MouseEvent, data: DraggableData) => {
     this.props.onNodeStop(this.props.nis, data);
     setTimeout(() => {
       this.dragStart = null;
     });
   };
 
-  handleDrag = (event, data: DraggableData) => {
+  handleDrag = (event: MouseEvent, data: DraggableData) => {
     this.props.onNodeMove(this.props.nis, data);
   };
 
-  onStartConnector = index => {
-    this.props.onStartConnector(this.props.nis.node.id, index);
+  onStartConnector = (i: number, e: MouseEvent, d: DraggableData)=> {
+    this.props.onStartConnector(this.props.nis.node.id, i, e, d);
   };
 
   onCompleteConnector = index => {
@@ -146,6 +145,8 @@ class Node extends React.Component<P> {
               items={node.outKeys()}
               display={node.constructor.displayOutKeys()}
               onStartConnector={this.onStartConnector}
+              scale={scale || 1}
+              positionOffset={positionOffset}
             />
           </div>
         </div>
@@ -174,19 +175,17 @@ class Node extends React.Component<P> {
 }
 
 const getInfoShowing = (s, op) => Boolean(s.graph.infoOpen === op.nis.node.id);
-const getPos = (s, op) => s.graph.nodePos[op.nis.node.id];
+const getPos = (s, op) => s.graph.nodePos[op.nis.node.id] || op.nis.pos;
 
-const makeSelectCreator = () => {
-  return createSelector(
+const makeSelectCreator = () =>
+  createSelector(
     [getPos, getInfoShowing],
     (pos, infoShowing) => ({ pos, infoShowing })
   );
-};
 
 const makeSelect = () => {
   const selector = makeSelectCreator();
-  const select = (s, op) => selector(s, op);
-  return select;
+  return (s, op) => selector(s, op);
 };
 
 export default connect(makeSelect)(onClickOutside(HotkeysTarget(Node)));

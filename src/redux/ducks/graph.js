@@ -1,11 +1,6 @@
 // @flow
 
-import {
-  combineReducers,
-  createSlice,
-  type PayloadAction as PA,
-  createSelector,
-} from 'redux-starter-kit';
+import { combineReducers, createSlice, type PayloadAction as PA } from 'redux-starter-kit';
 import { fromPairs } from 'lodash';
 import type { State } from 'redux/types';
 import { range } from 'utils/array';
@@ -69,19 +64,14 @@ export const selectedS = (s: State) => ({
   selectCount: s.graph.selected.length,
 });
 
-export type SelectedView = {| pan: Pos, scale: number |};
-export const selectView = (s: State): SelectedView => ({
-  pan: s.graph.view.pan,
-  scale: zooms[s.graph.view.zoom] / 100,
-});
+export type SelectedView = {| pan: Pos, scale: number, scaleInverse: number |};
+export const selectView = (s: State): SelectedView => {
+  const scale = zooms[s.graph.view.zoom] / 100;
+  return { pan: s.graph.view.pan, scale, scaleInverse: 1 / scale };
+};
 
 export const selectInfoOpen = (s: State) => s.graph.infoOpen;
 export const selectPositions = (s: State) => s.graph.nodePos;
-
-export const showNode = createSelector(
-  [selectInfoOpen],
-  showNode => ({ showNode })
-);
 
 export const { selSet } = selectedSlice.actions;
 export const { setInfoOpen } = infoOpenSlice.actions;

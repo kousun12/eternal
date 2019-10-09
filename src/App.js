@@ -3,6 +3,7 @@
 import './boot';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { createSelector } from 'redux-starter-kit';
 import { get } from 'lodash';
 import { Hotkey, Hotkeys, HotkeysTarget, setHotkeysDialogProps } from '@blueprintjs/core';
 
@@ -29,7 +30,7 @@ import 'eternal.scss';
 import type { Pos } from 'types';
 import Toolbar from 'components/Toolbar';
 import LoadPrompt from 'components/dialogs/LoadPrompt';
-import { setInfoOpen as _setInfoOpen, showNode } from 'redux/ducks/graph';
+import { setInfoOpen as _setInfoOpen, selectInfoOpen } from 'redux/ducks/graph';
 import Zoomer from 'components/Zoomer';
 
 const welcomeGraph = require('models/examples/welcome.json');
@@ -53,19 +54,15 @@ class App extends Component<P, S> {
   fileUpload: ?FileUpload;
   _mousePos: Pos = defaultNodePos;
   _insertPos: ?Pos = null;
-
-  constructor(p: P) {
-    super(p);
-    this.state = {
-      searchOpen: false,
-      saveOpen: false,
-      graph: null,
-      searchingNodes: false,
-      visible: true,
-      searchingExamples: false,
-      promptLoad: null,
-    };
-  }
+  state = {
+    searchOpen: false,
+    saveOpen: false,
+    graph: null,
+    searchingNodes: false,
+    visible: true,
+    searchingExamples: false,
+    promptLoad: null,
+  };
 
   componentDidMount() {
     let showWelcome = true;
@@ -321,7 +318,11 @@ class App extends Component<P, S> {
 
 setHotkeysDialogProps({ className: 'bp3-dark', globalHotkeysGroup: 'Menu' });
 const AppWithHK = HotkeysTarget(App);
+const select = createSelector(
+  [selectInfoOpen],
+  showNode => ({ showNode })
+);
 export default connect(
-  showNode,
+  select,
   d => ({ setInfoOpen: n => d(_setInfoOpen(n)) })
 )(AppWithHK);
