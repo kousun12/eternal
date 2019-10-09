@@ -24,6 +24,7 @@ type P = {
   positions: PosMemo,
   graph: Graph,
   scaleInverse: number,
+  mousePos: ?Pos,
 };
 const AllEdges = ({
   positions,
@@ -37,18 +38,23 @@ const AllEdges = ({
   pan,
   graph,
   scaleInverse,
+  mousePos,
 }: P) => {
   if (!visible) {
     return null;
   }
-  let activeSpline = null;
-  const mousePos = null;
-  if (dragging && source) {
+  let creatingSpline = null;
+  if (dragging && source && mousePos && window.centerP) {
     const [nodeId, outIdx] = source;
     let src = positions[nodeId] || graph.nodeWithIdF(nodeId).pos;
-    const start = addVec(outOffset(src.x, src.y, outIdx), pan);
-    const end = mousePos;
-    activeSpline = <Spline start={start} end={end} />;
+    const fromCenter = subVec(mousePos, window.centerP);
+    const endOff = scaleVec(fromCenter, scaleInverse);
+    creatingSpline = (
+      <Spline
+        start={addVec(outOffset(src.x, src.y, outIdx), pan)}
+        end={subVec(addVec(mousePos, endOff), fromCenter)}
+      />
+    );
   }
   return (
     <SVGComponent height="100%" width="100%">
@@ -76,7 +82,7 @@ const AllEdges = ({
           />
         );
       })}
-      {activeSpline}
+      {creatingSpline}
     </SVGComponent>
   );
 };

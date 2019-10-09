@@ -225,6 +225,13 @@ body {
 
 .nodeOutputList li {
   cursor: pointer;
+  margin-right: -16px;
+  padding-right: 16px;
+}
+
+.nodeInputList li {
+  margin-left: -16px;
+  padding-left: 16px;
 }
 
 .nodeOutputList li span {
@@ -236,6 +243,7 @@ body {
 }
 
 .nodeOutputList li span i {
+  padding-left: 6px;
 }
 
 .nodeOutputList li span i.unconnected {
@@ -245,6 +253,7 @@ body {
 .nodeOutputList li:hover span {
   color: white;
   font-weight: bold;
+  font-size: 14px;
 }
 
 .nodeInputList li span {
@@ -270,7 +279,7 @@ body {
 
 .dragging .nodeInputList li span.hover {
   vertical-align: top;
-  font-size: 15px;
+  font-size: 14px;
   color: #ffffff;
   margin-top: 2px;
   margin-left: -2px;

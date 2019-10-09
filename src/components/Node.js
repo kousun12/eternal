@@ -11,6 +11,7 @@ import NodeOutputList from './NodeOutputList';
 import type { AnyNode } from 'models/NodeBase';
 import type { NodeInSpace, Pos } from 'types';
 import { Hotkey, Hotkeys, HotkeysTarget } from '@blueprintjs/core';
+import { addVec } from 'utils/vector';
 
 type SP = {| pos: Pos, infoShowing: boolean |};
 type OP = {|
@@ -55,7 +56,7 @@ class Node extends React.Component<P> {
     this.props.onNodeMove(this.props.nis, data);
   };
 
-  onStartConnector = (i: number, e: MouseEvent, d: DraggableData)=> {
+  onStartConnector = (i: number, e: MouseEvent, d: DraggableData) => {
     this.props.onStartConnector(this.props.nis.node.id, i, e, d);
   };
 
@@ -146,7 +147,7 @@ class Node extends React.Component<P> {
               display={node.constructor.displayOutKeys()}
               onStartConnector={this.onStartConnector}
               scale={scale || 1}
-              positionOffset={positionOffset}
+              positionOffset={addVec(pos, positionOffset || { x: 0, y: 0 })}
             />
           </div>
         </div>

@@ -52,6 +52,7 @@ type P = {| ...SP, ...OP, ...DP |};
 type S = {|
   source: ?[string, number],
   dragging: boolean,
+  mousePos: ?Pos,
 |};
 
 class NodeGraph extends React.Component<P, S> {
@@ -59,20 +60,23 @@ class NodeGraph extends React.Component<P, S> {
   moving: boolean = false;
   timeoutId: ?TimeoutID = null;
   deltaY: number = 0;
-  state = { source: null, dragging: false };
+  state = { source: null, dragging: false, mousePos: null };
 
   componentDidMount() {
     document.addEventListener('mousemove', this.onMouseMove);
     document.addEventListener('mouseup', this.onMouseUp);
+    window.centerP = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+    window.addEventListener('resize', this.onWinResize);
     const { graph } = this.props;
     graph && this._setPosFromGraph();
   }
 
   componentWillUnmount() {
-    this.onMouseMove.cancel();
     document.removeEventListener('mousemove', this.onMouseMove);
     document.removeEventListener('mouseup', this.onMouseUp);
+    window.removeEventListener('resize', this.onWinResize);
     this.timeoutId && clearTimeout(this.timeoutId);
+    this._debouncedSetMouse.cancel();
   }
 
   componentDidUpdate(prevProps) {
@@ -92,8 +96,12 @@ class NodeGraph extends React.Component<P, S> {
     }
   };
 
+  onWinResize = () => {
+    window.centerP = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+  }
+
   onMouseUp = () => {
-    this.timeoutId = setTimeout(() => this.setState({ dragging: false }), 1);
+    this.timeoutId = setTimeout(() => this.setState({ dragging: false, mousePos: null }), 1);
   };
 
   onMouseMove = (e: MouseEvent) => {
@@ -110,8 +118,8 @@ class NodeGraph extends React.Component<P, S> {
   };
 
   _debouncedSetMouse = throttle((e: MouseEvent) => {
-    e.stopPropagation();
-    e.preventDefault();
+    // $FlowIgnore
+    this.setState({ mousePos: e });
   }, 20);
 
   _getSelected = (): NodeInSpace[] => {
@@ -144,7 +152,11 @@ class NodeGraph extends React.Component<P, S> {
   };
 
   onStartConnector = (id: string, outputIndex: number, e: MouseEvent, d: DraggableData) => {
-    this.setState({ dragging: true, source: [id, outputIndex] });
+    this.setState({
+      dragging: true,
+      source: [id, outputIndex],
+      mousePos: { x: e.clientX, y: e.clientY },
+    });
   };
 
   onCompleteConnector = (id: string, inIndex: number) => {
@@ -162,7 +174,7 @@ class NodeGraph extends React.Component<P, S> {
         this.props.onCreateEdge && this.props.onCreateEdge(edge);
       }
     }
-    this.setState({ dragging: false });
+    this.setState({ dragging: false, mousePos: null });
     this.forceUpdate();
   };
 
@@ -225,7 +237,7 @@ class NodeGraph extends React.Component<P, S> {
     return (
       <DraggableCore onDrag={this._onCanvasDrag} scale={scale}>
         <div id="graph-root" className={dragging ? 'dragging' : ''} onWheel={this.onScroll}>
-          <div className="graph-scalable" style={this._rootStyle()}>
+          <div id="graph-scalable" className="graph-scalable" style={this._rootStyle()}>
             {graph.nodes.map((nis, i) => {
               return (
                 <Node
@@ -257,6 +269,7 @@ class NodeGraph extends React.Component<P, S> {
               pan={pan}
               scaleInverse={scaleInverse}
               graph={graph}
+              mousePos={this.state.mousePos}
             />
           </div>
         </div>

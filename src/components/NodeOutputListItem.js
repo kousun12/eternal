@@ -20,22 +20,15 @@ export default class NodeOutputListItem extends React.Component<P> {
     this.props.onMouseDown(this.props.index, e, data);
   };
 
-  noop = (e: MouseEvent) => {
-    e.stopPropagation();
-    e.preventDefault();
-  };
-
   render() {
-    const { filled, item, scale, positionOffset } = this.props;
+    const { filled, item } = this.props;
     const modifier = filled ? '' : ' unconnected';
     return (
-      <DraggableCore
-        onStart={this.onMouseDown}
-        offsetParent={document.getElementById('graph-scalable')}
-      >
+      <DraggableCore onStart={this.onMouseDown}>
         <li>
-          <span onClick={e => this.noop(e)}>
-            {item} <i className={`fa fa-circle${modifier}`} />
+          <span>
+            {item}
+            <i className={`fa fa-circle${modifier}`} />
           </span>
         </li>
       </DraggableCore>
