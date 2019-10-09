@@ -57,7 +57,7 @@ type S = {|
 
 type DragDirective = {| nis: NodeInSpace, offset: Pos |};
 
-const gpu = new GPU({ mode: 'cpu' });
+const gpu = new GPU();
 
 class NodeGraph extends React.Component<P, S> {
   dragDirectives: { [string]: DragDirective } = {};
@@ -69,6 +69,21 @@ class NodeGraph extends React.Component<P, S> {
   constructor(props: P) {
     super(props);
     this.state = { nodes: props.graph.nodes, source: null, mousePos: null, dragging: false };
+    // const times = [];
+    // function refreshLoop() {
+    //   window.requestAnimationFrame(() => {
+    //     const now = performance.now();
+    //     while (times.length > 0 && times[0] <= now - 1000) {
+    //       times.shift();
+    //     }
+    //     times.push(now);
+    //     window.fps = times.length;
+    //     console.log(window.fps);
+    //     refreshLoop();
+    //   });
+    // }
+    //
+    // refreshLoop();
   }
 
   componentDidMount() {
@@ -149,55 +164,41 @@ class NodeGraph extends React.Component<P, S> {
         output: [offsets.length],
       }
     );
-
     this.dragDirectives = fromPairs(
-      this.dragSelected.map(nis => [
-        nis.node.id,
-        {
-          nis,
-          offset: { x: started.pos.x - nis.pos.x, y: started.pos.y - nis.pos.y },
-        },
-      ])
+      this.dragSelected.map(nis => [nis.node.id, { nis, offset: subVec(started.pos, nis.pos) }])
     );
     this.moving = true;
   };
 
   onNodeMove = (node: NodeInSpace, data: DraggableData) => {
-    // $FlowIgnore
-    const vals: DragDirective[] = Object.values(this.dragDirectives);
-    if (vals.length > 1) {
-      vals.forEach(d => {
-        if (this.props.selected[d.nis.node.id]) {
-          d.nis.pos = subVec(data, d.offset);
-        }
-      });
-    }
-    const t0 = performance.now();
-    const r0 = vals.map(d => [data.x - d.offset.x, data.y - d.offset.y]);
-    const t1 = performance.now();
-
     const t2 = performance.now();
     const r = this.kernel && this.kernel(data.x, data.y);
     const t3 = performance.now();
+
+    const t0 = performance.now();
+    // $FlowIgnore
+    const vals: DragDirective[] = Object.values(this.dragDirectives);
+    const r0 = vals.map(d => [data.x - d.offset.x, data.y - d.offset.y]);
+    const t1 = performance.now();
 
     const updated = fromPairs(
       this.dragSelected.map((nis, i) => [nis.node.id, { x: r[i][0], y: r[i][1] }])
     );
     const cpuTime = t1 - t0;
     const gpuTime = t3 - t2;
-    console.log('cpu', cpuTime);
-    console.log('gpu', gpuTime);
+    // console.log('cpu', cpuTime);
+    // console.log('gpu', gpuTime);
     if (cpuTime < gpuTime) {
       const diff = gpuTime - cpuTime;
-      console.log(`cpu faster by ${diff}`);
+      // console.log(`cpu faster by ${diff}`);
       window.cpuTotal += diff;
     } else {
       const diff = cpuTime - gpuTime;
-      console.log(`gpu faster by ${diff}`);
+      // console.log(`gpu faster by ${diff}`);
       window.gpuTotal += diff;
     }
 
-    console.log('****************************');
+    // console.log('****************************');
     const nodes = this.state.nodes.map(n => get(updated, [n.node.id, 'nis'], n));
     this.setState({ nodes });
   };
