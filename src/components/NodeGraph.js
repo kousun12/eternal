@@ -42,8 +42,8 @@ type OP = {|
 type SP = {| selected: { [string]: boolean }, selectCount: number, ...SelectedView |};
 type DP = {|
   selSet: (string[]) => void,
-  zoomIn: () => void,
-  zoomOut: () => void,
+  zoomIn: (?Pos) => void,
+  zoomOut: (?Pos) => void,
   zoomReset: () => void,
   setPan: Pos => void,
   updatePos: PosMemo => void,
@@ -93,23 +93,20 @@ class NodeGraph extends React.Component<P, S> {
     const { zoom, scale, pan } = this.props;
     this.deltaY += e.deltaY;
     const thresh = 30;
-    let offset = false;
+    let txFn = null;
     if (this.deltaY > thresh && zoom < zooms.length - 1) {
-      this.props.zoomIn();
+      txFn = this.props.zoomIn;
       this.deltaY = 0;
-      offset = true;
     } else if (this.deltaY < -thresh && zoom > 0) {
-      this.props.zoomOut();
+      txFn = this.props.zoomOut;
       this.deltaY = 0;
-      offset = true;
     }
     if (this.deltaY > thresh || this.deltaY < -thresh) {
       this.deltaY = 0;
     }
-    if (offset) {
-      const fromCenter = subVec(window.centerP, { x: e.clientX, y: e.clientY });
-      const off = scaleVec(fromCenter, scale * 0.01 * Math.sign(e.deltaY));
-      this.props.setPan(addVec(pan, off));
+    if (txFn) {
+      const fromCenter = subVec({ x: e.clientX, y: e.clientY }, window.centerP);
+      txFn(scaleVec(fromCenter, -scale * 0.02 * Math.sign(e.deltaY)));
     }
   };
 
@@ -343,7 +340,7 @@ class NodeGraph extends React.Component<P, S> {
         <Hotkey global combo="shift + meta + a" label="Select All" onKeyDown={this._selectAll} />
         <Hotkey global combo="alt + =" label="Zoom in" onKeyDown={zoomIn} group="View" />
         <Hotkey global combo="alt + -" label="Zoom out" onKeyDown={zoomOut} group="View" />
-        <Hotkey global combo="alt + 0" label="Zoom reset" onKeyDown={zoomReset} group="View" />
+        <Hotkey global combo="alt + 0" label="Home View" onKeyDown={zoomReset} group="View" />
         <Hotkey global combo="right" label="Pan right" onKeyDown={this._panR} group="View" />
         <Hotkey global combo="left" label="Pan left" onKeyDown={this._panL} group="View" />
         <Hotkey global combo="down" label="Pan down" onKeyDown={this._panD} group="View" />
@@ -359,8 +356,8 @@ const select = createSelector(
 );
 const dispatch = d => ({
   selSet: id => d(_selSet(id)),
-  zoomIn: () => d(_zIn()),
-  zoomOut: () => d(_zOut()),
+  zoomIn: (pan?: Pos) => d(_zIn(pan)),
+  zoomOut: (pan?: Pos) => d(_zOut(pan)),
   zoomReset: () => d(_zReset()),
   setPan: (pos: Pos) => d(_setPan(pos)),
   updatePos: (pos: PosMemo) => d(_updatePos(pos)),
