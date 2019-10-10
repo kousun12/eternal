@@ -6,8 +6,6 @@ import * as tf from '@tensorflow/tfjs-core';
 import { webgl } from '@tensorflow/tfjs-core';
 import { arrayOf } from 'utils/typeUtils';
 
-window.tf = tf;
-tf.enableDebugMode();
 const Types = window.Types;
 
 const TT = {
