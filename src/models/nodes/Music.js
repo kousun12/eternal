@@ -7,11 +7,22 @@ import { chroma } from 'tonal-pcset';
 import { transpose } from 'tonal-distance';
 import NodeBase from 'models/NodeBase';
 import Edge from 'models/Edge';
+import { arrayOf } from 'utils/typeUtils';
 const Types = window.Types;
 // window.Chord = Chord;
 // window.Key = Key;
 // window.Scale = Scale;
 
+const TT = {
+  Note: Types.object.aliased(
+    'Note',
+    'Note encoding, can be something like A4, a midi index, or a raw frequency in Hz'
+  ),
+  Interval: Types.object.aliased(
+    'Interval',
+    'Natural interval name, e.g. 1P, 2M, 3M, 4P, 5P, 6m, 7m'
+  ),
+};
 export class ScaleNode extends NodeBase<
   {},
   { name: string, tonic: string },
@@ -37,8 +48,8 @@ export class ScaleNode extends NodeBase<
       ),
     },
     output: {
-      notes: Types.object.desc('The notes in this scale'),
-      intervals: Types.object.desc('The intervals between notes in this scale'),
+      notes: arrayOf(TT.Note).desc('The notes in this scale'),
+      intervals: arrayOf(TT.Interval).desc('The intervals between notes in this scale'),
     },
     state: {},
   };
@@ -81,8 +92,8 @@ export class ChordNode extends NodeBase<
       ),
     },
     output: {
-      notes: Types.object.desc('The notes in this chord'),
-      intervals: Types.object.desc('The intervals between notes in this chord'),
+      notes: arrayOf(TT.Note).desc('The notes in this chord'),
+      intervals: arrayOf(TT.Interval).desc('The intervals between notes in this chord'),
     },
     state: {},
   };
@@ -109,7 +120,7 @@ export class KeyTriadsNode extends NodeBase<{}, { key: string }, { notes: string
       key: Types.string.desc('The name of the key (a tonic + a mode), e.g. C major, Db dorian'),
     },
     output: {
-      notes: Types.object.desc('Triad lead-sheet symbols for this key'),
+      notes: arrayOf(TT.Note).desc('Triad lead-sheet symbols for this key'),
     },
     state: {},
   };
@@ -164,10 +175,10 @@ export class ChromaNode extends NodeBase<{}, { notes: string[] }, { chroma: numb
   );
   static schema = {
     input: {
-      notes: Types.object.desc('A list of notes to compute a chroma for'),
+      notes: arrayOf(TT.Note).desc('A list of notes to compute a chroma for'),
     },
     output: {
-      chroma: Types.object.desc(
+      chroma: arrayOf(Types.number).desc(
         'the chroma output: 12-digit binary array, with each index presenting one semitone of the octave'
       ),
     },

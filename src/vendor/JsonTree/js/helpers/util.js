@@ -1,5 +1,5 @@
 /* eslint-disable */
-const toObj = ['gainnode', 'delaynode', 'midiinput', 'midioutput'];
+const toObj = ['gainnode', 'delaynode', 'midiinput', 'midioutput', 'float32array'];
 
 //returns a string "type" of input object
 export function toType(obj) {

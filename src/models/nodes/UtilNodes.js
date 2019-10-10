@@ -5,6 +5,7 @@ import NodeBase from 'models/NodeBase';
 import Edge from 'models/Edge';
 import { TT } from 'models/nodes/ToneNode';
 import Regexp from 'vendor/JsonTree/js/components/DataTypes/Regexp';
+import { arrayOf } from 'utils/typeUtils';
 const Types = window.Types;
 
 export class InfoLog extends NodeBase<{}, { anything: any }, { anything: any }> {
@@ -86,7 +87,7 @@ export class StephenWolfram extends NodeBase<
       ),
       call: TT.Call,
     },
-    output: { out: Types.any.desc('The resulting binary array') },
+    output: { out: arrayOf(Types.number).desc('The resulting binary array') },
     state: {},
   };
 
@@ -140,23 +141,23 @@ export class StephenWolfram extends NodeBase<
   process = () => ({ out: this.currentState });
 }
 
-export class HistoryNode extends NodeBase<{}, { capacity: number, value: any }, { out: any[] }> {
-  static +displayName = 'History';
+export class CollectNode extends NodeBase<{}, { capacity: number, value: any }, { out: any[] }> {
+  static +displayName = 'Collect';
   static +registryName = 'HistoryNode';
   static description = (
     <span>
-      Buffer values from input into a linear history. If memory capacity is reached, oldest memories
-      are forgotten first.
+      Buffer values from an input stream. If memory capacity is reached, oldest values are purged
+      first
     </span>
   );
   static schema = {
     input: {
       capacity: Types.number.desc(
-        'The max number of events to remember. Omitting this means no limit'
+        'The max number of elements to keep. Omitting this means no limit'
       ),
-      value: Types.any.desc('Any value. This will be pushed into a memory queue in the output'),
+      value: Types.any.desc('Any value. This will be pushed into the output collector'),
     },
-    output: { out: Types.any.desc('The memory queue, from oldest to youngest.') },
+    output: { out: arrayOf(Types.any).desc('The collected queue, oldest to newest.') },
     state: {},
   };
 
