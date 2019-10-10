@@ -90,7 +90,7 @@ class NodeGraph extends React.Component<P, S> {
   }
 
   onScroll = (e: WheelEvent) => {
-    const { zoom, scale, pan } = this.props;
+    const { zoom, scale } = this.props;
     this.deltaY += e.deltaY;
     const thresh = 30;
     let txFn = null;
