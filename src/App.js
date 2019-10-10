@@ -250,8 +250,8 @@ class App extends Component<P, S> {
         {graph && (
           <NodeGraph visible={visible} graph={graph} onNodeSelectionChange={this._onNodeSelect} />
         )}
-        <AttributePane node={inPane} />
-        <Zoomer />
+        <AttributePane node={visible ? inPane : null} />
+        {visible && <Zoomer />}
         {saveOpen && (
           <SaveDialog
             initial={title}
