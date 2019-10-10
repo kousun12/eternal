@@ -98,7 +98,7 @@ class NodeGraph extends React.Component<P, S> {
 
   onWinResize = () => {
     window.centerP = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
-  }
+  };
 
   onMouseUp = () => {
     this.timeoutId = setTimeout(() => this.setState({ dragging: false, mousePos: null }), 1);
@@ -118,9 +118,8 @@ class NodeGraph extends React.Component<P, S> {
   };
 
   _debouncedSetMouse = throttle((e: MouseEvent) => {
-    // $FlowIgnore
-    this.setState({ mousePos: e });
-  }, 20);
+    this.setState({ mousePos: { x: e.clientX, y: e.clientY } });
+  }, 24);
 
   _getSelected = (): NodeInSpace[] => {
     const { selected, graph } = this.props;
@@ -146,9 +145,22 @@ class NodeGraph extends React.Component<P, S> {
     this.moving = false;
   };
 
+  lastData: ?DraggableData;
+  lastUpdateTime: number = performance.now();
   onNodeMove = (node: NodeInSpace, data: DraggableData) => {
-    const updates = mapValues(this.dragOffsets, offset => subVec(data, offset));
-    this.props.updatePos(updates);
+    const thresh = 120 * this.props.scaleInverse;
+    const timeThresh = this.props.selectCount < 4 ? 16 : this.props.selectCount < 11 ? 30 : 50;
+    if (
+      !this.lastData ||
+      performance.now() - this.lastUpdateTime > timeThresh ||
+      Math.abs(this.lastData.x - data.x) > thresh ||
+      Math.abs(this.lastData.y - data.y) > thresh
+    ) {
+      const updates = mapValues(this.dragOffsets, offset => subVec(data, offset));
+      this.props.updatePos(updates);
+      this.lastUpdateTime = performance.now();
+      this.lastData = data;
+    }
   };
 
   onStartConnector = (id: string, outputIndex: number, e: MouseEvent, d: DraggableData) => {
@@ -224,12 +236,12 @@ class NodeGraph extends React.Component<P, S> {
     }
   };
 
-  _onCanvasDrag = (e: Event, data: DraggableData) => {
+  _onCanvasDrag = throttle((e: Event, data: DraggableData) => {
     if (!this.moving) {
       const { setPan, pan, scaleInverse } = this.props;
       setPan(addVec(pan, scaleVec({ x: data.deltaX, y: data.deltaY }, scaleInverse)));
     }
-  };
+  }, 18);
 
   render() {
     const { dragging, source } = this.state;
@@ -277,9 +289,7 @@ class NodeGraph extends React.Component<P, S> {
     );
   }
 
-  _rootStyle = () => {
-    return { transform: `scale(${this.props.scale})` };
-  };
+  _rootStyle = () => ({ transform: `scale(${this.props.scale})` });
 
   _onCopy = () => {
     const selected = this.props.graph.duplicate(this._getSelected()).map(nis => nis.node.id);
@@ -288,11 +298,10 @@ class NodeGraph extends React.Component<P, S> {
 
   _selectAll = () => this.props.selSet(this.props.graph.nodeIds());
 
-  _pan = (dir: Direction) => {
+  _pan = throttle((dir: Direction) => {
     const { setPan, pan, scaleInverse } = this.props;
-    const move = scaleVec(unitVec(dir), scaleInverse * 30);
-    setPan(addVec(pan, move));
-  };
+    setPan(addVec(pan, scaleVec(unitVec(dir), scaleInverse * 20)));
+  }, 60);
 
   _panR = () => this._pan('right');
   _panL = () => this._pan('left');
