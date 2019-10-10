@@ -62,6 +62,7 @@ import { PlusNode } from './String';
 import { ScaleNode, ChromaNode, ChordNode, TransposeNode, KeyTriadsNode } from './Music';
 import { PerformanceRNNNode } from './Neural';
 import { DivideNode, SumNode, ProductNode, IntToIntMathNode } from './MathNodes';
+import { GPGPUProgramNode } from './GPGPU';
 import { number, string, boolean, date } from './primitives';
 
 /**
@@ -136,6 +137,7 @@ export {
   RegexReplace,
   DomNode,
   PlusNode,
+  GPGPUProgramNode,
   number,
   string,
   boolean,
@@ -211,6 +213,7 @@ export const allNodes = [
   RegexReplace,
   DomNode,
   PlusNode,
+  GPGPUProgramNode,
   number,
   string,
   boolean,

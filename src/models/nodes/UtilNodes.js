@@ -5,6 +5,7 @@ import NodeBase from 'models/NodeBase';
 import Edge from 'models/Edge';
 import { TT } from 'models/nodes/ToneNode';
 import Regexp from 'vendor/JsonTree/js/components/DataTypes/Regexp';
+import { arrayOf } from 'models/types';
 const Types = window.Types;
 
 export class InfoLog extends NodeBase<{}, { anything: any }, { anything: any }> {
@@ -86,7 +87,7 @@ export class StephenWolfram extends NodeBase<
       ),
       call: TT.Call,
     },
-    output: { out: Types.any.desc('The resulting binary array') },
+    output: { out: arrayOf(Types.number).desc('The resulting binary array') },
     state: {},
   };
 

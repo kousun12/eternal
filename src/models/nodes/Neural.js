@@ -37,7 +37,6 @@ export type ToneData = [Tone.Frequency, ToneAction, Tone.Time, ?number];
 export class PerformanceRNNNode extends NodeBase<
   {},
   {
-    chroma: number[],
     density: number,
     synth: Tone.Synth | Tone.Instrument,
     stepsPerSecond: number,

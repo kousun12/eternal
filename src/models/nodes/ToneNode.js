@@ -4,20 +4,25 @@ import { get } from 'lodash';
 import Tone from 'tone';
 import NodeBase from 'models/NodeBase';
 import Edge from 'models/Edge';
+import { arrayOf } from 'models/types';
 const Piano = require('tone-piano').Piano;
 const Types = window.Types;
 const URL_BASE = process.env.PUBLIC_URL || '';
 
 // Tone Types
 export const TT = {
-  AudioNode: Types.object.aliased('AudioNode'),
+  AudioNode: Types.object.aliased('AudioNode', 'Any kind of audio node'),
   Config: Types.object.aliased('Config'),
   Synth: Types.object.aliased('Synth', 'Any kind of synth'),
-  Panner: Types.object.aliased('Panner'),
-  Gain: Types.object.aliased('Gain'),
-  FeedbackDelay: Types.object.aliased('FeedbackDelay'),
+  Panner: Types.object.aliased('Panner', 'An audio pan'),
+  Gain: Types.object.aliased('Gain', 'An audio gain'),
+  FeedbackDelay: Types.object.aliased('FeedbackDelay', 'A feedback delay'),
+  Note: Types.object.aliased(
+    'Note',
+    'Note encoding, can be something like A4, a midi index, or a raw frequency in Hz'
+  ),
   Call: Types.any
-    .aliased('Call')
+    .aliased('Call', 'Something that is callable')
     .desc(
       "Certain nodes are designated 'callable', i.e. they are operator nodes. Sending a truthy call signal will invoke that node's handler over its parameters"
     ),
@@ -730,7 +735,7 @@ export class ArpeggiateNode extends NodeBase<
   _out: { note: string, time: Tone.Time } = {};
   static schema = {
     input: {
-      notes: Types.object.desc('Notes to arpeggiate over'),
+      notes: arrayOf(TT.Note).desc('Notes to arpeggiate over'),
       interval: Types.time.desc('The interval at which this node loops'),
       pattern: Types.string
         .aliased(

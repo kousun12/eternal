@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 import { TypeBuilder } from 'models/AttributeType';
-import type { TypeMap } from 'models/AttributeType';
+import type { AttributeType, TypeMap } from 'models/AttributeType';
 
 const primitiveSerializer: any => any = v => v;
 // Primitives
@@ -116,6 +116,9 @@ const Vec3 = new TypeBuilder('Vec3')
   })
   .withParser(v => (typeof v === 'string' ? JSON.parse(v) : v))
   .build();
+
+export const arrayOf = (type: AttributeType) =>
+  object.aliased(`${type.name}[]`, `An array of ${type.name}s`);
 
 /**
  * using {@link TypeBuilder.build} will register types in the global registry automatically
