@@ -4,7 +4,7 @@ import './boot';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { createSelector } from 'redux-starter-kit';
-import { get } from 'lodash';
+import { get, throttle } from 'lodash';
 import { Hotkey, Hotkeys, HotkeysTarget, setHotkeysDialogProps } from '@blueprintjs/core';
 
 import 'font-awesome/css/font-awesome.css';
@@ -30,12 +30,18 @@ import 'eternal.scss';
 import type { Pos } from 'types';
 import Toolbar from 'components/Toolbar';
 import LoadPrompt from 'components/dialogs/LoadPrompt';
-import { setInfoOpen as _setInfoOpen, selectInfoOpen } from 'redux/ducks/graph';
+import {
+  setInfoOpen as _setInfoOpen,
+  selectInfoOpen,
+  updatePos as _updatePos,
+} from 'redux/ducks/graph';
 import Zoomer from 'components/Zoomer';
+import type { PosMemo } from 'redux/ducks/graph';
+import { subVec } from 'utils/vector';
 
 const welcomeGraph = require('models/examples/welcome.json');
 
-type P = { setInfoOpen: (?string) => void, showNode: ?string };
+type P = { setInfoOpen: (?string) => void, showNode: ?string, updatePos: PosMemo => void };
 type S = {
   graph: ?Graph,
   searchOpen: boolean,
@@ -94,9 +100,9 @@ class App extends Component<P, S> {
     document.removeEventListener('mousemove', this._onMouseMove);
   }
 
-  _onMouseMove = (me: MouseEvent) => {
+  _onMouseMove = throttle((me: MouseEvent) => {
     this._mousePos = { x: me.clientX, y: me.clientY };
-  };
+  }, 30);
 
   _setGraph = (graph: Graph) => {
     this.state.graph && this.state.graph.dispose();
@@ -148,8 +154,13 @@ class App extends Component<P, S> {
     this.setState({ searchOpen: false });
     if (graph) {
       const node = new cls();
-      graph.addNode(node, this._insertPos || this._mousePos);
-      this._onNodeSelect(node);
+      const pos = this._insertPos || subVec(this._mousePos, { x: 30, y: 30 });
+      graph.addNode(node, pos);
+      // only show node info if pane is already open
+      if (this.props.showNode) {
+        this._onNodeSelect(node);
+      }
+      this.props.updatePos({ [node.id]: pos });
     }
     this._insertPos = null;
   };
@@ -324,5 +335,8 @@ const select = createSelector(
 );
 export default connect(
   select,
-  d => ({ setInfoOpen: n => d(_setInfoOpen(n)) })
+  d => ({
+    setInfoOpen: n => d(_setInfoOpen(n)),
+    updatePos: (pos: PosMemo) => d(_updatePos(pos)),
+  })
 )(AppWithHK);
