@@ -20,6 +20,7 @@ import {
   zoomReset as _zReset,
   setPan as _setPan,
   updatePos as _updatePos,
+  zooms,
 } from 'redux/ducks/graph';
 
 import type { NodeInSpace, Pos } from 'types';
@@ -79,20 +80,36 @@ class NodeGraph extends React.Component<P, S> {
     this._debouncedSetMouse.cancel();
   }
 
-  componentDidUpdate(prevProps) {
-    const { graph } = this.props;
-    graph && graph !== prevProps.graph && this._setPosFromGraph();
+  componentDidUpdate(prev) {
+    const { graph, scale } = this.props;
+    graph && graph !== prev.graph && this._setPosFromGraph();
+    if (prev.scale !== scale && document.body) {
+      const size = 250 * (scale * 0.25 + 0.75);
+      document.body.style.backgroundSize = `${size}px ${size}px`;
+    }
   }
 
   onScroll = (e: WheelEvent) => {
+    const { zoom, scale, pan } = this.props;
     this.deltaY += e.deltaY;
     const thresh = 30;
-    if (this.deltaY > thresh) {
+    let offset = false;
+    if (this.deltaY > thresh && zoom < zooms.length - 1) {
       this.props.zoomIn();
       this.deltaY = 0;
-    } else if (this.deltaY < -thresh) {
+      offset = true;
+    } else if (this.deltaY < -thresh && zoom > 0) {
       this.props.zoomOut();
       this.deltaY = 0;
+      offset = true;
+    }
+    if (this.deltaY > thresh || this.deltaY < -thresh) {
+      this.deltaY = 0;
+    }
+    if (offset) {
+      const fromCenter = subVec(window.centerP, { x: e.clientX, y: e.clientY });
+      const off = scaleVec(fromCenter, scale * 0.01 * Math.sign(e.deltaY));
+      this.props.setPan(addVec(pan, off));
     }
   };
 

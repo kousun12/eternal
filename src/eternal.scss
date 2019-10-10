@@ -17,9 +17,13 @@ body {
   height: 100vh;
   overflow: hidden;
   margin: auto;
-  background: linear-gradient(90deg, $bg-color ($dot-space - $dot-size), transparent 1%) center,
-  linear-gradient($bg-color ($dot-space - $dot-size), transparent 1%) center, $dot-color;
-  background-size: $dot-space $dot-space;
+  //background: linear-gradient(90deg, $bg-color ($dot-space - $dot-size), transparent 1%) center,
+  //linear-gradient($bg-color ($dot-space - $dot-size), transparent 1%) center, $dot-color;
+  //background-size: $dot-space $dot-space;
+  background-image: url("img/bg-poly.png");
+  background-position: center;
+  background-size: 250px 250px;
+  background-repeat: repeat;
 }
 
 .body::-webkit-scrollbar, html::-webkit-scrollbar {
@@ -110,8 +114,11 @@ body {
 }
 
 .node.selected, .node.in-view {
+  background-color: rgba(0, 0, 0, 1);
+  -webkit-box-shadow: 6px 6px 28px -2px rgba(0, 0, 0, 0.8);
+  -moz-box-shadow: 6px 6px 28px -2px rgba(0, 0, 0, 0.8);
+  box-shadow: 6px 6px 28px -2px rgba(0, 0, 0, 0.8);
   border: 2px solid #dadada;
-  box-shadow: 0 0 8px 1px #494949;
   z-index: 14;
 }
 
@@ -558,15 +565,18 @@ $attrs-pad-sides: 16px;
 
 .bp3-slider-track {
   background: $connector-color;
+  height: 3px;
+  top: 6.5px;
+  border-radius: 1.5px;
 }
 
 .bp3-slider-label {
   color: $connector-color;
+  font-size: 11px;
 }
 
 .bp3-slider-handle .bp3-slider-label {
-  background: $connector-color !important;
+  background: #101011 !important;
   color: #b7b7b7 !important;
 }
-
 

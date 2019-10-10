@@ -14,7 +14,7 @@ type P = { node: AnyNode };
 type S = { fullDocs: boolean, width: number };
 
 class AttributePane extends Component<P, S> {
-  state = { fullDocs: true, width: 400 };
+  state = { fullDocs: true, width: 380 };
   listener: ?string;
 
   // noinspection JSUnusedGlobalSymbols

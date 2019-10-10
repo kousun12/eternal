@@ -64,10 +64,11 @@ export const selectedS = (s: State) => ({
   selectCount: s.graph.selected.length,
 });
 
-export type SelectedView = {| pan: Pos, scale: number, scaleInverse: number |};
+export type SelectedView = {| pan: Pos, scale: number, scaleInverse: number, zoom: number |};
 export const selectView = (s: State): SelectedView => {
-  const scale = zooms[s.graph.view.zoom] / 100;
-  return { pan: s.graph.view.pan, scale, scaleInverse: 1 / scale };
+  const { zoom } = s.graph.view
+  const scale = zooms[zoom] / 100;
+  return { pan: s.graph.view.pan, scale, scaleInverse: 1 / scale, zoom };
 };
 
 export const selectInfoOpen = (s: State) => s.graph.infoOpen;
