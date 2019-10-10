@@ -23,3 +23,5 @@ export const unitVec = (dir: Direction): Pos => units[dir];
 export const scaleVec = (v: Pos, scale: number): Pos => {
   return { x: v.x * scale, y: v.y * scale };
 };
+
+export const zero = { x: 0, y: 0 };

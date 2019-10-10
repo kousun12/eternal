@@ -41,6 +41,9 @@ class Node extends React.Component<P> {
   };
 
   handleDragStart = (event: MouseEvent, data: DraggableData) => {
+    if (event.metaKey || event.shiftKey) {
+      return;
+    }
     this.dragStart = { x: event.clientX, y: event.clientY };
     this.props.onNodeStart(this.props.nis, data);
   };
@@ -71,30 +74,28 @@ class Node extends React.Component<P> {
     }
   };
 
-  _deselectNode = () => {
+  _deselectNode = (all: boolean) => {
     if (this.props.onNodeDeselect) {
-      this.props.onNodeDeselect(this.props.nis, false);
+      this.props.onNodeDeselect(this.props.nis, all);
     }
   };
 
-  handleClick = () => {
+  handleClick = (event: MouseEvent) => {
     const x = get(this.dragStart, 'x');
     const y = get(this.dragStart, 'y');
-    const wx = get(window, 'event.clientX');
-    const wy = get(window, 'event.clientY');
     if (
       x &&
       y &&
-      wx &&
-      wy &&
-      (Math.abs(wx - x) > MoveBufferPx || Math.abs(wy - y) > MoveBufferPx)
+      event.clientX &&
+      event.clientY &&
+      (Math.abs(event.clientX - x) > MoveBufferPx || Math.abs(event.clientY - y) > MoveBufferPx)
     ) {
       return;
     }
     if (!this.props.selected) {
       this._selectNode();
     } else {
-      this._deselectNode();
+      this._deselectNode(!event.metaKey);
     }
   };
 

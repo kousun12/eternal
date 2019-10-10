@@ -2,11 +2,15 @@
 import React from 'react';
 import NodeBase from 'models/NodeBase';
 import Edge from 'models/Edge';
+import * as tf from '@tensorflow/tfjs-core';
 import { webgl } from '@tensorflow/tfjs-core';
-import { arrayOf } from 'models/types';
+import { arrayOf } from 'utils/typeUtils';
 
 const Types = window.Types;
 
+const TT = {
+  Program: Types.object.aliased('GPGPUProgram', 'An uncompiled GPGPU program'),
+};
 export class GPGPUProgramNode extends NodeBase<
   {},
   { kernel: string, outputShape: number[], variableNames: string[] },
@@ -33,9 +37,9 @@ export class GPGPUProgramNode extends NodeBase<
       ),
     },
     output: {
-      program: Types.object
-        .desc('A WebGL GPGPU program. This is not a compiled binary.')
-        .aliased('GPGPUProgram', 'An uncompiled gpgpu program'),
+      program: TT.Program.desc(
+        'Program info output. Use the "Run GPGPU" node to compile and run this over inputs'
+      ),
     },
     state: {},
   };
@@ -70,5 +74,56 @@ export class GPGPUProgramNode extends NodeBase<
   onInputChange = (edge: Edge, change: Object) => {
     this.updateProgram(change);
     return this.outKeys();
+  };
+}
+
+export class RunGPGPUProgramNode extends NodeBase<
+  {},
+  { program: webgl.GPGPUProgram, input: any[] },
+  { result: any }
+> {
+  static +displayName = 'Run GPGPU';
+  static +registryName = 'RunGPGPUProgram';
+  static description =
+    'Compile and run a GPGPU program. Kernels passed in will be compiled and cached, so that subsequent calls to kernels will not create new binaries.';
+  static schema = {
+    input: {
+      program: TT.Program.desc('The uncompiled program info to be turned into a full WebGL shader'),
+      input: arrayOf(Types.any).desc('The input tensor to run through the compiled program kernel'),
+    },
+    output: { result: Types.any.desc('Program output') },
+    state: {},
+  };
+  _inputQ: any[][] = [];
+  _program: ?webgl.GPGPUProgram;
+  _result: any;
+
+  process = () => ({ result: this._result });
+
+  _compileAndRun = () => {
+    if (!this._program) {
+      return;
+    }
+    this._inputQ.forEach(async input => {
+      const r = await tf
+        .backend()
+        .compileAndRun(this._program, [tf.tensor(input)])
+        .data();
+      if (r) {
+        this._result = r;
+        this.notifyOutputs('result');
+      }
+    });
+    this._inputQ = [];
+  };
+
+  onInputChange = (edge: Edge, change: Object) => {
+    if (edge.toPort === 'program') {
+      this._program = change.inDataFor('program');
+    } else if (edge.toPort === 'input') {
+      this._inputQ.push(edge.inDataFor('input'));
+    }
+    this._compileAndRun();
+    return [];
   };
 }

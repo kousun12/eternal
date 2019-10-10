@@ -27,7 +27,7 @@ import type { NodeInSpace, Pos } from 'types';
 import type { AnyNode } from 'models/NodeBase';
 import AllEdges from 'components/AllEdges';
 import type { PosMemo, SelectedView } from 'redux/ducks/graph';
-import { addVec, scaleVec, subVec, unitVec } from 'utils/vector';
+import { addVec, scaleVec, subVec, unitVec, zero } from 'utils/vector';
 import type { Direction } from 'utils/vector';
 
 type OP = {|
@@ -140,12 +140,17 @@ class NodeGraph extends React.Component<P, S> {
     return graph.nodes.filter(nis => selected[nis.node.id]);
   };
 
-  onNodeStartMove = (started: NodeInSpace) => {
-    this.dragOffsets = fromPairs(
-      this._getSelected()
-        .map(nis => [nis.node.id, subVec(started.pos, nis.pos)])
-        .concat([[started.node.id, { x: 0, y: 0 }]])
-    );
+  onNodeStartMove = (started: NodeInSpace, data: DraggableData) => {
+    if (!this.props.selected[started.node.id]) {
+      this.dragOffsets = { [started.node.id]: zero };
+      this.props.selectCount && this.props.selSet([]);
+    } else {
+      this.dragOffsets = fromPairs(
+        this._getSelected()
+          .map(nis => [nis.node.id, subVec(started.pos, nis.pos)])
+          .concat([[started.node.id, zero]])
+      );
+    }
     this.moving = true;
   };
 

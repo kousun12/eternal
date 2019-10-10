@@ -5,7 +5,7 @@ import NodeBase from 'models/NodeBase';
 import Edge from 'models/Edge';
 import { TT } from 'models/nodes/ToneNode';
 import Regexp from 'vendor/JsonTree/js/components/DataTypes/Regexp';
-import { arrayOf } from 'models/types';
+import { arrayOf } from 'utils/typeUtils';
 const Types = window.Types;
 
 export class InfoLog extends NodeBase<{}, { anything: any }, { anything: any }> {

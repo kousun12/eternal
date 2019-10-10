@@ -4,7 +4,7 @@ import { get } from 'lodash';
 import Tone from 'tone';
 import NodeBase from 'models/NodeBase';
 import Edge from 'models/Edge';
-import { arrayOf } from 'models/types';
+import { arrayOf } from 'utils/typeUtils';
 const Piano = require('tone-piano').Piano;
 const Types = window.Types;
 const URL_BASE = process.env.PUBLIC_URL || '';

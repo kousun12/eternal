@@ -7,7 +7,7 @@ import { chroma } from 'tonal-pcset';
 import { transpose } from 'tonal-distance';
 import NodeBase from 'models/NodeBase';
 import Edge from 'models/Edge';
-import { arrayOf } from 'models/types';
+import { arrayOf } from 'utils/typeUtils';
 const Types = window.Types;
 // window.Chord = Chord;
 // window.Key = Key;
