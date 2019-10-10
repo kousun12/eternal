@@ -51,7 +51,7 @@ import {
   JSONParse,
   ExtractNode,
   StephenWolfram,
-  HistoryNode,
+  CollectNode,
   JoinNode,
   RegexReplace,
 } from './UtilNodes';
@@ -62,7 +62,7 @@ import { PlusNode } from './String';
 import { ScaleNode, ChromaNode, ChordNode, TransposeNode, KeyTriadsNode } from './Music';
 import { PerformanceRNNNode } from './Neural';
 import { DivideNode, SumNode, ProductNode, IntToIntMathNode } from './MathNodes';
-import { GPGPUProgramNode } from './GPGPU';
+import { GPGPUProgramNode, RunGPGPUProgramNode } from './GPGPU';
 import { number, string, boolean, date } from './primitives';
 
 /**
@@ -132,12 +132,13 @@ export {
   JSONParse,
   ExtractNode,
   StephenWolfram,
-  HistoryNode,
+  CollectNode,
   JoinNode,
   RegexReplace,
   DomNode,
   PlusNode,
   GPGPUProgramNode,
+  RunGPGPUProgramNode,
   number,
   string,
   boolean,
@@ -208,12 +209,13 @@ export const allNodes = [
   JSONParse,
   ExtractNode,
   StephenWolfram,
-  HistoryNode,
+  CollectNode,
   JoinNode,
   RegexReplace,
   DomNode,
   PlusNode,
   GPGPUProgramNode,
+  RunGPGPUProgramNode,
   number,
   string,
   boolean,

@@ -6,6 +6,8 @@ import * as tf from '@tensorflow/tfjs-core';
 import { webgl } from '@tensorflow/tfjs-core';
 import { arrayOf } from 'utils/typeUtils';
 
+window.tf = tf;
+tf.enableDebugMode();
 const Types = window.Types;
 
 const TT = {
@@ -13,7 +15,7 @@ const TT = {
 };
 export class GPGPUProgramNode extends NodeBase<
   {},
-  { kernel: string, outputShape: number[], variableNames: string[] },
+  { userCode: string, outputShape: ?(number[]), variableNames: string[] },
   { program: webgl.GPGPUProgram }
 > {
   static +displayName = 'GPGPU Program';
@@ -24,13 +26,13 @@ export class GPGPUProgramNode extends NodeBase<
   );
   static schema = {
     input: {
-      kernel: Types.string
+      userCode: Types.string
         .desc(
           "Your user code for the kernel to be uploaded to your graphics hardware. Syntax is specific to your backend, but a safe bet is conforming to the OpenGL/WebGL standards that your hardware supports. In order to set an output to your kernel call `setOutput` in your kernel's main function. To get the output coords in your computation call `getOutputCoords`."
         )
         .aliased('GPGPUKernel', 'An open frameworks compliant shader program'),
       outputShape: arrayOf(Types.number).desc(
-        'A tensor shape describing the kernel output, e.g. [100, 100]'
+        'A tensor shape describing the kernel output, e.g. [100, 100]. if omitted, output shape is assumed to be the same as the input shape'
       ),
       variableNames: arrayOf(Types.string).desc(
         'A list of variable names that your kernel will use. This gives you access to functions inside your program kernel. i.e. variable named X gives you the methods `getXAtOutCoords` and `getX`'
@@ -80,7 +82,7 @@ export class GPGPUProgramNode extends NodeBase<
 export class RunGPGPUProgramNode extends NodeBase<
   {},
   { program: webgl.GPGPUProgram, input: any[] },
-  { result: any }
+  { result: number[] }
 > {
   static +displayName = 'Run GPGPU';
   static +registryName = 'RunGPGPUProgram';
@@ -91,7 +93,7 @@ export class RunGPGPUProgramNode extends NodeBase<
       program: TT.Program.desc('The uncompiled program info to be turned into a full WebGL shader'),
       input: arrayOf(Types.any).desc('The input tensor to run through the compiled program kernel'),
     },
-    output: { result: Types.any.desc('Program output') },
+    output: { result: arrayOf(Types.any).desc('Program output') },
     state: {},
   };
   _inputQ: any[][] = [];
@@ -104,10 +106,16 @@ export class RunGPGPUProgramNode extends NodeBase<
     if (!this._program) {
       return;
     }
+    // TODO can we batch this in handles?
     this._inputQ.forEach(async input => {
+      const i = tf.tensor(input);
+      if (this._program && this._program.outputShape.length === 0) {
+        // $FlowIgnore
+        this._program.outputShape = i.shape.slice();
+      }
       const r = await tf
         .backend()
-        .compileAndRun(this._program, [tf.tensor(input)])
+        .compileAndRun(this._program, [i])
         .data();
       if (r) {
         this._result = r;
@@ -119,9 +127,9 @@ export class RunGPGPUProgramNode extends NodeBase<
 
   onInputChange = (edge: Edge, change: Object) => {
     if (edge.toPort === 'program') {
-      this._program = change.inDataFor('program');
+      this._program = edge.inDataFor(change);
     } else if (edge.toPort === 'input') {
-      this._inputQ.push(edge.inDataFor('input'));
+      this._inputQ.push(edge.inDataFor(change));
     }
     this._compileAndRun();
     return [];

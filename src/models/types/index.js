@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 import { TypeBuilder } from 'models/AttributeType';
-import type { AttributeType, TypeMap } from 'models/AttributeType';
+import type { TypeMap } from 'models/AttributeType';
 
 const primitiveSerializer: any => any = v => v;
 // Primitives
