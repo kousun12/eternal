@@ -15,6 +15,7 @@ export const examples = [
   require('models/examples/the music while the music lasts.json'),
   require('models/examples/stephen wolfram.json'),
   require('models/examples/shaders.json'),
+  require('models/examples/gpgpu.json'),
   require('models/examples/percept nets.json'),
   require('models/examples/soundfont-midi.json'),
   require('models/examples/soundfont-tone.json'),
