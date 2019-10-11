@@ -5,7 +5,6 @@ import { fromPairs } from 'lodash';
 import type { State } from 'redux/types';
 import { range } from 'utils/array';
 import type { Pos } from 'types';
-import { addVec, scaleVec, subVec } from 'utils/vector';
 
 type ViewState = {| zoom: number, pan: Pos |};
 export type PosMemo = { [string]: Pos };
@@ -41,15 +40,17 @@ const viewSlice = createSlice({
     },
     zoomIn: (v: ViewState, a: PA<?Pos>) => {
       v.zoom = Math.min(zooms.length - 1, v.zoom + 1);
-      if (a.payload) {
-        v.pan = subVec(v.pan, a.payload);
-      }
+      // todo
+      // if (a.payload) {
+      // v.pan = subVec(v.pan, a.payload);
+      // }
     },
     zoomOut: (v: ViewState, a: PA<?Pos>) => {
       v.zoom = Math.max(0, v.zoom - 1);
-      if (a.payload) {
-        v.pan = subVec(v.pan, a.payload);
-      }
+      // todo
+      // if (a.payload) {
+      // v.pan = subVec(v.pan, a.payload);
+      // }
     },
     zoomReset: (v: ViewState) => {
       v.zoom = defView.zoom;
