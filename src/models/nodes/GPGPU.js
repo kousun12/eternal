@@ -26,14 +26,27 @@ export class GPGPUProgramNode extends NodeBase<
     input: {
       userCode: Types.string
         .desc(
-          "Your user code for the kernel to be uploaded to your graphics hardware. Syntax is specific to your backend, but a safe bet is conforming to the OpenGL/WebGL standards that your hardware supports. In order to set an output to your kernel call `setOutput` in your kernel's main function. To get the output coords in your computation call `getOutputCoords`."
+          <p>
+            Your user code for the kernel to be uploaded to your graphics hardware. Syntax is
+            specific to your backend, but a safe bet is conforming to the OpenGL/WebGL standards
+            that your hardware supports. In order to set an output to your kernel call `setOutput`
+            in your kernel's main function. To get the output coords in your computation call
+            <code>getOutputCoords</code>.
+          </p>
         )
         .aliased('GPGPUKernel', 'An open frameworks compliant shader program'),
       outputShape: arrayOf(Types.number).desc(
-        'A tensor shape describing the kernel output, e.g. [100, 100]. if omitted, output shape is assumed to be the same as the input shape'
+        <p>
+          A tensor shape describing the kernel output, e.g. <code>[100, 100]</code>. if omitted,
+          output shape is assumed to be the same as the input shape
+        </p>
       ),
       variableNames: arrayOf(Types.string).desc(
-        'A list of variable names that your kernel will use. This gives you access to functions inside your program kernel. i.e. variable named X gives you the methods `getXAtOutCoords` and `getX`'
+        <p>
+          A list of variable names that your kernel will use. This gives you access to functions
+          inside your program kernel. i.e. variable named <code>X</code> gives you the methods{' '}
+          <code>getXAtOutCoords</code> and <code>getX</code>
+        </p>
       ),
     },
     output: {
@@ -84,8 +97,12 @@ export class RunGPGPUProgramNode extends NodeBase<
 > {
   static +displayName = 'Run GPGPU';
   static +registryName = 'RunGPGPUProgram';
-  static description =
-    'Compile and run a GPGPU program. Kernels passed in will be compiled and cached, so that subsequent calls to kernels will not create new binaries.';
+  static description = (
+    <span>
+      Compile and run a GPGPU program. Kernels passed in will be compiled and cached, so that
+      subsequent calls to kernels will not create new binaries.
+    </span>
+  );
   static schema = {
     input: {
       program: TT.Program.desc('The uncompiled program info to be turned into a full WebGL shader'),
@@ -125,7 +142,8 @@ export class RunGPGPUProgramNode extends NodeBase<
 
   onInputChange = (edge: Edge, change: Object) => {
     if (edge.toPort === 'input') {
-      this._inputQ.push(edge.inDataFor(change));
+      const i = edge.inDataFor(change);
+      i && this._inputQ.push(i);
     }
     this._compileAndRun();
     return [];

@@ -168,11 +168,6 @@ body {
   stroke-width: 15;
 }
 
-.connector.selected {
-  stroke: $graph-yellow;
-  stroke-width: 6;
-}
-
 .connector-click-area:hover + .connector,
 .connector:hover {
   stroke: #d5d5d5;
@@ -180,31 +175,14 @@ body {
   stroke-width: 4;
 }
 
+.connector.selected {
+  stroke: $graph-yellow;
+  stroke-width: 6;
+}
+
 .connector.highlight {
   stroke: $graph-red;
   z-index: 11;
-}
-
-.trash-icon .trash-icon-trashcan {
-  opacity: 0.8;
-}
-
-.trash-icon:hover {
-  cursor: pointer;
-}
-
-.trash-icon-bg {
-  fill: $primary-graph-color;
-}
-
-.trash-icon:hover .trash-icon-bg {
-  stroke: white;
-  stroke-width: 1;
-  opacity: 0.7;
-}
-
-.trash-icon:hover .trash-icon-trashcan {
-  opacity: 1;
 }
 
 .node-content li {

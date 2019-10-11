@@ -1,10 +1,9 @@
 // @flow
 import React from 'react';
-import { get, reverse } from 'lodash';
+import { get, reverse, set } from 'lodash';
 import NodeBase from 'models/NodeBase';
 import Edge from 'models/Edge';
 import { TT } from 'models/nodes/ToneNode';
-import Regexp from 'vendor/JsonTree/js/components/DataTypes/Regexp';
 import { arrayOf } from 'utils/typeUtils';
 const Types = window.Types;
 
@@ -44,7 +43,7 @@ export class JSONParse extends NodeBase<{}, { in: string }, { out: Object }> {
 export class ExtractNode extends NodeBase<{}, { from: any, get: string }, { out: any }> {
   static +displayName = 'Extract';
   static +registryName = 'ExtractNode';
-  static description = <span>Extract a value from an object</span>;
+  static description = <span>Extract a value from an object. Complement of SetNode</span>;
   static schema = {
     input: {
       from: Types.object.desc('Object to extract from'),
@@ -58,9 +57,26 @@ export class ExtractNode extends NodeBase<{}, { from: any, get: string }, { out:
 
   process = () => ({ out: get(this.props.from, this.props.get || '') });
 
-  onInputChange = (edge: Edge, change: Object) => {
-    return this.outKeys();
+  onInputChange = () => this.outKeys();
+}
+
+export class SetNode extends NodeBase<{}, { target: any, path: string, value: any }, { out: any }> {
+  static +displayName = 'Set Value';
+  static +registryName = 'SetNode';
+  static description = <span>Set a value on any object / array. Complement of ExtractNode</span>;
+  static schema = {
+    input: {
+      target: Types.object.desc('Object / array to set to'),
+      path: Types.string.desc("The path to set at. You can use dot notation, i.e. 'foo.bar'"),
+      value: Types.any.desc('The value to set at path.'),
+    },
+    output: { out: Types.any.desc('The extracted value, or `undefined`') },
+    state: {},
   };
+
+  process = () => ({ out: set(this.props.target, this.props.path || '', this.props.value) });
+
+  onInputChange = () => this.outKeys();
 }
 
 export class StephenWolfram extends NodeBase<
@@ -193,16 +209,17 @@ export class JoinNode extends NodeBase<{}, { array: any[], separator: string }, 
     state: {},
   };
 
-  process = () => ({ out: (this.props.array || []).join(this.props.separator || '') });
-
-  onInputChange = (edge: Edge, change: Object) => {
-    return this.outKeys();
+  process = () => {
+    const val = (this.props.array || []).join(this.props.separator || '');
+    return { out: val };
   };
+
+  onInputChange = () => this.outKeys();
 }
 
 export class RegexReplace extends NodeBase<
   {},
-  { string: string, regex: Regexp | string, replacement: string },
+  { string: string, regex: RegExp | string, replacement: string },
   { out: string }
 > {
   static +displayName = 'Regex Replace';
@@ -217,7 +234,7 @@ export class RegexReplace extends NodeBase<
     output: { out: Types.string.desc('The joined array, as a string') },
     state: {},
   };
-  re: Regexp;
+  re: RegExp;
 
   willReceiveProps = (newProps: Object, prevProps: Object) => {
     if (!prevProps || (newProps.regex !== prevProps.regex && newProps.regex)) {
@@ -261,4 +278,6 @@ export class ArrayFillNode extends NodeBase<{}, { length: number, fillWith: any 
   process = (): { out: any[] } => ({
     out: [...new Array(this.props.length || 0)].map(() => this.props.fillWith),
   });
+
+  onInputChange = () => this.outKeys();
 }

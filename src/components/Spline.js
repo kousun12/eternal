@@ -1,33 +1,20 @@
 // @flow
 import React from 'react';
+import { get } from 'lodash';
 import onClickOutside from 'react-onclickoutside';
-
-import TrashIcon from './TrashIcon';
 import type { Pos } from 'types';
 import Edge from 'models/Edge';
 import { Hotkey, Hotkeys, HotkeysTarget } from '@blueprintjs/core';
 
-type P = {
-  start: Pos,
-  end: Pos,
-  onRemove?: () => void,
-  edge: ?Edge,
-  highlighted?: boolean,
-};
-
-type S = { selected: boolean, position: Pos };
+type P = { start: Pos, end: Pos, onRemove?: () => void, edge: ?Edge, highlighted?: boolean };
+type S = { selected: boolean };
 
 class Spline extends React.Component<P, S> {
   el: ?Element;
-  state = { selected: false, position: { x: 0, y: 0 } };
+  state = { selected: false };
   listeningOnEdge: string;
 
-  handleClick = e => {
-    this.setState({
-      selected: !this.state.selected,
-      position: { x: e.clientX, y: e.clientY },
-    });
-  };
+  handleClick = () => this.setState({ selected: !this.state.selected });
 
   componentDidMount() {
     this._setListener();
@@ -45,7 +32,8 @@ class Spline extends React.Component<P, S> {
   };
 
   _onNotify = () => {
-    this.el &&
+    !this.state.selected &&
+      this.el &&
       // $FlowIssue
       this.el.animate(
         [
@@ -71,16 +59,17 @@ class Spline extends React.Component<P, S> {
   };
 
   render() {
-    let { selected, position } = this.state;
-    let { start, end, highlighted } = this.props;
-    let dist = this.distance([start.x, start.y], [end.x, end.y]);
-    let pathString = this.bezierCurve(
+    let { selected } = this.state;
+    let { start, end, highlighted, edge } = this.props;
+    const dist = this.distance([start.x, start.y], [end.x, end.y]);
+    const selfEdge = edge && get(edge, 'from.id') === get(edge, 'to.id');
+    const pathString = this.bezierCurve(
       start.x, // start x
       start.y, // start y
-      start.x + dist * 0.18, // cp1 x
-      start.y, // cp1 y
-      end.x - dist * 0.35, // cp2 x
-      end.y, // cp2 y
+      start.x + dist * (selfEdge ? 0.7 : 0.18), // cp1 x
+      start.y - dist * (selfEdge ? 0.9 : 0), // cp1 y
+      end.x - dist * (selfEdge ? 0.7 : 0.35), // cp2 x
+      end.y - dist * (selfEdge ? 0.9 : 0), // cp2 y
       end.x, // end x
       end.y
     );
@@ -90,7 +79,6 @@ class Spline extends React.Component<P, S> {
       <g>
         <path className="connector-click-area" d={pathString} onClick={this.handleClick} />
         <path className={cls} d={pathString} onClick={this.handleClick} ref={r => (this.el = r)} />
-        {selected ? <TrashIcon position={position} onClick={this.handleRemove} /> : null}
       </g>
     );
   }

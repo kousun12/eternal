@@ -8,22 +8,25 @@ const Types = window.Types;
 export class DivideNode extends NodeBase<
   {},
   { dividend: number, divisor: number },
-  { result: number }
+  { result: number, int: number }
 > {
   static +displayName = 'Divide';
   static +registryName = 'DivideNode';
   static description = <span>Divide one number by another</span>;
   static schema = {
     input: { dividend: Types.number, divisor: Types.number },
-    output: { result: Types.number },
+    output: { result: Types.number, int: Types.number },
     state: {},
   };
 
-  process = () => ({ result: this.props.dividend / this.props.divisor });
+  process = () => ({
+    result: this.props.dividend / this.props.divisor,
+    int: parseInt(this.props.dividend / this.props.divisor, 10),
+  });
 
-  willReceiveProps = (newProps: Object, prevProps: Object) => this.outKeys();
+  willReceiveProps = () => this.outKeys();
 
-  onInputChange = (edge: Edge, change: Object) => this.outKeys();
+  onInputChange = () => this.outKeys();
 }
 
 export class SumNode extends NodeBase<{}, { numbers: number[] }, { result: number }> {

@@ -26,7 +26,8 @@ const renderItem: ItemRenderer<T> = (node, { handleClick, modifiers, query }) =>
   );
 };
 
-const noResults = <MenuItem disabled={true} text="No matching nodes" />;
+const noResults = <MenuItem disabled={true} text="No matching node in graph" />;
+
 const itemListRenderer = (o: {
   activeItem: T | null,
   filteredItems: T[],

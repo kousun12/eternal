@@ -4,7 +4,7 @@ import NodeBase from 'models/NodeBase';
 
 const Types = window.Types;
 
-export class DomNode extends NodeBase<{}, { html: string }, null> {
+export class DomNode extends NodeBase<{}, { html: string, style: string, text: ?string }, null> {
   static +displayName = 'HTML Element';
   static +registryName = 'DomNode';
   static description = <span>A node that renders HTML to the screen</span>;
@@ -21,9 +21,13 @@ export class DomNode extends NodeBase<{}, { html: string }, null> {
   domNode: HTMLElement;
   inserted: boolean = false;
 
-  onAddToGraph = () => {
+  _ensureExist = () => {
+    if (this.inserted) {
+      return;
+    }
     this.domNode = document.createElement('div');
-    this._tryInsert();
+    this.props.style && this.domNode.setAttribute('style', this.props.style);
+    setTimeout(() => this._tryInsert(), 20);
   };
 
   _tryInsert = () => {
@@ -33,14 +37,15 @@ export class DomNode extends NodeBase<{}, { html: string }, null> {
     const root = document.getElementById('graph-root');
     const scalable = document.getElementById('graph-scalable');
     if (root && scalable) {
-      root.insertBefore(this.domNode, scalable);
-      this.inserted = true;
-    } else {
+      this.inserted = Boolean(root.insertBefore(this.domNode, scalable));
+    }
+    if (!this.inserted) {
       setTimeout(() => this._tryInsert(), 20);
     }
   };
 
   willReceiveProps = (newProps: Object, prevProps: Object) => {
+    this._ensureExist();
     if (!prevProps || newProps.text !== prevProps.text) {
       this.domNode.innerText = newProps.text;
     }
@@ -48,6 +53,7 @@ export class DomNode extends NodeBase<{}, { html: string }, null> {
       this.domNode.innerHTML = newProps.html;
     }
     if (!prevProps || newProps.style !== prevProps.style) {
+      console.log(newProps.style);
       this.domNode.setAttribute('style', newProps.style);
     }
   };

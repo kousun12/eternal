@@ -47,7 +47,10 @@ export default class NodeBase<Val: Object, In: ?Object, Out: ?Object> {
 
   _process: (string[], boolean) => Out = (keys, force) => {
     const val = this.process(keys);
-    const forward = force ? val : omitBy(val, (v, k) => isEqual(v, this.outputCache[k]));
+    // TODO: think about object equality case. should we update?
+    const forward = force
+      ? val
+      : omitBy(val, (v, k) => typeof v !== 'object' && isEqual(v, this.outputCache[k]));
     this.outputCache = { ...this.outputCache, ...val };
     return forward;
   };
