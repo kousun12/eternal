@@ -66,7 +66,7 @@ export class ScaleNode extends NodeBase<
     };
   };
 
-  onInputChange = (edge: Edge, change: Object) => this.outKeys();
+  onInputChange = () => this.outKeys();
 }
 
 export class ChordNode extends NodeBase<
@@ -81,7 +81,7 @@ export class ChordNode extends NodeBase<
     input: {
       tonic: Types.string.desc(
         'The tonic for this scale, e.g. "C" or "Ab4". ' +
-          'You can optionally specify the chord name here too, and omit the name input, e.g. "EMaj7"' +
+          'You can optionally specify the chord name here too, and omit the name input, e.g. "E Maj7"' +
           ' See the name param info for recognized chord names.'
       ),
       name: Types.string.desc(
@@ -112,7 +112,7 @@ export class ChordNode extends NodeBase<
     };
   };
 
-  onInputChange = (edge: Edge, change: Object) => this.outKeys();
+  onInputChange = () => this.outKeys();
 }
 
 export class KeyTriadsNode extends NodeBase<{}, { key: string }, { notes: string[] }> {

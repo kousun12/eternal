@@ -18,6 +18,7 @@ export class GPGPUProgramNode extends NodeBase<
 > {
   static +displayName = 'GPGPU Program';
   static +registryName = 'GPGPUProgram';
+  static +defaultProps = { variableNames: [], outputShape: [], userCode: '' };
   static shortNames = { variableNames: 'varNames', outputShape: 'outShape' };
   static description = (
     <span>Define a GPGPU program to be run on your machine's compatible backend</span>
@@ -56,33 +57,26 @@ export class GPGPUProgramNode extends NodeBase<
     },
     state: {},
   };
-
-  _program: webgl.GPGPUProgram = { outputShape: [], userCode: '', variableNames: [] };
+  _varNames = [];
 
   updateProgram = (up: {
     outputShape?: number[],
     variableNames?: string[] | string,
     userCode?: string,
   }) => {
-    if (up.outputShape) {
-      this._program.outputShape = up.outputShape;
-    }
     if (up.variableNames) {
       if (Array.isArray(up.variableNames)) {
-        this._program.variableNames = up.variableNames;
+        this._varNames = up.variableNames;
       } else if (
         typeof up.variableNames === 'string' &&
-        !this._program.variableNames.includes(up.variableNames)
+        !this._varNames.includes(up.variableNames)
       ) {
-        this._program.variableNames.push(up.variableNames);
+        this._varNames.push(up.variableNames);
       }
-    }
-    if (up.userCode) {
-      this._program.userCode = up.userCode;
     }
   };
 
-  process = () => ({ program: this._program });
+  process = () => ({ program: { ...this.props, variableNames: this._varNames } });
 
   onInputChange = (edge: Edge, change: Object) => {
     this.updateProgram(change);
@@ -116,12 +110,12 @@ export class RunGPGPUProgramNode extends NodeBase<
 
   process = () => ({ result: this._result });
 
+  // TODO can we batch this in handles?
   _compileAndRun = () => {
     const { program } = this.props;
     if (!program) {
       return;
     }
-    // TODO can we batch this in handles?
     this._inputQ.forEach(async input => {
       const i = tf.tensor(input);
       const { program } = this.props;
