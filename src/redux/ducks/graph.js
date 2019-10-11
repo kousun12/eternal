@@ -5,7 +5,7 @@ import { fromPairs } from 'lodash';
 import type { State } from 'redux/types';
 import { range } from 'utils/array';
 import type { Pos } from 'types';
-import { addVec } from 'utils/vector';
+import { addVec, scaleVec, subVec } from 'utils/vector';
 
 type ViewState = {| zoom: number, pan: Pos |};
 export type PosMemo = { [string]: Pos };
@@ -28,7 +28,7 @@ const infoOpenSlice = createSlice({
   reducers: { setInfoOpen: (infoOpen: ?string, a: PA<?string>) => a.payload },
 });
 
-export const zooms = range([5, 205], 5, 0);
+export const zooms = range([20, 205], 5, 0);
 const defView = { pan: { x: 0, y: 0 }, zoom: zooms.indexOf(100) };
 
 // NB using immer to update state, which looks like mutation but is actually not
@@ -42,13 +42,13 @@ const viewSlice = createSlice({
     zoomIn: (v: ViewState, a: PA<?Pos>) => {
       v.zoom = Math.min(zooms.length - 1, v.zoom + 1);
       if (a.payload) {
-        v.pan = addVec(v.pan, a.payload);
+        v.pan = subVec(v.pan, a.payload);
       }
     },
     zoomOut: (v: ViewState, a: PA<?Pos>) => {
       v.zoom = Math.max(0, v.zoom - 1);
       if (a.payload) {
-        v.pan = addVec(v.pan, a.payload);
+        v.pan = subVec(v.pan, a.payload);
       }
     },
     zoomReset: (v: ViewState) => {

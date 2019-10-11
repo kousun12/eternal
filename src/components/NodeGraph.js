@@ -54,14 +54,16 @@ type S = {|
   source: ?[string, number],
   dragging: boolean,
   mousePos: ?Pos,
+  canvasDragEnd: ?Pos,
 |};
 
 class NodeGraph extends React.Component<P, S> {
   dragOffsets: PosMemo = {};
+  canvasDragStart: ?Pos;
   moving: boolean = false;
   timeoutId: ?TimeoutID = null;
   deltaY: number = 0;
-  state = { source: null, dragging: false, mousePos: null };
+  state = { source: null, dragging: false, mousePos: null, canvasDragEnd: null };
 
   componentDidMount() {
     document.addEventListener('mousemove', this.onMouseMove);
@@ -106,7 +108,7 @@ class NodeGraph extends React.Component<P, S> {
     }
     if (txFn) {
       const fromCenter = subVec({ x: e.clientX, y: e.clientY }, window.centerP);
-      txFn(scaleVec(fromCenter, -scale * 0.02 * Math.sign(e.deltaY)));
+      txFn(scaleVec(fromCenter, scale * 0.1 * Math.sign(e.deltaY)));
     }
   };
 
@@ -255,19 +257,70 @@ class NodeGraph extends React.Component<P, S> {
     }
   };
 
-  _onCanvasDrag = throttle((e: Event, data: DraggableData) => {
+  _overlap = (rect1, rect2) =>
+    !(
+      rect1.right < rect2.left ||
+      rect1.left > rect2.right ||
+      rect1.bottom < rect2.top ||
+      rect1.top > rect2.bottom
+    );
+
+  _setIntersects = throttle(() => {
+    const selBox = document.getElementById('selection-box');
+    if (!selBox) {
+      return;
+    }
+    const selBound = selBox.getBoundingClientRect();
+    const ids = this.props.graph.nodes
+      .filter(nis => {
+        const el = document.getElementById(nis.node.domId());
+        return el && this._overlap(selBound, el.getBoundingClientRect());
+      })
+      .map(nis => nis.node.id);
+    this.props.selSet(ids);
+  }, 18);
+
+  _onCanvasDrag = throttle((e: MouseEvent, data: DraggableData) => {
     if (!this.moving) {
-      const { setPan, pan, scaleInverse } = this.props;
-      setPan(addVec(pan, scaleVec({ x: data.deltaX, y: data.deltaY }, scaleInverse)));
+      if (e.metaKey && this.canvasDragStart) {
+        this.setState({ canvasDragEnd: scaleVec(data, this.props.scaleInverse) });
+        this._setIntersects();
+      } else {
+        const { setPan, pan, scaleInverse } = this.props;
+        setPan(addVec(pan, scaleVec({ x: data.deltaX, y: data.deltaY }, scaleInverse)));
+      }
     }
   }, 18);
+
+  _onStartCanvasDrag = (e: MouseEvent, data: DraggableData) => {
+    if (e.metaKey) {
+      this.canvasDragStart = scaleVec(data, this.props.scaleInverse);
+    }
+  };
+
+  _onEndCanvasDrag = (e: MouseEvent, data: DraggableData) => {
+    this.canvasDragStart = null;
+    this.setState({ canvasDragEnd: null });
+  };
 
   render() {
     const { dragging, source } = this.state;
     const { visible, selected, scale, pan, graph, scaleInverse } = this.props;
+    const selStyle = this._selectionBoxStyle();
     return (
-      <DraggableCore onDrag={this._onCanvasDrag} scale={scale}>
-        <div id="graph-root" className={dragging ? 'dragging' : ''} onWheel={this.onScroll}>
+      <DraggableCore
+        onDrag={this._onCanvasDrag}
+        scale={scale}
+        onStart={this._onStartCanvasDrag}
+        onStop={this._onEndCanvasDrag}
+      >
+        <div
+          id="graph-root"
+          className={
+            dragging ? 'dragging' : selStyle ? 'selecting' : this.moving ? 'moving-node' : ''
+          }
+          onWheel={this.onScroll}
+        >
           <div id="graph-scalable" className="graph-scalable" style={this._rootStyle()}>
             {graph.nodes.map((nis, i) => {
               return (
@@ -302,13 +355,35 @@ class NodeGraph extends React.Component<P, S> {
               graph={graph}
               mousePos={this.state.mousePos}
             />
+            {selStyle && <div id="selection-box" style={selStyle} />}
           </div>
         </div>
       </DraggableCore>
     );
   }
 
-  _rootStyle = () => ({ transform: `scale(${this.props.scale})` });
+  _rootStyle = () => ({
+    transform: `scale(${this.props.scale})`,
+    width: `${this.props.scaleInverse * 100}vw`,
+    height: `${this.props.scaleInverse * 100}vh`,
+  });
+
+  _selectionBoxStyle = () => {
+    const {
+      canvasDragStart,
+      state: { canvasDragEnd },
+    } = this;
+    if (!canvasDragEnd || !canvasDragStart) {
+      return;
+    }
+    const selCoord = subVec(canvasDragEnd, canvasDragStart);
+    return {
+      width: Math.abs(selCoord.x),
+      height: Math.abs(selCoord.y),
+      top: Math.min(canvasDragStart.y, canvasDragEnd.y),
+      left: Math.min(canvasDragStart.x, canvasDragEnd.x),
+    };
+  };
 
   _onCopy = () => {
     const selected = this.props.graph.duplicate(this._getSelected()).map(nis => nis.node.id);
@@ -343,13 +418,21 @@ class NodeGraph extends React.Component<P, S> {
           />
         )}
         <Hotkey global combo="shift + meta + a" label="Select All" onKeyDown={this._selectAll} />
-        <Hotkey global combo="alt + =" label="Zoom in" onKeyDown={zoomIn} group="View" />
-        <Hotkey global combo="alt + -" label="Zoom out" onKeyDown={zoomOut} group="View" />
-        <Hotkey global combo="alt + 0" label="Home View" onKeyDown={zoomReset} group="View" />
+        <Hotkey global combo="alt + =" label="Zoom in" onKeyDown={() => zoomIn()} group="View" />
+        <Hotkey global combo="alt + -" label="Zoom out" onKeyDown={() => zoomOut()} group="View" />
+        <Hotkey
+          global
+          combo="alt + 0"
+          label="Home View"
+          onKeyDown={() => zoomReset()}
+          group="View"
+        />
         <Hotkey global combo="right" label="Pan right" onKeyDown={this._panR} group="View" />
         <Hotkey global combo="left" label="Pan left" onKeyDown={this._panL} group="View" />
         <Hotkey global combo="down" label="Pan down" onKeyDown={this._panD} group="View" />
         <Hotkey global combo="up" label="Pan up" onKeyDown={this._panU} group="View" />
+
+        <Hotkey global combo="meta + drag" label="Select Area" group="Misc" />
       </Hotkeys>
     );
   }

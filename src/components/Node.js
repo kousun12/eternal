@@ -56,6 +56,9 @@ class Node extends React.Component<P> {
   };
 
   handleDrag = (event: MouseEvent, data: DraggableData) => {
+    if (event.metaKey) {
+      return;
+    }
     this.props.onNodeMove(this.props.nis, data);
   };
 
@@ -131,7 +134,12 @@ class Node extends React.Component<P> {
         scale={scale || 1}
         positionOffset={positionOffset}
       >
-        <div className={nodeClass} onClick={this.handleClick} onDoubleClick={this._selectNode}>
+        <div
+          className={nodeClass}
+          onClick={this.handleClick}
+          onDoubleClick={this._selectNode}
+          id={node.domId()}
+        >
           <header className="node-header">
             <span className="node-title">{name}</span>
           </header>

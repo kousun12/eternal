@@ -110,6 +110,8 @@ export default class NodeBase<Val: Object, In: ?Object, Out: ?Object> {
     }
   };
 
+  domId = () => `n-root-${this.id}`
+
   addOutput: (output: Edge) => void = out => {
     this.beforeConnectOut(out);
     this.outputs.push(out);
