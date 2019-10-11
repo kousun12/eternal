@@ -95,25 +95,25 @@ export class RunGPGPUProgramNode extends NodeBase<
     state: {},
   };
   _inputQ: any[][] = [];
-  _program: ?webgl.GPGPUProgram;
   _result: any;
 
   process = () => ({ result: this._result });
 
   _compileAndRun = () => {
-    if (!this._program) {
+    const { program } = this.props;
+    if (!program) {
       return;
     }
     // TODO can we batch this in handles?
     this._inputQ.forEach(async input => {
       const i = tf.tensor(input);
-      if (this._program && this._program.outputShape.length === 0) {
-        // $FlowIgnore
-        this._program.outputShape = i.shape.slice();
+      const { program } = this.props;
+      if (program && program.outputShape.length === 0) {
+        program.outputShape = i.shape.slice();
       }
       const r = await tf
         .backend()
-        .compileAndRun(this._program, [i])
+        .compileAndRun(program, [i])
         .data();
       if (r) {
         this._result = r;
@@ -124,9 +124,7 @@ export class RunGPGPUProgramNode extends NodeBase<
   };
 
   onInputChange = (edge: Edge, change: Object) => {
-    if (edge.toPort === 'program') {
-      this._program = edge.inDataFor(change);
-    } else if (edge.toPort === 'input') {
+    if (edge.toPort === 'input') {
       this._inputQ.push(edge.inDataFor(change));
     }
     this._compileAndRun();

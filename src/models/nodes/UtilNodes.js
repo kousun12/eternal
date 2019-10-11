@@ -244,3 +244,21 @@ export class RegexReplace extends NodeBase<
     return this.outKeys();
   };
 }
+
+export class ArrayFillNode extends NodeBase<{}, { length: number, fillWith: any }, { out: any[] }> {
+  static +displayName = 'Array Fill';
+  static +registryName = 'ArrayFillNode';
+  static description = <span>Create an array filled with a value</span>;
+  static schema = {
+    input: {
+      length: Types.number.desc('The length of this array'),
+      fillWith: Types.any.desc('The value to fill with'),
+    },
+    output: { out: arrayOf(Types.any).desc('An array, filled to length by value') },
+    state: {},
+  };
+
+  process = (): { out: any[] } => ({
+    out: [...new Array(this.props.length || 0)].map(() => this.props.fillWith),
+  });
+}
