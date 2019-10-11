@@ -59,11 +59,7 @@ export class GPGPUProgramNode extends NodeBase<
   };
   _varNames = [];
 
-  updateProgram = (up: {
-    outputShape?: number[],
-    variableNames?: string[] | string,
-    userCode?: string,
-  }) => {
+  updateProgram = (up: { variableNames?: string[] | string }) => {
     if (up.variableNames) {
       if (Array.isArray(up.variableNames)) {
         this._varNames = up.variableNames;
@@ -122,14 +118,11 @@ export class RunGPGPUProgramNode extends NodeBase<
       if (program && program.outputShape.length === 0) {
         program.outputShape = i.shape.slice();
       }
-      const r = await tf
+      this._result = await tf
         .backend()
         .compileAndRun(program, [i])
         .data();
-      if (r) {
-        this._result = r;
-        this.notifyOutputs('result');
-      }
+      this._result && this.notifyOutputs('result');
     });
     this._inputQ = [];
   };
