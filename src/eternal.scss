@@ -67,6 +67,10 @@ body {
   font-family: Monaco, "Source Code Pro", monospace, sans-serif;
   color: #a5a5a5;
   margin: 0;
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
 }
 
 .graph-toolbar {
