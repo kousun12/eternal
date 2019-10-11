@@ -7,28 +7,44 @@ const primitiveSerializer: any => any = v => v;
 // Primitives
 const number = new TypeBuilder('number')
   .withType('primitive')
-  .desc('A basic `number` type.')
+  .desc(
+    <span>
+      A basic <code>number</code> type
+    </span>
+  )
   .havingDefault(0)
   .withParser(v => (typeof v === 'string' ? parseInt(v) : v))
   .withSerializer(primitiveSerializer)
   .build();
 const string = new TypeBuilder('string')
   .withType('primitive')
-  .desc('A basic `string` type.')
+  .desc(
+    <span>
+      A basic <code>string</code> type
+    </span>
+  )
   .havingDefault('')
   .withParser(v => (typeof v === 'object' ? JSON.stringify(v) : String(v)))
   .withSerializer(a => (typeof a === 'object' ? JSON.stringify(a) : String(a)))
   .build();
 const boolean = new TypeBuilder('boolean')
   .withType('primitive')
-  .desc('A basic `boolean` type.')
+  .desc(
+    <span>
+      A basic <code>boolean</code> type
+    </span>
+  )
   .havingDefault(false)
   .withParser(Boolean)
   .withSerializer(primitiveSerializer)
   .build();
 const date = new TypeBuilder('date')
   .withType('primitive')
-  .desc('A basic `date` type.')
+  .desc(
+    <span>
+      A basic <code>date</code> type
+    </span>
+  )
   .havingDefault(new Date())
   .withSerializer(v => (v instanceof Date ? v.toISOString() : undefined))
   .withParser(v => (typeof v === 'string' ? Date.parse(v) : v))
@@ -83,7 +99,11 @@ const object = new TypeBuilder('object')
 const Vec2 = new TypeBuilder('Vec2')
   .withSchema(({ x: number, y: number }: TypeMap))
   .withType('complex')
-  .desc('A 2D Vector with keys `x` and `y`')
+  .desc(
+    <span>
+      A 2D Vector with keys <code>x</code> and <code>y</code>
+    </span>
+  )
   .havingDefault({ x: 0, y: 0 })
   .withSerializer(v => {
     if (
@@ -101,7 +121,11 @@ const Vec2 = new TypeBuilder('Vec2')
 const Vec3 = new TypeBuilder('Vec3')
   .withSchema(({ x: number, y: number, z: number }: TypeMap))
   .withType('complex')
-  .desc('A 3D Vector with keys `x`, `y` and `z`')
+  .desc(
+    <span>
+      A 3D Vector with keys <code>x</code>, <code>y</code>, and <code>z</code>
+    </span>
+  )
   .havingDefault({ x: 0, y: 0, z: 0 })
   .withSerializer(v => {
     if (

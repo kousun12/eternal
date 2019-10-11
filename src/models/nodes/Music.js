@@ -42,7 +42,9 @@ export class ScaleNode extends NodeBase<
         <div>
           <p>The name of the scale. Possible values:</p>
           <p>
-            <code>{Scale.names().join(', ')}</code>
+            {Scale.names()
+              .map(n => <code>{n}</code>)
+              .join(', ')}
           </p>
         </div>
       ),
@@ -86,7 +88,9 @@ export class ChordNode extends NodeBase<
         <div>
           <p>The name of the chord. Recognized names:</p>
           <p>
-            <code>{Chord.names().join(', ')}</code>
+            {Chord.names()
+              .map(n => <code>{n}</code>)
+              .join(', ')}
           </p>
         </div>
       ),

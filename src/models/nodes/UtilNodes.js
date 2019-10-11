@@ -48,10 +48,18 @@ export class ExtractNode extends NodeBase<{}, { from: any, get: string }, { out:
     input: {
       from: Types.object.desc('Object to extract from'),
       get: Types.string.desc(
-        "The key to get. You can traverse an object with dot notation, i.e. 'foo.bar'"
+        <span>
+          The key to get. You can traverse an object with dot notation, i.e. <code>foo.bar</code>
+        </span>
       ),
     },
-    output: { out: Types.any.desc('The extracted value, or `undefined`') },
+    output: {
+      out: Types.any.desc(
+        <span>
+          The extracted value, or <code>undefined</code>
+        </span>
+      ),
+    },
     state: {},
   };
 
@@ -67,10 +75,20 @@ export class SetNode extends NodeBase<{}, { target: any, path: string, value: an
   static schema = {
     input: {
       target: Types.object.desc('Object / array to set to'),
-      path: Types.string.desc("The path to set at. You can use dot notation, i.e. 'foo.bar'"),
+      path: Types.string.desc(
+        <span>
+          The path to set at. You can use dot notation, i.e. <code>foo.bar</code>
+        </span>
+      ),
       value: Types.any.desc('The value to set at path.'),
     },
-    output: { out: Types.any.desc('The extracted value, or `undefined`') },
+    output: {
+      out: Types.any.desc(
+        <span>
+          The extracted value, or <code>undefined</code>
+        </span>
+      ),
+    },
     state: {},
   };
 

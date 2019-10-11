@@ -453,9 +453,13 @@ $attrs-pad-sides: 16px;
   color: rgba(250, 250, 250, 0.8)
 }
 
-.attr-help-content {
-}
+.attr-help-content { }
 
+code {
+  border-radius: 2px;
+  background-color: rgba(0, 0, 0, 0.2);
+  padding: 1px 4px 3px 4px;
+}
 // JSON VIEWER STYLES
 
 .react-json-view {

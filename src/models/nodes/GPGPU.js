@@ -29,9 +29,9 @@ export class GPGPUProgramNode extends NodeBase<
           <p>
             Your user code for the kernel to be uploaded to your graphics hardware. Syntax is
             specific to your backend, but a safe bet is conforming to the OpenGL/WebGL standards
-            that your hardware supports. In order to set an output to your kernel call `setOutput`
-            in your kernel's main function. To get the output coords in your computation call
-            <code>getOutputCoords</code>.
+            that your hardware supports. In order to set an output to your kernel call{' '}
+            <code>setOutput</code> in your kernel's main function. To get the output coords in your
+            computation call <code>getOutputCoords</code>.
           </p>
         )
         .aliased('GPGPUKernel', 'An open frameworks compliant shader program'),
