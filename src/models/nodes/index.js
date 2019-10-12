@@ -43,7 +43,7 @@ import {
   BoxGeometryNode,
 } from './Geometries';
 import { LambertMaterialNode, ShaderMaterialNode } from './MaterialNode';
-import { AndNode, OrNode, NotNode, EqualsNode } from './Logic';
+import { AndNode, OrNode, NotNode, EqualsNode, SwitchNode } from './Logic';
 import MeshNode from './MeshNode';
 import { MidiOutNode, MidiInNode } from './Midi';
 import {
@@ -123,6 +123,7 @@ export {
   OrNode,
   NotNode,
   EqualsNode,
+  SwitchNode,
   PerformanceRNNNode,
   InfoLog,
   ScaleNode,
@@ -203,6 +204,7 @@ export const allNodes = [
   OrNode,
   NotNode,
   EqualsNode,
+  SwitchNode,
   PerformanceRNNNode,
   InfoLog,
   ScaleNode,

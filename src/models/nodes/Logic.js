@@ -99,9 +99,8 @@ export class SwitchNode extends NodeBase<
     result: isEqual(this.props.value, this.props.equals) ? this.props.value : this.props.else,
   });
 
-  onInputChange = (edge: Edge, change: Object) => {
-    return typeof this.props.value !== 'undefined' && typeof this.props.equals !== 'undefined'
+  onInputChange = () =>
+    typeof this.props.value !== 'undefined' && typeof this.props.equals !== 'undefined'
       ? this.outKeys()
       : [];
-  };
 }
