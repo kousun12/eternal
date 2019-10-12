@@ -286,8 +286,12 @@ class NodeGraph extends React.Component<P, S> {
         this.setState({ canvasDragEnd: data });
         this._setIntersects();
       } else {
-        const { setPan, pan, scaleInverse } = this.props;
-        setPan(addVec(pan, scaleVec({ x: data.deltaX, y: data.deltaY }, scaleInverse)));
+        const { setPan, pan, scaleInverse, scale } = this.props;
+        const newPan = addVec(pan, scaleVec({ x: data.deltaX, y: data.deltaY }, scaleInverse));
+        setPan(newPan);
+        if (document.body) {
+          document.body.style.backgroundPosition = `${newPan.x * scale}px ${newPan.y * scale}px`;
+        }
       }
     }
   }, 18);
