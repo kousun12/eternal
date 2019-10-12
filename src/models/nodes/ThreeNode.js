@@ -13,6 +13,8 @@ import {
   Object3D,
   TextureLoader,
   Vector2,
+  Vector3,
+  Color as ThreeColor,
 } from 'three';
 import {
   ChromaticAberrationEffect,
@@ -63,7 +65,8 @@ export default class ThreeNode extends NodeBase<S, P, null> {
   _start = () => {
     if (this.props.child && !this.started) {
       this.started = true;
-      this.state.base.camera.position.set(-6, 1, 30);
+      this.state.base.camera.position.set(0, 0, 30);
+      this.state.base.camera.lookAt(new Vector3(0, 0, 0));
       this.state.base.start();
       if (this.state.base.renderPass && this.state.base.renderPass.renderToScreen) {
         this.rendered = this.state.base.renderPass;
@@ -102,6 +105,7 @@ export default class ThreeNode extends NodeBase<S, P, null> {
       const renderer = get(this.state, 'base.renderer');
       if (renderer && renderer.getClearColor() !== newColor) {
         renderer.setClearColor(newColor);
+        this.state.base.scene.background = new ThreeColor(newColor);
       }
     }
     if (toPort === 'clearAlpha') {

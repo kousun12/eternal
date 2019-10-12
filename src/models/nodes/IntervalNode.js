@@ -1,7 +1,6 @@
 // @flow
 import NodeBase from 'models/NodeBase';
 import React from 'react';
-import Edge from 'models/Edge';
 const Types = window.Types;
 
 type P = { value: any, interval: number };
@@ -10,6 +9,7 @@ type O = { count: number, value: any };
 
 const intervalDesc = 'The interval at which this node will emit, in miliseconds';
 const countDesc = 'The number of times this node has emitted so far.';
+
 export default class IntervalNode extends NodeBase<S, P, O> {
   count: number = 0;
   static displayName = 'Interval';
@@ -69,5 +69,5 @@ export default class IntervalNode extends NodeBase<S, P, O> {
   };
 
   // do not notify on input changes
-  onInputChange = (edge: Edge, change: Object) => [];
+  onInputChange = () => [];
 }

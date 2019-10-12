@@ -299,3 +299,19 @@ export class ArrayFillNode extends NodeBase<{}, { length: number, fillWith: any 
 
   onInputChange = () => this.outKeys();
 }
+
+export class CountSourceNode extends NodeBase<{}, {}, { count: number }> {
+  static +displayName = 'Count Source';
+  static +registryName = 'CountSourceNode';
+  static description = <span>Create an array filled with a value</span>;
+  static schema = {
+    input: {},
+    output: { count: Types.number.desc('The output count') },
+    state: {},
+  };
+  _count = 0;
+
+  process = () => ({ count: this._count++ });
+
+  onInputChange = () => this.outKeys();
+}

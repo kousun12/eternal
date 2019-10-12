@@ -56,6 +56,7 @@ import {
   JoinNode,
   RegexReplace,
   ArrayFillNode,
+  CountSourceNode,
 } from './UtilNodes';
 import Vector2D from './Vector2D';
 import Vector3D from './Vector3D';
@@ -139,6 +140,7 @@ export {
   JoinNode,
   RegexReplace,
   ArrayFillNode,
+  CountSourceNode,
   DomNode,
   PlusNode,
   GPGPUProgramNode,
@@ -218,6 +220,7 @@ export const allNodes = [
   JoinNode,
   RegexReplace,
   ArrayFillNode,
+  CountSourceNode,
   DomNode,
   PlusNode,
   GPGPUProgramNode,

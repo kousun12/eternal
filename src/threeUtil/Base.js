@@ -8,6 +8,8 @@ import {
   Scene,
   Vector2,
   WebGLRenderer,
+  Color,
+  OrthographicCamera,
 } from 'three';
 import { throttle } from 'lodash';
 import OrbitControls from 'orbit-controls-es6';
@@ -40,7 +42,7 @@ export default class Base {
   loadingManager: LoadingManager;
   assets: ?Map<string, any>;
   scene: Scene;
-  camera: PerspectiveCamera;
+  camera: PerspectiveCamera | OrthographicCamera;
   showStats: boolean = process.env.NODE_ENV === 'development';
   stats: ?{ domElement: Object, begin: () => void, update: () => void };
   renderer: ?Renderable;
@@ -51,8 +53,10 @@ export default class Base {
     this.loadingManager = new LoadingManager();
     this.assets = null;
     this.scene = new Scene();
+    // todo: eventually switch things to this
+    // this.scene.background = new Color(0x2c2222);
     this.scene.fog = new FogExp2(0x0d0d0d, 0.0025);
-    this.camera = new PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 2000);
+    this.camera = new PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 1000);
     if (this.showStats) {
       this.stats = new Stats();
     }
@@ -78,6 +82,16 @@ export default class Base {
   }
 
   afterLoad = () => {};
+
+  orthoCam = () =>
+    new OrthographicCamera(
+      window.innerWidth / -2,
+      window.innerWidth / 2,
+      window.innerHeight / 2,
+      window.innerHeight / -2,
+      0.1,
+      1000
+    );
 
   initialise(composer?: ?EffectComposer, renderPass?: ?RenderPass) {
     this.setupStats();
@@ -131,6 +145,7 @@ export default class Base {
       this.initialise(composer, renderPass);
       uniforms.u_resolution.value.x = renderer.domElement.width;
       uniforms.u_resolution.value.y = renderer.domElement.height;
+      renderer.setPixelRatio(renderer.domElement.devicePixelRatio);
       this.camera.aspect = window.innerWidth / window.innerHeight;
       this.camera.updateProjectionMatrix();
       renderer.domElement.style.visibility = 'visible';
@@ -206,7 +221,7 @@ export default class Base {
   }, 18);
 
   _makeRenderer = (antialias: boolean = true) => {
-    const r = new WebGLRenderer({ antialias, alpha: true });
+    const r = new WebGLRenderer({ alpha: true, antialias });
     r.setSize(window.innerWidth, window.innerHeight);
     r.setPixelRatio(window.devicePixelRatio);
     r.setClearColor(0x2c2222);

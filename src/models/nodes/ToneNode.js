@@ -21,10 +21,6 @@ export const TT = {
     'Note',
     'Note encoding, can be something like A4, a midi index, or a raw frequency in Hz'
   ),
-  Note: Types.object.aliased(
-    'Note',
-    'Note encoding, can be something like A4, a midi index, or a raw frequency in Hz'
-  ),
   Call: Types.any
     .aliased('Call', 'Something that is callable')
     .desc(
@@ -574,12 +570,17 @@ export class AudioGainNode extends NodeBase<
 
 export class AttackReleaseNode extends NodeBase<
   {},
-  { synth: Tone.Synth, note: Tone.Frequency, duration: Tone.Time, time: Tone.Time, call: any },
+  { synth: Tone.Synth, note: Tone.Frequency, duration: ?Tone.Time, time: Tone.Time, call: any },
   { draw: { note: Tone.Frequency, duration: Tone.Time } }
 > {
   static +displayName = 'Attack-Release';
   static +registryName = 'AttackReleaseNode';
-  static description = <span>Trigger the attack and then the release after the duration.</span>;
+  static description = (
+    <span>
+      Trigger the attack and then the release after the duration. Omitting a duration and calling{' '}
+      <code>call</code> results in an attack without release.
+    </span>
+  );
   static schema = {
     input: {
       synth: TT.Synth.desc('The synth to use'),
@@ -608,6 +609,16 @@ export class AttackReleaseNode extends NodeBase<
             }, time);
           } else {
             synth.triggerAttackRelease(note, duration);
+            return this.outKeys();
+          }
+        } else if (synth && note) {
+          if (time) {
+            synth.triggerAttack(note, time);
+            Tone.Draw.schedule(() => {
+              this.notifyAllOutputs();
+            }, time);
+          } else {
+            synth.triggerAttack(note);
             return this.outKeys();
           }
         }
@@ -905,7 +916,7 @@ export class SynthNode extends NodeBase<
             will apply the envelope to the amplitude of the signal.
           </div>
         )
-        .desc('The frequency of vibrato'),
+        .desc('The amplitude envelope for this synth'),
     },
     output: { out: TT.Synth.desc('Resulting Synth') },
     state: { value: TT.Synth.desc('The synth') },

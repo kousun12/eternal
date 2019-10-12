@@ -12,6 +12,7 @@ export class DivideNode extends NodeBase<
 > {
   static +displayName = 'Divide';
   static +registryName = 'DivideNode';
+  static +defaultProps = { dividend: 0, divisor: 1 };
   static description = <span>Divide one number by another</span>;
   static schema = {
     input: { dividend: Types.number, divisor: Types.number },
@@ -24,9 +25,7 @@ export class DivideNode extends NodeBase<
     int: parseInt(this.props.dividend / this.props.divisor, 10),
   });
 
-  willReceiveProps = () => this.outKeys();
-
-  onInputChange = () => this.outKeys();
+  onInputChange = () => (this.props.dividend && this.props.divisor ? this.outKeys() : []);
 }
 
 export class SumNode extends NodeBase<{}, { numbers: number[] }, { result: number }> {
