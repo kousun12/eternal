@@ -212,7 +212,7 @@ export class CollectNode extends NodeBase<{}, { capacity: number, value: any }, 
         }
         // todo a better slice
         this.memory.push(data);
-        this.notifyAllOutputs(true)
+        this.notifyAllOutputs(true);
       }
     }
     return [];
@@ -272,12 +272,12 @@ export class RegexReplace extends NodeBase<
     }
   };
 
+  requireForOutput = () =>
+    Boolean(this.re && this.props.string && typeof this.props.replacement !== 'object');
+
   process = () => {
     const { string, replacement } = this.props;
-    if (string && this.re && typeof replacement !== 'object') {
-      return { out: string.replace(this.re, replacement) };
-    }
-    return { out: '' };
+    return { out: string.replace(this.re, replacement) };
   };
 
   onInputChange = (edge: Edge, change: Object) => {
@@ -318,5 +318,29 @@ export class CountSourceNode extends NodeBase<{}, {}, { count: number }> {
 
   process = () => ({ count: this._count++ });
 
+  onInputChange = () => this.outKeys();
+}
+
+export class ZipNode extends NodeBase<
+  {},
+  { arg1: any, arg2: any, arg3: any, arg4: any },
+  { zipped: any[] }
+> {
+  static +displayName = 'Zip';
+  static +registryName = 'ZipItemsNode';
+  static description = <span>Zip elements from an input stream</span>;
+  static schema = {
+    input: {
+      arg1: Types.any.desc('Any object to zip'),
+      arg2: Types.any.desc('Any object to zip'),
+      arg3: Types.any.desc('Any object to zip'),
+      arg4: Types.any.desc('Any object to zip'),
+    },
+    output: { zipped: arrayOf(Types.any).desc('The zipped object') },
+    state: {},
+  };
+
+  requireForOutput = () => this.inputs.length >= 2;
+  process = () => ({ zipped: this.forAllConnectedInputs((k, v) => v) });
   onInputChange = () => this.outKeys();
 }

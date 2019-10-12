@@ -87,6 +87,8 @@ export default class NodeBase<Val: Object, In: ?Object, Out: ?Object> {
   beforeDisconnectIn: Edge => void = edge => {};
   afterDisconnectIn: Edge => void = edge => {};
 
+  requireForOutput: () => boolean = () => true;
+
   addInput: (input: Edge) => void = input => {
     this.beforeConnectIn(input);
     this.inputs.push(input);
@@ -107,6 +109,9 @@ export default class NodeBase<Val: Object, In: ?Object, Out: ?Object> {
       }
     }
   };
+
+  forAllConnectedInputs = (handler: (key: string, val: any) => void) =>
+    uniq(this.inputs.map(edge => edge.toPort)).map(k => handler(k, this.props[k]));
 
   domId = () => `n-root-${this.id}`;
 
@@ -191,6 +196,9 @@ export default class NodeBase<Val: Object, In: ?Object, Out: ?Object> {
    * @param force use this flag to force propagation updates, even if the value has not changed
    */
   notifyOutputs: (string | string[], force?: boolean) => void = (ofKeyChanges, force = false) => {
+    if (!this.requireForOutput()) {
+      return;
+    }
     const asList = Array.isArray(ofKeyChanges) ? ofKeyChanges : [ofKeyChanges];
     const val = this._process(asList, force);
     const changes = pick(val, asList);

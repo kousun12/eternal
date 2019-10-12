@@ -95,12 +95,12 @@ export class SwitchNode extends NodeBase<
     state: {},
   };
 
+  requireForOutput = () =>
+    typeof this.props.value !== 'undefined' && typeof this.props.equals !== 'undefined';
+
   process = () => ({
     result: isEqual(this.props.value, this.props.equals) ? this.props.value : this.props.else,
   });
 
-  onInputChange = () =>
-    typeof this.props.value !== 'undefined' && typeof this.props.equals !== 'undefined'
-      ? this.outKeys()
-      : [];
+  onInputChange = () => this.outKeys();
 }
