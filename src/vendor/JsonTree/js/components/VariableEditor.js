@@ -47,10 +47,10 @@ class VariableEditor extends React.PureComponent {
     return (
       <Hotkeys>
         <Hotkey
-          group="Node Actions"
-          global={true}
+          group="Detail Pane"
+          global={Boolean(this.props.variable)}
           combo="meta + i"
-          label="Edit"
+          label="Edit First Value"
           onKeyDown={() => this.prepopInput(this.props.variable)}
         />
       </Hotkeys>

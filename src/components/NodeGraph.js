@@ -55,6 +55,7 @@ type S = {|
   dragging: boolean,
   mousePos: ?Pos,
   canvasDragEnd: ?Pos,
+  metaDown: boolean,
 |};
 
 class NodeGraph extends React.Component<P, S> {
@@ -63,11 +64,13 @@ class NodeGraph extends React.Component<P, S> {
   moving: boolean = false;
   timeoutId: ?TimeoutID = null;
   deltaY: number = 0;
-  state = { source: null, dragging: false, mousePos: null, canvasDragEnd: null };
+  state = { source: null, dragging: false, mousePos: null, canvasDragEnd: null, metaDown: false };
 
   componentDidMount() {
     document.addEventListener('mousemove', this.onMouseMove);
     document.addEventListener('mouseup', this.onMouseUp);
+    document.addEventListener('keyup', this.onKeyUp);
+    document.addEventListener('keydown', this.onKeyDown);
     window.centerP = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
     window.addEventListener('resize', this.onWinResize);
     const { graph } = this.props;
@@ -77,6 +80,8 @@ class NodeGraph extends React.Component<P, S> {
   componentWillUnmount() {
     document.removeEventListener('mousemove', this.onMouseMove);
     document.removeEventListener('mouseup', this.onMouseUp);
+    document.removeEventListener('keyup', this.onKeyUp);
+    document.removeEventListener('keydown', this.onKeyDown);
     window.removeEventListener('resize', this.onWinResize);
     this.timeoutId && clearTimeout(this.timeoutId);
     this._debouncedSetMouse.cancel();
@@ -91,6 +96,8 @@ class NodeGraph extends React.Component<P, S> {
     }
   }
 
+  onKeyUp = (e: KeyboardEvent) => e.key === 'Meta' && this.setState({ metaDown: false });
+  onKeyDown = (e: KeyboardEvent) => e.key === 'Meta' && this.setState({ metaDown: true });
   onScroll = (e: WheelEvent) => {
     const { zoom, scale } = this.props;
     this.deltaY += e.deltaY;
@@ -257,35 +264,41 @@ class NodeGraph extends React.Component<P, S> {
     }
   };
 
-  _overlap = (rect1, rect2) =>
-    !(
-      rect1.right < rect2.left ||
-      rect1.left > rect2.right ||
-      rect1.bottom < rect2.top ||
-      rect1.top > rect2.bottom
-    );
+  _overlaps = (r1: ClientRect, r2: ClientRect) =>
+    !(r1.right < r2.left || r1.left > r2.right || r1.bottom < r2.top || r1.top > r2.bottom);
 
-  _setIntersects = throttle(() => {
+  _nodesIntersecting = (box: ClientRect): NodeInSpace[] =>
+    this.props.graph.nodes.filter(nis => {
+      const el = document.getElementById(nis.node.domId());
+      return el && this._overlaps(box, el.getBoundingClientRect());
+    });
+
+  _setIntersects = throttle((union: boolean, subtract: boolean) => {
     const selBox = document.getElementById('selection-box');
     if (!selBox) {
       return;
     }
     const selBound = selBox.getBoundingClientRect();
-    const ids = this.props.graph.nodes
-      .filter(nis => {
-        const el = document.getElementById(nis.node.domId());
-        return el && this._overlap(selBound, el.getBoundingClientRect());
-      })
-      .map(nis => nis.node.id);
-    this.props.selSet(ids);
+    if (selBound.width < 10 && selBound.height < 10) {
+      return;
+    }
+    const { selSet, selected } = this.props;
+    const ids = this._nodesIntersecting(selBound).map(nis => nis.node.id);
+    selSet(
+      union
+        ? uniq(Object.keys(selected).concat(ids))
+        : subtract
+        ? Object.keys(selected).filter(sId => !ids.includes(sId))
+        : ids
+    );
   }, 18);
 
   _onCanvasDrag = throttle((e: MouseEvent, data: DraggableData) => {
     if (!this.moving) {
       if (e.metaKey && this.canvasDragStart) {
         this.setState({ canvasDragEnd: data });
-        this._setIntersects();
-      } else {
+        this._setIntersects(e.shiftKey, e.altKey);
+      } else if (!e.metaKey) {
         const { setPan, pan, scaleInverse, scale } = this.props;
         const newPan = addVec(pan, scaleVec({ x: data.deltaX, y: data.deltaY }, scaleInverse));
         setPan(newPan);
@@ -308,7 +321,7 @@ class NodeGraph extends React.Component<P, S> {
   };
 
   render() {
-    const { dragging, source } = this.state;
+    const { dragging, source, metaDown } = this.state;
     const { visible, selected, scale, pan, graph, scaleInverse } = this.props;
     const selStyle = this._selectionBoxStyle();
     return (
@@ -321,7 +334,13 @@ class NodeGraph extends React.Component<P, S> {
         <div
           id="graph-root"
           className={
-            dragging ? 'dragging' : selStyle ? 'selecting' : this.moving ? 'moving-node' : ''
+            dragging
+              ? 'dragging'
+              : selStyle || metaDown
+              ? 'selecting'
+              : this.moving
+              ? 'moving-node'
+              : ''
           }
           onWheel={this.onScroll}
         >
@@ -331,6 +350,7 @@ class NodeGraph extends React.Component<P, S> {
                 <Node
                   selected={selected[nis.node.id]}
                   visible={visible}
+                  disabled={Boolean(metaDown)}
                   index={i}
                   nis={nis}
                   key={`node-${nis.node.id}`}
@@ -411,7 +431,7 @@ class NodeGraph extends React.Component<P, S> {
         {showCopy && (
           <Hotkey
             group="Node Actions"
-            combo="meta + c"
+            combo="shift + meta + c"
             label="Duplicate Node(s)"
             global={true}
             onKeyDown={this._onCopy}
@@ -432,7 +452,9 @@ class NodeGraph extends React.Component<P, S> {
         <Hotkey global combo="down" label="Pan down" onKeyDown={this._panD} group="View" />
         <Hotkey global combo="up" label="Pan up" onKeyDown={this._panU} group="View" />
 
-        <Hotkey global combo="meta + drag" label="Select Area" group="Misc" />
+        <Hotkey global combo="meta + drag" label="Select Area" group="Selection" />
+        <Hotkey global combo="meta + alt + drag" label="Subtract Selection" group="Selection" />
+        <Hotkey global combo="meta + shift + drag" label="Add Selection" group="Selection" />
       </Hotkeys>
     );
   }

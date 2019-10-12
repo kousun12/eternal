@@ -22,8 +22,8 @@ class AttributePane extends Component<P, S> {
     return (
       <Hotkeys>
         <Hotkey
-          group="Node Actions"
-          global={true}
+          global={Boolean(this.props.node)}
+          group="Detail Pane"
           combo="meta + j"
           label="Toggle Docs"
           onKeyDown={this._toggleDocs}
@@ -91,7 +91,7 @@ class AttributePane extends Component<P, S> {
           <div className="attr-title">
             {c.title}
             {this._helpInfo(c)}
-            <span style={{ flex: 1 }} />
+            <span style={styles.spacer} />
             <InfoPopup
               anchor={<span className="attr-type-indicator attr-help">{c.type.name}</span>}
               content={c.type.typeDescription}
@@ -144,7 +144,7 @@ class AttributePane extends Component<P, S> {
 
   render() {
     if (!this.props.node) {
-      return null;
+      return <div />;
     }
     const { fullDocs, width } = this.state;
     return (
@@ -221,5 +221,7 @@ class MultiTypeEditor extends Component<MP> {
     );
   }
 }
+
+const styles = { spacer: { flex: 1 } };
 
 export default HotkeysTarget(AttributePane);

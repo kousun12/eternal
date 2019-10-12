@@ -109,7 +109,6 @@ body {
   z-index: 11;
 }
 
-
 .node:hover {
   background-color: rgba(0, 0, 0, 1);
   -webkit-box-shadow: 6px 6px 28px -2px rgba(0, 0, 0, 0.8);
@@ -272,7 +271,7 @@ body {
   cursor: grabbing;
 }
 
-.selecting {
+.selecting, .selecting .node {
   cursor: crosshair;
 }
 
@@ -453,7 +452,7 @@ $attrs-pad-sides: 16px;
 }
 
 .attr-help {
-  cursor: default;
+  cursor: help;
 }
 
 .attr-indicator:hover {

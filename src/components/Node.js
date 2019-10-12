@@ -29,6 +29,7 @@ type OP = {|
   selected: boolean,
   scale?: ?number,
   positionOffset?: Pos | typeof undefined,
+  disabled: boolean,
 |};
 type P = {| ...SP, ...OP |};
 const MoveBufferPx = 4;
@@ -115,7 +116,7 @@ class Node extends React.Component<P> {
   };
 
   render() {
-    const { selected, infoShowing, visible, pos, scale, positionOffset } = this.props;
+    const { selected, infoShowing, visible, pos, scale, positionOffset, disabled } = this.props;
     const { node } = this.props.nis;
     const sel = infoShowing ? 'in-view' : selected ? 'selected' : '';
     let nodeClass = 'node' + (sel ? ` ${sel} ignore-react-onclickoutside` : '');
@@ -126,6 +127,7 @@ class Node extends React.Component<P> {
     const name = node.name();
     return (
       <Draggable
+        disabled={disabled}
         position={pos}
         handle=".node"
         onStart={this.handleDragStart}
