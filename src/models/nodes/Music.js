@@ -14,13 +14,39 @@ const Types = window.Types;
 // window.Scale = Scale;
 
 const TT = {
-  Note: Types.object.aliased(
+  Note: Types.string.aliased(
     'Note',
     'Note encoding, can be something like A4, a midi index, or a raw frequency in Hz'
   ),
-  Interval: Types.object.aliased(
+  Interval: Types.string.aliased(
     'Interval',
     'Natural interval name, e.g. 1P, 2M, 3M, 4P, 5P, 6m, 7m'
+  ),
+  Scale: Types.string.aliased(
+    'ScaleName',
+    <div>
+      <p>One of:</p>
+      <p style={{ display: 'flex', flexWrap: 'wrap' }}>
+        {Scale.names().map(n => (
+          <code style={{ marginRight: 5, marginBottom: 6 }} key={n}>
+            {n}
+          </code>
+        ))}
+      </p>
+    </div>
+  ),
+  Chord: Types.string.aliased(
+    'ChordName',
+    <div>
+      <p>One of:</p>
+      <p style={{ display: 'flex', flexWrap: 'wrap' }}>
+        {Chord.names().map(n => (
+          <code style={{ marginRight: 5, marginBottom: 6 }} key={n}>
+            {n}
+          </code>
+        ))}
+      </p>
+    </div>
   ),
 };
 export class ScaleNode extends NodeBase<
@@ -38,16 +64,7 @@ export class ScaleNode extends NodeBase<
           'You can optionally specify the scale name here too, and omit the name input, e.g. "C minor pentatonic"' +
           ' See the name param info for possible scale names.'
       ),
-      name: Types.string.desc(
-        <div>
-          <p>The name of the scale. Possible values:</p>
-          <p>
-            {Scale.names()
-              .map(n => <code>{n}</code>)
-              .join(', ')}
-          </p>
-        </div>
-      ),
+      name: TT.Scale.desc('The name of the scale. Check type for possible values'),
     },
     output: {
       notes: arrayOf(TT.Note).desc('The notes in this scale'),
@@ -84,16 +101,7 @@ export class ChordNode extends NodeBase<
           'You can optionally specify the chord name here too, and omit the name input, e.g. "E Maj7"' +
           ' See the name param info for recognized chord names.'
       ),
-      name: Types.string.desc(
-        <div>
-          <p>The name of the chord. Recognized names:</p>
-          <p>
-            {Chord.names()
-              .map(n => <code>{n}</code>)
-              .join(', ')}
-          </p>
-        </div>
-      ),
+      name: TT.Chord.desc('The name of the chord. Check type for possible values'),
     },
     output: {
       notes: arrayOf(TT.Note).desc('The notes in this chord'),

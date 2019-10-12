@@ -44,13 +44,14 @@ const AllEdges = ({
     return null;
   }
   let creatingSpline = null;
-  if (dragging && source && mousePos && window.centerP) {
+  const mid = window.centerP;
+  if (dragging && source && mousePos && mid) {
     const [nodeId, outIdx] = source;
     let src = positions[nodeId] || graph.nodeWithIdF(nodeId).pos;
     creatingSpline = (
       <Spline
         start={addVec(outOffset(src.x, src.y, outIdx), pan)}
-        end={scaleVec(mousePos, scaleInverse)}
+        end={addVec(mid, scaleVec(subVec(mousePos, mid), scaleInverse))}
       />
     );
   }

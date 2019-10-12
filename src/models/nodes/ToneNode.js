@@ -17,6 +17,10 @@ export const TT = {
   Panner: Types.object.aliased('Panner', 'An audio pan'),
   Gain: Types.object.aliased('Gain', 'An audio gain'),
   FeedbackDelay: Types.object.aliased('FeedbackDelay', 'A feedback delay'),
+  Note: Types.string.aliased(
+    'Note',
+    'Note encoding, can be something like A4, a midi index, or a raw frequency in Hz'
+  ),
   Note: Types.object.aliased(
     'Note',
     'Note encoding, can be something like A4, a midi index, or a raw frequency in Hz'
@@ -579,7 +583,7 @@ export class AttackReleaseNode extends NodeBase<
   static schema = {
     input: {
       synth: TT.Synth.desc('The synth to use'),
-      note: Types.string.desc('The frequency to play'),
+      note: TT.Note.desc('The frequency to play'),
       duration: Types.time.desc('The duration to play the note for'),
       time: Types.time.desc('When the note should be triggered'),
       call: TT.Call,
@@ -683,7 +687,7 @@ export class SetNoteNode extends NodeBase<
   static schema = {
     input: {
       synth: TT.Synth.desc('The synth to use'),
-      note: Types.string.desc('The frequency to set on the synth'),
+      note: TT.Note.desc('The frequency to set on the synth'),
       time: Types.time.desc('Time which the note should be set on the synth'),
       call: TT.Call,
     },
@@ -763,7 +767,7 @@ export class ArpeggiateNode extends NodeBase<
       probability: Types.number.desc('probability that each iteration will play, [0,1]'),
     },
     output: {
-      note: Types.string.desc('The note'),
+      note: TT.Note.desc('The note'),
       time: Types.time.desc('Time accompanying the note'),
     },
     state: {},

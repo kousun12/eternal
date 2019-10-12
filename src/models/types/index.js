@@ -16,6 +16,7 @@ const number = new TypeBuilder('number')
   .withParser(v => (typeof v === 'string' ? parseInt(v) : v))
   .withSerializer(primitiveSerializer)
   .build();
+
 const string = new TypeBuilder('string')
   .withType('primitive')
   .desc(
@@ -27,6 +28,7 @@ const string = new TypeBuilder('string')
   .withParser(v => (typeof v === 'object' ? JSON.stringify(v) : String(v)))
   .withSerializer(a => (typeof a === 'object' ? JSON.stringify(a) : String(a)))
   .build();
+
 const boolean = new TypeBuilder('boolean')
   .withType('primitive')
   .desc(
@@ -38,6 +40,7 @@ const boolean = new TypeBuilder('boolean')
   .withParser(Boolean)
   .withSerializer(primitiveSerializer)
   .build();
+
 const date = new TypeBuilder('date')
   .withType('primitive')
   .desc(

@@ -155,7 +155,7 @@ class AttributePane extends Component<P, S> {
         {this._signature()}
         {this._description()}
         <div className="attr-doc-toggle" onClick={this._toggleDocs}>
-          {fullDocs ? 'Hide' : 'Expand'} Docs
+          {fullDocs ? 'Collapse' : 'Expand'} Docs
         </div>
         <hr />
         <div className="attr-list">{this._changeables()}</div>

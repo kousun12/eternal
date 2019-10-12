@@ -283,7 +283,7 @@ class NodeGraph extends React.Component<P, S> {
   _onCanvasDrag = throttle((e: MouseEvent, data: DraggableData) => {
     if (!this.moving) {
       if (e.metaKey && this.canvasDragStart) {
-        this.setState({ canvasDragEnd: scaleVec(data, this.props.scaleInverse) });
+        this.setState({ canvasDragEnd: data });
         this._setIntersects();
       } else {
         const { setPan, pan, scaleInverse } = this.props;
@@ -294,7 +294,7 @@ class NodeGraph extends React.Component<P, S> {
 
   _onStartCanvasDrag = (e: MouseEvent, data: DraggableData) => {
     if (e.metaKey) {
-      this.canvasDragStart = scaleVec(data, this.props.scaleInverse);
+      this.canvasDragStart = data;
     }
   };
 
@@ -355,18 +355,14 @@ class NodeGraph extends React.Component<P, S> {
               graph={graph}
               mousePos={this.state.mousePos}
             />
-            {selStyle && <div id="selection-box" style={selStyle} />}
           </div>
+          {selStyle && <div id="selection-box" style={selStyle} />}
         </div>
       </DraggableCore>
     );
   }
 
-  _rootStyle = () => ({
-    transform: `scale(${this.props.scale})`,
-    width: `${this.props.scaleInverse * 100}vw`,
-    height: `${this.props.scaleInverse * 100}vh`,
-  });
+  _rootStyle = () => ({ transform: `scale(${this.props.scale})` });
 
   _selectionBoxStyle = () => {
     const {

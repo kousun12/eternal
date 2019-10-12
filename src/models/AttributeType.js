@@ -68,7 +68,7 @@ export class TypeImpl implements AttributeType {
     this.metadata = data.metadata;
     this.type = data.type;
     this.defaultValue = data.defaultValue;
-    this.description = data.description || data.typeDescription;
+    this.description = data.description;
     this.parse = data.parse;
     this.typeDescription = data.typeDescription;
     this.serialize = data.serialize;
@@ -87,6 +87,7 @@ export class TypeImpl implements AttributeType {
   meta = (metadata: Object): TypeImpl => new TypeImpl({ ...this, metadata });
   isA = (t: AttributeType) => t.id === this.id;
   isPrimitive = (): boolean => this.type === 'primitive';
+  isUndescribedPrimitive = (): boolean => this.type === 'primitive' && !this.typeDescription;
   isComplex = (): boolean => this.type === 'complex';
 
   /**
