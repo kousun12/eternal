@@ -53,7 +53,6 @@ export class DomNode extends NodeBase<{}, { html: string, style: string, text: ?
       this.domNode.innerHTML = newProps.html;
     }
     if (!prevProps || newProps.style !== prevProps.style) {
-      console.log(newProps.style);
       this.domNode.setAttribute('style', newProps.style);
     }
   };

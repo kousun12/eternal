@@ -91,10 +91,14 @@ export class SetNode extends NodeBase<{}, { target: any, path: string, value: an
     },
     state: {},
   };
+  _val: any;
 
-  process = () => ({ out: set(this.props.target, this.props.path || '', this.props.value) });
+  process = () => ({ out: this._val });
 
-  onInputChange = () => this.outKeys();
+  onInputChange = () => {
+    this._val = set(this.props.target, this.props.path || '', this.props.value);
+    return this.outKeys();
+  };
 }
 
 export class StephenWolfram extends NodeBase<
@@ -262,14 +266,14 @@ export class RegexReplace extends NodeBase<
         const [_, t, f] = parsed;
         this.re = new RegExp(t, f);
       } else {
-        this.re = new RegExp(newProps.string);
+        this.re = new RegExp(newProps.regex);
       }
     }
   };
 
   process = () => {
     const { string, replacement } = this.props;
-    if (string && this.re && typeof replacement === 'string') {
+    if (string && this.re && typeof replacement !== 'object') {
       return { out: string.replace(this.re, replacement) };
     }
     return { out: '' };

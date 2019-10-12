@@ -8,7 +8,6 @@ import {
   Scene,
   Vector2,
   WebGLRenderer,
-  Color,
   OrthographicCamera,
 } from 'three';
 import { throttle } from 'lodash';
