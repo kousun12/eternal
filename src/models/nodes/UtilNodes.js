@@ -212,9 +212,10 @@ export class CollectNode extends NodeBase<{}, { capacity: number, value: any }, 
         }
         // todo a better slice
         this.memory.push(data);
+        this.notifyAllOutputs(true)
       }
     }
-    return this.outKeys();
+    return [];
   };
 }
 

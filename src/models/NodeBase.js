@@ -47,10 +47,8 @@ export default class NodeBase<Val: Object, In: ?Object, Out: ?Object> {
 
   _process: (string[], boolean) => Out = (keys, force) => {
     const val = this.process(keys);
-    // TODO: think about object equality case. should we update?
-    const forward = force
-      ? val
-      : omitBy(val, (v, k) => typeof v !== 'object' && isEqual(v, this.outputCache[k]));
+    // TODO: think about mutating objects in output cache. should we deep copy or not allow mutations?
+    const forward = force ? val : omitBy(val, (v, k) => isEqual(v, this.outputCache[k]));
     this.outputCache = { ...this.outputCache, ...val };
     return forward;
   };
@@ -110,7 +108,7 @@ export default class NodeBase<Val: Object, In: ?Object, Out: ?Object> {
     }
   };
 
-  domId = () => `n-root-${this.id}`
+  domId = () => `n-root-${this.id}`;
 
   addOutput: (output: Edge) => void = out => {
     this.beforeConnectOut(out);
@@ -207,9 +205,7 @@ export default class NodeBase<Val: Object, In: ?Object, Out: ?Object> {
       });
   };
 
-  notifyAllOutputs = (force?: boolean = false) => {
-    this.notifyOutputs(this.outKeys(), force);
-  };
+  notifyAllOutputs = (force?: boolean = false) => this.notifyOutputs(this.outKeys(), force);
 
   inKeys = (): string[] => this.constructor.inKeys();
   inKeyAt = (i: number): string => this.inKeys()[i];

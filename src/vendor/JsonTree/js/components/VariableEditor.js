@@ -40,6 +40,7 @@ class VariableEditor extends React.PureComponent {
     };
   }
 
+  // noinspection JSUnusedGlobalSymbols
   renderHotkeys() {
     if (!this.props.editOnHotkey) {
       return <Hotkeys />;

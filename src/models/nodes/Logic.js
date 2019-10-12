@@ -1,6 +1,6 @@
 // @flow
 import React from 'react';
-import { uniq } from 'lodash';
+import { uniq, isEqual } from 'lodash';
 import NodeBase from 'models/NodeBase';
 import Edge from 'models/Edge';
 
@@ -75,4 +75,33 @@ export class NotNode extends NodeBase<{}, { in: any }, { result: boolean }> {
 
   process = () => ({ result: !this.props.in });
   onInputChange = (edge: Edge, change: Object) => this.outKeys();
+}
+
+export class SwitchNode extends NodeBase<
+  {},
+  { value: any, equals: any, else: any },
+  { result: any }
+> {
+  static +displayName = 'Switch';
+  static +registryName = 'SwitchNode';
+  static description = <span>An If-Else switch on value equality</span>;
+  static schema = {
+    input: {
+      value: Types.any.desc('Any value, as input to the switch'),
+      equals: Types.any.desc('Any value to use to compare the input to'),
+      else: Types.any.desc('Any value to return if not logically equal'),
+    },
+    output: { result: Types.any.desc('Result of the switch') },
+    state: {},
+  };
+
+  process = () => ({
+    result: isEqual(this.props.value, this.props.equals) ? this.props.value : this.props.else,
+  });
+
+  onInputChange = (edge: Edge, change: Object) => {
+    return typeof this.props.value !== 'undefined' && typeof this.props.equals !== 'undefined'
+      ? this.outKeys()
+      : [];
+  };
 }
