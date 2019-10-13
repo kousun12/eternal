@@ -120,8 +120,6 @@ export default class NodeBase<Val: Object, In: ?Object, Out: ?Object> {
   forAllConnectedInputs = (handler: (key: string, val: any) => void) =>
     uniq(this.inputs.map(edge => edge.toPort)).map(k => handler(k, this.props && this.props[k]));
 
-  domId = () => `n-root-${this.id}`;
-
   addOutput: (output: Edge) => void = out => {
     this.beforeConnectOut(out);
     this.outputs.push(out);
@@ -346,6 +344,10 @@ export default class NodeBase<Val: Object, In: ?Object, Out: ?Object> {
     });
     return keys;
   };
+  
+  domId = () => `n-root-${this.id}`;
+  domNode = () => document.getElementById(this.domId());
+
 
   // Probably should just require display name and not need this
   static nameFrom(clazz: Class<AnyNode>) {

@@ -278,7 +278,7 @@ class NodeGraph extends React.Component<P, S> {
 
   _nodesIntersecting = (box: ClientRect): NodeInSpace[] =>
     this.props.graph.nodes.filter(nis => {
-      const el = document.getElementById(nis.node.domId());
+      const el = nis.node.domNode();
       return el && this._overlaps(box, el.getBoundingClientRect());
     });
 
@@ -300,7 +300,7 @@ class NodeGraph extends React.Component<P, S> {
         ? Object.keys(selected).filter(sId => !ids.includes(sId))
         : ids
     );
-  }, 18);
+  }, 30);
 
   _onCanvasDrag = throttle((e: MouseEvent, data: DraggableData) => {
     if (!this.moving) {

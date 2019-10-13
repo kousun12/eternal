@@ -309,6 +309,8 @@ body {
   height: 200px;
   z-index: 14;
   cursor: crosshair;
+  border-radius: 3px;
+  border: 1px solid rgba(200, 200, 200, 0.3);
 }
 
 .zoomer {

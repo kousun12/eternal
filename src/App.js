@@ -117,8 +117,10 @@ class App extends Component<P, S> {
     window['$node'] = null;
     this.setState({ graph: null }, () => {
       this.mostRecentNode = get(graph.nodes, [0, 'node']);
-      const readme = graph.nodes.find(nis => nis.node.title === 'README');
-      this._setInfoOpen(readme ? readme.node.id : null);
+      if (process.env.NODE_ENV === 'production') {
+        const readme = graph.nodes.find(nis => nis.node.title === 'README');
+        this._setInfoOpen(readme ? readme.node.id : null);
+      }
       if (typeof graph.meta.zoom === 'number') {
         this.props.setScale(graph.meta.zoom);
       }

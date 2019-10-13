@@ -1054,7 +1054,7 @@ export class DuoSynthNode extends NodeBase<{ value: Tone.DuoSynth }, {}, { out: 
   };
 
   static defaultSynth() {
-    let envelope = { attack: 0.8, release: 4, releaseCurve: 'linear' };
+    let envelope = { attack: 0.8, release: 4, releaseCurve: 'linear', attackCurve: 'sine' };
     let filterEnvelope = {
       baseFrequency: 200,
       octaves: 2,

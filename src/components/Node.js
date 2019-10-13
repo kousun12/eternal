@@ -37,9 +37,7 @@ const MoveBufferPx = 4;
 class Node extends React.Component<P> {
   dragStart: ?Pos;
 
-  _onDelete = () => {
-    this.props.onDelete && this.props.onDelete(this.props.nis.node);
-  };
+  _onDelete = () => this.props.onDelete && this.props.onDelete(this.props.nis.node);
 
   handleDragStart = (event: MouseEvent, data: DraggableData) => {
     if (event.metaKey || event.shiftKey) {
@@ -56,27 +54,20 @@ class Node extends React.Component<P> {
     });
   };
 
-  handleDrag = (event: MouseEvent, data: DraggableData) => {
-    if (event.metaKey) {
-      return;
-    }
-    this.props.onNodeMove(this.props.nis, data);
-  };
+  handleDrag = (event: MouseEvent, data: DraggableData) =>
+    !event.metaKey && this.props.onNodeMove(this.props.nis, data);
 
-  onStartConnector = (i: number, e: MouseEvent, d: DraggableData) => {
+  onStartConnector = (i: number, e: MouseEvent, d: DraggableData) =>
     this.props.onStartConnector(this.props.nis.node.id, i, e, d);
-  };
 
   onCompleteConnector = index => {
     this.props.onCompleteConnector(this.props.nis.node.id, index);
     this.forceUpdate();
   };
 
-  _selectNode = (resetHighlights?: boolean) => {
-    if (this.props.onNodeSelect) {
-      this.props.onNodeSelect(this.props.nis, this.props.index, resetHighlights);
-    }
-  };
+  _selectNode = (resetHighlights?: boolean) =>
+    this.props.onNodeSelect &&
+    this.props.onNodeSelect(this.props.nis, this.props.index, resetHighlights);
 
   _deselectNode = (removeHighlight: boolean, resetOtherHighlights: boolean) => {
     if (this.props.onNodeDeselect) {
@@ -105,14 +96,12 @@ class Node extends React.Component<P> {
 
   // noinspection JSUnusedGlobalSymbols
   handleClickOutside = event => {
-    const { selected, infoShowing } = this.props;
+    const { selected, infoShowing, onNodeDeselect, nis } = this.props;
     const ignore = !selected && !infoShowing;
     if (event.metaKey || event.shiftKey || ignore) {
       return;
     }
-    if (this.props.onNodeDeselect) {
-      this.props.onNodeDeselect(this.props.nis, false);
-    }
+    onNodeDeselect && onNodeDeselect(nis, false);
   };
 
   render() {
@@ -158,7 +147,7 @@ class Node extends React.Component<P> {
               display={node.constructor.displayOutKeys()}
               onStartConnector={this.onStartConnector}
               scale={scale || 1}
-              positionOffset={addVec(pos, positionOffset || { x: 0, y: 0 })}
+              positionOffset={positionOffset ? addVec(pos, positionOffset) : pos}
             />
           </div>
         </div>
