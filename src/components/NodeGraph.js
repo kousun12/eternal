@@ -35,7 +35,7 @@ type OP = {|
   onCreateEdge?: Edge => void,
   onDeleteEdge?: Edge => void,
   onNodeSelect?: AnyNode => void,
-  onNodeDeselect?: (AnyNode, ?boolean) => void,
+  onNodeDeselect?: (AnyNode, ?boolean, ?boolean) => void,
   onNodeSelectionChange?: (?AnyNode, ?number) => void,
   visible: boolean,
 |};
@@ -62,6 +62,7 @@ class NodeGraph extends React.Component<P, S> {
   dragOffsets: PosMemo = {};
   canvasDragStart: ?Pos;
   moving: boolean = false;
+  deselectNodes: boolean = false;
   timeoutId: ?TimeoutID = null;
   deltaY: number = 0;
   state = { source: null, dragging: false, mousePos: null, canvasDragEnd: null, metaDown: false };
@@ -226,11 +227,13 @@ class NodeGraph extends React.Component<P, S> {
     this.forceUpdate();
   };
 
-  onNodeSelect = (n: NodeInSpace, idx?: number) => {
+  onNodeSelect = (n: NodeInSpace, idx?: number, resetHighlights?: boolean) => {
     if (this.props.onNodeSelect) {
       this.props.onNodeSelect(n.node);
     }
-    const highlighted = uniq(Object.keys(this.props.selected).concat(n.node.id));
+    const highlighted = resetHighlights
+      ? [n.node.id]
+      : uniq(Object.keys(this.props.selected).concat(n.node.id));
     if (highlighted.length > 1) {
       this._onNodeChange(null);
     } else {
@@ -239,13 +242,19 @@ class NodeGraph extends React.Component<P, S> {
     this.props.selSet(highlighted);
   };
 
-  onNodeDeselect = (n: NodeInSpace, all?: boolean) => {
+  onNodeDeselect = (n: NodeInSpace, removeHighlight: boolean, resetOtherHighlights?: boolean) => {
     if (this.props.onNodeDeselect) {
       this.props.onNodeDeselect(n.node);
     }
-    const highlighted = all ? [] : Object.keys(omit(this.props.selected, n.node.id));
     this._onNodeChange(null);
-    this.props.selSet(highlighted);
+    if (removeHighlight || resetOtherHighlights) {
+      const highlighted = resetOtherHighlights
+        ? removeHighlight
+          ? []
+          : [n.node.id]
+        : Object.keys(omit(this.props.selected, n.node.id));
+      this.props.selSet(highlighted);
+    }
   };
 
   onDeleteNode = (n: AnyNode) => {
@@ -305,6 +314,7 @@ class NodeGraph extends React.Component<P, S> {
         if (document.body) {
           document.body.style.backgroundPosition = `${newPan.x * scale}px ${newPan.y * scale}px`;
         }
+        this.deselectNodes = false;
       }
     }
   }, 18);
@@ -312,10 +322,17 @@ class NodeGraph extends React.Component<P, S> {
   _onStartCanvasDrag = (e: MouseEvent, data: DraggableData) => {
     if (e.metaKey) {
       this.canvasDragStart = data;
+      this.deselectNodes = false;
+    } else {
+      this.deselectNodes = true;
     }
   };
 
   _onEndCanvasDrag = (e: MouseEvent, data: DraggableData) => {
+    if (this.deselectNodes) {
+      this.props.selSet([]);
+      this.deselectNodes = false;
+    }
     this.canvasDragStart = null;
     this.setState({ canvasDragEnd: null });
   };
@@ -343,6 +360,7 @@ class NodeGraph extends React.Component<P, S> {
               : ''
           }
           onWheel={this.onScroll}
+          onDoubleClick={() => this.props.selSet([])}
         >
           <div id="graph-scalable" className="graph-scalable" style={this._rootStyle()}>
             {graph.nodes.map((nis, i) => {
@@ -435,6 +453,7 @@ class NodeGraph extends React.Component<P, S> {
             label="Duplicate Node(s)"
             global={true}
             onKeyDown={this._onCopy}
+            preventDefault
           />
         )}
         <Hotkey global combo="shift + meta + a" label="Select All" onKeyDown={this._selectAll} />

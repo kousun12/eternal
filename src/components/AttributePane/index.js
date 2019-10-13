@@ -37,12 +37,13 @@ class AttributePane extends Component<P, S> {
   }
 
   componentDidUpdate(oldProps: P) {
-    if (this.props.node && get(this, 'props.node.id') !== get(oldProps, 'node.id')) {
+    if (get(this, 'props.node.id') !== get(oldProps, 'node.id')) {
       if (oldProps && oldProps.node) {
         const listener = this.listener;
         listener && oldProps.node.removeListener(listener);
+        this.listener = null;
       }
-      this._setListener(this.props.node);
+      this.props.node && this._setListener(this.props.node);
     }
   }
 

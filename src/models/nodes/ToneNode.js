@@ -789,10 +789,11 @@ export class ArpeggiateNode extends NodeBase<
       this._out = { note, time };
       this.notifyOutputs(this.outKeys(), true);
     }, this.props.notes);
+    Tone.Transport.on('start', this._manageLoop);
   };
 
   _manageLoop = () => {
-    if (this.pattern.state !== 'started') {
+    if (this.pattern.state !== 'started' && Tone.Transport.state === 'started') {
       this.pattern.start();
     }
   };
@@ -826,7 +827,6 @@ export class TimeLoopNode extends NodeBase<
   static +displayName = 'Time Loop';
   static +registryName = 'TimeLoopNode';
   static defaultProps = {
-    interval: '1m',
     playbackRate: 1,
     iterations: Infinity,
     mute: false,
@@ -860,18 +860,40 @@ export class TimeLoopNode extends NodeBase<
       this.count += 1;
       this.notifyOutputs(this.outKeys(), true);
     }, this.props.interval);
+    Tone.Transport.on('start', this._manageLoop);
+  };
+
+  _recreateLoop = () => {
+    this.loop && this.loop.dispose();
+    this.count = 0;
+    this.loop = new Tone.Loop(() => {
+      this.count += 1;
+      this.notifyOutputs(this.outKeys(), true);
+    }, this.props.interval);
   };
 
   _manageLoop = () => {
-    if (this.loop.state !== 'started') {
+    if (
+      this.props.interval &&
+      this.loop.state !== 'started' &&
+      Tone.Transport.state === 'started'
+    ) {
       this.loop.start();
     }
   };
 
-  willReceiveProps = (newProps: Object) => {
-    ['interval', 'playbackRate', 'humanize', 'mute', 'iterations'].forEach(k => {
-      this.loop[k] = newProps[k];
-    });
+  requireForOutput = () => typeof this.props.interval !== 'undefined';
+
+  onInputChange = (edge: Edge, change: Object) => {
+    if (['humanize', 'loop', 'iterations', 'playbackRate'].includes(edge.toPort)) {
+      this._recreateLoop();
+      this.loop[edge.toPort] = edge.inDataFor(change);
+      return this.outKeys();
+    } else if (edge.toPort === 'interval') {
+      this._recreateLoop();
+      return this.outKeys();
+    }
+    return [];
   };
 
   process = () => {
@@ -888,7 +910,8 @@ export class SynthNode extends NodeBase<
   static fwdSignals = ['frequency', 'volume'];
   static +displayName = 'Synth';
   static +registryName = 'SynthNode';
-  static defaultProps = { volume: 0 };
+  static defaultEnv = {};
+  static defaultProps = { volume: 0, envelope: SynthNode.defaultEnv };
   static description = (
     <span>A Synth is composed by routing an OmniOscillator through a AmplitudeEnvelope.</span>
   );
@@ -927,6 +950,7 @@ export class SynthNode extends NodeBase<
   };
 
   _recreateSynth = () => {
+    this.state.value && this.state.value.dispose();
     this.state.value = new Tone.Synth({
       oscillator: { type: this.props.oscillator },
       envelope: this.props.envelope,
@@ -967,8 +991,7 @@ export class SynthNode extends NodeBase<
   };
 
   static defaultSynth() {
-    let envelope = { attack: 0.1, release: 4, releaseCurve: 'linear' };
-    return new Tone.Synth({ oscillator: { type: 'sawtooth' }, envelope });
+    return new Tone.Synth({ oscillator: { type: 'sawtooth' }, envelope: SynthNode.defaultEnv });
   }
 }
 

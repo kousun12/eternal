@@ -77,29 +77,26 @@ export class NotNode extends NodeBase<{}, { in: any }, { result: boolean }> {
   onInputChange = (edge: Edge, change: Object) => this.outKeys();
 }
 
-export class SwitchNode extends NodeBase<
-  {},
-  { value: any, equals: any, else: any },
-  { result: any }
-> {
+export class SwitchNode extends NodeBase<{}, { value: any, not: any, else: any }, { result: any }> {
   static +displayName = 'Switch';
   static +registryName = 'SwitchNode';
   static description = <span>An If-Else switch on value equality</span>;
   static schema = {
     input: {
       value: Types.any.desc('Any value, as input to the switch'),
-      equals: Types.any.desc('Any value to use to compare the input to'),
+      not: Types.any.desc('Any value to use to compare the input to'),
       else: Types.any.desc('Any value to return if not logically equal'),
     },
     output: { result: Types.any.desc('Result of the switch') },
     state: {},
   };
 
-  requireForOutput = () =>
-    typeof this.props.value !== 'undefined' && typeof this.props.equals !== 'undefined';
+  requireForOutput = () => {
+    return typeof this.props.value !== 'undefined' && typeof this.props.not !== 'undefined';
+  };
 
   process = () => ({
-    result: isEqual(this.props.value, this.props.equals) ? this.props.value : this.props.else,
+    result: isEqual(this.props.value, this.props.not) ? this.props.else : this.props.value,
   });
 
   onInputChange = () => this.outKeys();

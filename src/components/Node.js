@@ -22,8 +22,8 @@ type OP = {|
   onNodeMove: (NodeInSpace, DraggableData) => void,
   onStartConnector: (string, number, e: MouseEvent, d: DraggableData) => void,
   onCompleteConnector: (string, number) => void,
-  onNodeSelect?: (NodeInSpace, ?number) => void,
-  onNodeDeselect?: (NodeInSpace, boolean) => void,
+  onNodeSelect?: (NodeInSpace, ?number, ?boolean) => void,
+  onNodeDeselect?: (NodeInSpace, boolean, ?boolean) => void,
   onDelete?: AnyNode => void,
   visible: boolean,
   selected: boolean,
@@ -72,15 +72,15 @@ class Node extends React.Component<P> {
     this.forceUpdate();
   };
 
-  _selectNode = () => {
+  _selectNode = (resetHighlights?: boolean) => {
     if (this.props.onNodeSelect) {
-      this.props.onNodeSelect(this.props.nis, this.props.index);
+      this.props.onNodeSelect(this.props.nis, this.props.index, resetHighlights);
     }
   };
 
-  _deselectNode = (all: boolean) => {
+  _deselectNode = (removeHighlight: boolean, resetOtherHighlights: boolean) => {
     if (this.props.onNodeDeselect) {
-      this.props.onNodeDeselect(this.props.nis, all);
+      this.props.onNodeDeselect(this.props.nis, removeHighlight, resetOtherHighlights);
     }
   };
 
@@ -96,10 +96,10 @@ class Node extends React.Component<P> {
     ) {
       return;
     }
-    if (!this.props.selected) {
-      this._selectNode();
+    if (this.props.selected) {
+      this._deselectNode(event.metaKey, !event.metaKey);
     } else {
-      this._deselectNode(!event.metaKey);
+      this._selectNode();
     }
   };
 
@@ -111,7 +111,7 @@ class Node extends React.Component<P> {
       return;
     }
     if (this.props.onNodeDeselect) {
-      this.props.onNodeDeselect(this.props.nis, true);
+      this.props.onNodeDeselect(this.props.nis, false);
     }
   };
 
@@ -121,7 +121,7 @@ class Node extends React.Component<P> {
     const sel = infoShowing ? 'in-view' : selected ? 'selected' : '';
     let nodeClass = 'node' + (sel ? ` ${sel} ignore-react-onclickoutside` : '');
     if (!visible) {
-      return null;
+      return <div />;
     }
 
     const name = node.name();
@@ -139,7 +139,7 @@ class Node extends React.Component<P> {
         <div
           className={nodeClass}
           onClick={this.handleClick}
-          onDoubleClick={this._selectNode}
+          onDoubleClick={() => this._selectNode(true)}
           id={node.domId()}
         >
           <header className="node-header">

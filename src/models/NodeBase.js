@@ -22,6 +22,7 @@ export default class NodeBase<Val: Object, In: ?Object, Out: ?Object> {
   live: boolean = false;
   +listeners: { [string]: ChangeListener } = {};
   title: ?string;
+  _unPushed: string[] = [];
 
   static +displayName: ?string;
   static +registryName: string;
@@ -42,6 +43,8 @@ export default class NodeBase<Val: Object, In: ?Object, Out: ?Object> {
     };
     if (this.constructor.defaultProps) {
       this.props = { ...this.constructor.defaultProps, ...props };
+    } else {
+      this.props = props || {};
     }
   }
 
@@ -92,8 +95,12 @@ export default class NodeBase<Val: Object, In: ?Object, Out: ?Object> {
   addInput: (input: Edge) => void = input => {
     this.beforeConnectIn(input);
     this.inputs.push(input);
-    const initialValue = input.from.process([input.toPort]);
-    this._onInputChange(input, input.outDataFor(initialValue), true);
+    if (input.from.requireForOutput()) {
+      const initialValue = input.from.process([input.toPort]);
+      this._onInputChange(input, input.outDataFor(initialValue), true);
+    } else {
+      this._unPushed.push(input.id);
+    }
     this._notifyLive(input);
     this.afterConnectIn(input);
   };
@@ -111,7 +118,7 @@ export default class NodeBase<Val: Object, In: ?Object, Out: ?Object> {
   };
 
   forAllConnectedInputs = (handler: (key: string, val: any) => void) =>
-    uniq(this.inputs.map(edge => edge.toPort)).map(k => handler(k, this.props[k]));
+    uniq(this.inputs.map(edge => edge.toPort)).map(k => handler(k, this.props && this.props[k]));
 
   domId = () => `n-root-${this.id}`;
 
@@ -151,11 +158,15 @@ export default class NodeBase<Val: Object, In: ?Object, Out: ?Object> {
   ) => {
     const oldProps = { ...this.props };
     this.props = this.props || {};
-    // $FlowIssue
+    // $FlowIgnore
     change && Object.keys(change).forEach(k => (this.props[k] = change[k]));
-    // $FlowIssue
+    let _force = force;
+    if (this._unPushed.includes(edge.id)) {
+      this._unPushed = this._unPushed.filter(id => id !== edge.id);
+      _force = true;
+    }
     this.willReceiveProps(this.props, oldProps, false);
-    this.notifyOutputs(this.onInputChange(edge, change), force);
+    this.notifyOutputs(this.onInputChange(edge, change), _force);
   };
 
   registerListener: ChangeListener => string = listener => {
@@ -346,6 +357,7 @@ export default class NodeBase<Val: Object, In: ?Object, Out: ?Object> {
   }
 
   signature = (maxLen: number = 0, style: ?Object = null) => {
+    // $FlowIgnore
     return signatureFor(this.constructor, maxLen, style);
   };
 

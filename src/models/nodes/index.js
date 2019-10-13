@@ -67,6 +67,7 @@ import { ScaleNode, ChromaNode, ChordNode, TransposeNode, KeyTriadsNode } from '
 import { PerformanceRNNNode } from './Neural';
 import { DivideNode, SumNode, ProductNode, IntToIntMathNode } from './MathNodes';
 import { GPGPUProgramNode, RunGPGPUProgramNode } from './GPGPU';
+import { JSCodeNode } from './Code';
 import { number, string, boolean, date } from './primitives';
 
 /**
@@ -148,6 +149,7 @@ export {
   PlusNode,
   GPGPUProgramNode,
   RunGPGPUProgramNode,
+  JSCodeNode,
   number,
   string,
   boolean,
@@ -230,6 +232,7 @@ export const allNodes = [
   PlusNode,
   GPGPUProgramNode,
   RunGPGPUProgramNode,
+  JSCodeNode,
   number,
   string,
   boolean,

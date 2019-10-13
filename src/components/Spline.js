@@ -5,8 +5,15 @@ import onClickOutside from 'react-onclickoutside';
 import type { Pos } from 'types';
 import Edge from 'models/Edge';
 import { Hotkey, Hotkeys, HotkeysTarget } from '@blueprintjs/core';
+import { connect } from 'react-redux';
+import { selSet as _selSet, setInfoOpen as _setInfoOpen } from 'redux/ducks/graph';
 
-type P = { start: Pos, end: Pos, onRemove?: () => void, edge: ?Edge, highlighted?: boolean };
+type DP = {|
+  selSet: (string[]) => void,
+  setInfoOpen: (?string) => void,
+|};
+type OP = {| start: Pos, end: Pos, onRemove?: () => void, edge: ?Edge, highlighted?: boolean |};
+type P = {| ...OP, ...DP |};
 type S = { selected: boolean };
 
 class Spline extends React.Component<P, S> {
@@ -14,7 +21,11 @@ class Spline extends React.Component<P, S> {
   state = { selected: false };
   listeningOnEdge: string;
 
-  handleClick = () => this.setState({ selected: !this.state.selected });
+  handleClick = () => {
+    this.setState({ selected: true });
+    this.props.selSet([]);
+    this.props.setInfoOpen(null);
+  };
 
   componentDidMount() {
     this._setListener();
@@ -111,4 +122,10 @@ class Spline extends React.Component<P, S> {
   }
 }
 
-export default onClickOutside(HotkeysTarget(Spline));
+export default connect(
+  null,
+  d => ({
+    selSet: id => d(_selSet(id)),
+    setInfoOpen: n => d(_setInfoOpen(n)),
+  })
+)(onClickOutside(HotkeysTarget(Spline)));
