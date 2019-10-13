@@ -34,14 +34,22 @@ import {
   setInfoOpen as _setInfoOpen,
   selectInfoOpen,
   updatePos as _updatePos,
+  selectView,
+  setScale as _setScale,
 } from 'redux/ducks/graph';
 import Zoomer from 'components/Zoomer';
-import type { PosMemo } from 'redux/ducks/graph';
+import type { PosMemo, SelectedView } from 'redux/ducks/graph';
 import { subVec } from 'utils/vector';
 
 const welcomeGraph = require('models/examples/welcome.json');
 
-type P = { setInfoOpen: (?string) => void, showNode: ?string, updatePos: PosMemo => void };
+type P = {
+  setInfoOpen: (?string) => void,
+  showNode: ?string,
+  updatePos: PosMemo => void,
+  view: SelectedView,
+  setScale: number => void,
+};
 type S = {
   graph: ?Graph,
   searchOpen: boolean,
@@ -111,6 +119,9 @@ class App extends Component<P, S> {
       this.mostRecentNode = get(graph.nodes, [0, 'node']);
       const readme = graph.nodes.find(nis => nis.node.title === 'README');
       this._setInfoOpen(readme ? readme.node.id : null);
+      if (typeof graph.meta.zoom === 'number') {
+        this.props.setScale(graph.meta.zoom);
+      }
       this.setState({ graph }, () => (window['$graph'] = graph));
     });
   };
@@ -123,7 +134,10 @@ class App extends Component<P, S> {
 
   _exportJSON = (name: string) => {
     const { graph } = this.state;
-    graph && downloadObj(graph.serialize(name), name);
+    const {
+      view: { zoom },
+    } = this.props;
+    graph && downloadObj(graph.serialize(name, { zoom }), name);
     this._closeSave();
   };
 
@@ -330,13 +344,14 @@ class App extends Component<P, S> {
 setHotkeysDialogProps({ className: 'bp3-dark', globalHotkeysGroup: 'Menu' });
 const AppWithHK = HotkeysTarget(App);
 const select = createSelector(
-  [selectInfoOpen],
-  showNode => ({ showNode })
+  [selectInfoOpen, selectView],
+  (showNode, view) => ({ showNode, view })
 );
 export default connect(
   select,
   d => ({
     setInfoOpen: n => d(_setInfoOpen(n)),
     updatePos: (pos: PosMemo) => d(_updatePos(pos)),
+    setScale: s => d(_setScale(s)),
   })
 )(AppWithHK);

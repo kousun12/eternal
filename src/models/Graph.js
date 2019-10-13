@@ -8,26 +8,36 @@ import type { EdgeSerialization } from 'models/Edge';
 import { uuid } from 'helpers';
 import type { PosMemo } from 'redux/ducks/graph';
 
+type MetaData = { zoom?: number };
+
 export type GraphSerialization = {
   name?: string,
   nodes: NodeSerialization<any>[],
   edges: EdgeSerialization[],
+  meta?: MetaData,
 };
 
 export default class Graph {
   id: string;
   name: string = 'untitled';
+  meta: MetaData = {};
   nodes: NodeInSpace[] = [];
   _nodesById: { [string]: NodeInSpace } = {};
   edges: Edge[] = [];
 
-  constructor(nodes?: NodeInSpace[] = [], edges?: Edge[] = [], name?: string = 'untitled') {
+  constructor(
+    nodes?: NodeInSpace[] = [],
+    edges?: Edge[] = [],
+    name?: string = 'untitled',
+    meta: MetaData = {}
+  ) {
     this.id = uuid();
     const _nodes = nodes || [];
     _nodes.forEach(nis => this.addNode(nis.node, nis.pos));
     const _edges = edges || [];
     _edges.forEach(this.addEdge);
     this.name = name;
+    this.meta = meta;
   }
 
   nodeWithId: string => ?NodeInSpace = id => this._nodesById[id];
@@ -88,11 +98,12 @@ export default class Graph {
     edge.to.removeInput(edge);
   };
 
-  serialize: string => GraphSerialization = name => {
+  serialize: (string, ?MetaData) => GraphSerialization = (name, meta) => {
     return {
       name,
       nodes: this.nodes.map(n => n.node.serialize(n.pos.x, n.pos.y)),
       edges: this.edges.map(e => e.serialize()),
+      ...(meta && { meta }),
     };
   };
 
@@ -127,7 +138,8 @@ export default class Graph {
     const nodes = nodesInSpace.map(nis => nis.node);
     const edges = json.edges.map(j => Edge.load(j, nodes));
     const name = json.name || 'untitled';
-    return new Graph(nodesInSpace, edges, name);
+    const meta = json.meta || {};
+    return new Graph(nodesInSpace, edges, name, meta);
   }
 
   static empty(): GraphSerialization {
