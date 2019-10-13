@@ -10,6 +10,15 @@ type P = {};
 type S = { material: Material };
 type O = { material: Material };
 
+const TT = {
+  ShaderProgram: Types.string.aliased(
+    'ShaderProgram',
+    <div>
+      <p>An OpenGL compatible GLSL shader</p>
+    </div>
+  ),
+};
+
 let color = Base.rgbToHex(28, 5, 9);
 
 export class LambertMaterialNode extends NodeBase<S, P, O> {
@@ -77,8 +86,8 @@ export class ShaderMaterialNode extends NodeBase<S, { vertex: string, fragment: 
 
   static schema = {
     input: {
-      vertex: Types.string.desc('Vertex shader for this shader material'),
-      fragment: Types.string.desc('Fragment shader for this shader material'),
+      vertex: TT.ShaderProgram.desc('Vertex shader for this shader material'),
+      fragment: TT.ShaderProgram.desc('Fragment shader for this shader material'),
       transparent: Types.boolean.desc(
         'Whether or not this material responds to an alpha component'
       ),

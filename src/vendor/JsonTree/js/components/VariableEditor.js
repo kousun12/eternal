@@ -6,6 +6,14 @@ import dispatcher from './../helpers/dispatcher';
 import parseInput from './../helpers/parseInput';
 import stringifyVariable from './../helpers/stringifyVariable';
 
+import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
+import js from 'react-syntax-highlighter/dist/esm/languages/hljs/javascript';
+import glsl from 'react-syntax-highlighter/dist/esm/languages/hljs/glsl';
+import syntaxTheme from 'react-syntax-highlighter/dist/esm/styles/hljs/tomorrow-night';
+
+SyntaxHighlighter.registerLanguage('javascript', js);
+SyntaxHighlighter.registerLanguage('glsl', glsl);
+
 //data type components
 import {
   JsonBoolean,
@@ -33,10 +41,7 @@ class VariableEditor extends React.PureComponent {
       editMode: false,
       editValue: '',
       renameKey: false,
-      parsedInput: {
-        type: false,
-        value: null,
-      },
+      parsedInput: { type: false, value: null },
     };
   }
 
@@ -191,11 +196,34 @@ class VariableEditor extends React.PureComponent {
   };
 
   getValue = (variable, editMode) => {
-    const type = editMode ? false : variable.type;
+    if (editMode) {
+      return this.getEditInput();
+    }
+    const { attrType } = this.props;
+    if (attrType.name === 'JSFunction') {
+      return (
+        <SyntaxHighlighter
+          language="javascript"
+          style={syntaxTheme}
+          codeTagProps={{ className: 'syntax-highlighter' }}
+        >
+          {variable.value}
+        </SyntaxHighlighter>
+      );
+    } else if (['GPGPUKernel', 'ShaderProgram'].includes(attrType.name)) {
+      return (
+        <SyntaxHighlighter
+          language="glsl"
+          style={syntaxTheme}
+          codeTagProps={{ className: 'syntax-highlighter' }}
+        >
+          {variable.value}
+        </SyntaxHighlighter>
+      );
+    }
+    const type = variable.type;
     const { props } = this;
     switch (type) {
-      case false:
-        return this.getEditInput();
       case 'string':
         return <JsonString value={variable.value} {...props} />;
       case 'integer':
@@ -225,9 +253,10 @@ class VariableEditor extends React.PureComponent {
   getEditInput = () => {
     const { theme } = this.props;
     const { editValue } = this.state;
-
     return (
-      <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+      <div
+        style={{ display: 'flex', alignItems: 'center', width: '100%', flexDirection: 'column' }}
+      >
         <AutosizeTextarea
           type="text"
           inputRef={input => input && input.focus()}
@@ -266,19 +295,17 @@ class VariableEditor extends React.PureComponent {
           {...Theme(theme, 'edit-input')}
         />
         <div {...Theme(theme, 'edit-icon-container')}>
-          <div>
+          <div {...Theme(theme, 'cancel-icon')}>
             <Remove
               className="edit-cancel"
-              {...Theme(theme, 'cancel-icon')}
               onClick={() => {
                 this.setState({ editMode: false, editValue: '' });
               }}
             />
           </div>
-          <div>
+          <div {...Theme(theme, 'check-icon')}>
             <CheckCircle
               className="edit-check string-value"
-              {...Theme(theme, 'check-icon')}
               onClick={() => this.submitEdit(true)}
             />
           </div>

@@ -341,10 +341,11 @@ $attrs-pad-sides: 16px;
 .attribute-pane {
   color: #888888;
   height: calc(100vh - #{$toolbar-height});
-  position: fixed;
-  min-width: 80px;
+  position: absolute;
+  min-width: 140px;
   max-width: 85vw;
   overflow-x: hidden;
+  overflow-y: scroll;
   right: 0;
   z-index: 14;
   top: $toolbar-height;
@@ -352,7 +353,6 @@ $attrs-pad-sides: 16px;
   -moz-box-shadow: -3px 0px 20px 3px rgba(0, 0, 0, 0.3);
   box-shadow: -3px 0px 20px 3px rgba(0, 0, 0, 0.3);
   background-color: rgba(38, 39, 40, 1);
-  overflow-y: auto;
   border-left: 1px solid $pane-border;
 }
 
@@ -361,12 +361,11 @@ $attrs-pad-sides: 16px;
 }
 
 #attr-pane-resizer {
-  width: 16px;
-  height: calc(100vh - #{$toolbar-height});
   position: absolute;
-  cursor: col-resize;
-  top: 0;
   left: 0;
+  width: 16px;
+  height: 100%;
+  cursor: col-resize;
 }
 
 .attr-title {
@@ -464,10 +463,14 @@ $attrs-pad-sides: 16px;
   max-height: 400px;
 }
 
-code {
+code:not(.syntax-highlighter) {
   border-radius: 2px;
   background-color: rgba(0, 0, 0, 0.2);
   padding: 1px 4px 3px 4px;
+}
+
+code {
+  font-family: Monaco, "Source Code Pro", monospace, sans-serif;
 }
 
 // JSON VIEWER STYLES
@@ -494,7 +497,8 @@ code {
 
   .variable-editor {
     outline: none;
-    flex: 1;
+    width: 100%;
+    margin: 0;
   }
 
   .variable-value {

@@ -11,10 +11,10 @@ import NodeBase from 'models/NodeBase';
 const Types = window.Types;
 
 type P = { node: AnyNode };
-type S = { fullDocs: boolean, width: number };
+type S = { fullDocs: boolean, width: number, resizerTop: number };
 
 class AttributePane extends Component<P, S> {
-  state = { fullDocs: true, width: 380 };
+  state = { fullDocs: true, width: 380, resizerTop: 0 };
   listener: ?string;
 
   // noinspection JSUnusedGlobalSymbols
@@ -143,13 +143,19 @@ class AttributePane extends Component<P, S> {
 
   _onResize = (e: MouseEvent) => this.setState({ width: window.innerWidth - e.clientX });
 
+  _onScroll = r => this.setState({ resizerTop: r.target.scrollTop });
+
   render() {
     if (!this.props.node) {
       return <div />;
     }
     const { fullDocs, width } = this.state;
     return (
-      <div className="attribute-pane ignore-react-onclickoutside" style={{ width }}>
+      <div
+        className="attribute-pane ignore-react-onclickoutside"
+        style={{ width }}
+        onScroll={this._onScroll}
+      >
         <h3 className="pane-header">
           {this.props.node.title || NodeBase.nameFrom(this.props.node.constructor)}
         </h3>
@@ -161,7 +167,7 @@ class AttributePane extends Component<P, S> {
         <hr />
         <div className="attr-list">{this._changeables()}</div>
         <DraggableCore onDrag={this._onResize}>
-          <div id="attr-pane-resizer" />
+          <div id="attr-pane-resizer" style={{ top: this.state.resizerTop }} />
         </DraggableCore>
       </div>
     );

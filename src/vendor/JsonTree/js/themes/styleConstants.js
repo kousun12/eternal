@@ -62,7 +62,7 @@ export default {
   editInputHeight: '25px',
   editInputMinWidth: '130px',
   editInputBorderRadius: '3px',
-  editInputPadding: '6px 8px 4px 8px',
+  editInputPadding: '10px 8px',
   editInputMarginRight: '4px',
   editInputFontFamily: 'Monaco, "Source Code Pro", monospace, sans-serif',
 
