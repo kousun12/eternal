@@ -16,6 +16,12 @@ type S = { fullDocs: boolean, width: number, resizerTop: number };
 class AttributePane extends Component<P, S> {
   state = { fullDocs: true, width: 380, resizerTop: 0 };
   listener: ?string;
+  root: { current: null | HTMLDivElement };
+
+  constructor(props: P) {
+    super(props);
+    this.root = React.createRef();
+  }
 
   // noinspection JSUnusedGlobalSymbols
   renderHotkeys() {
@@ -44,6 +50,9 @@ class AttributePane extends Component<P, S> {
         this.listener = null;
       }
       this.props.node && this._setListener(this.props.node);
+      if (this.root && this.root.current) {
+        this.root.current.scrollTop = 0;
+      }
     }
   }
 
@@ -152,6 +161,7 @@ class AttributePane extends Component<P, S> {
     const { fullDocs, width } = this.state;
     return (
       <div
+        ref={this.root}
         className="attribute-pane ignore-react-onclickoutside"
         style={{ width }}
         onScroll={this._onScroll}
