@@ -20,9 +20,11 @@ export default class NodeBase<Val: Object, In: ?Object, Out: ?Object> {
   // Private vars
   outputCache = {};
   live: boolean = false;
+  isLoading: boolean = false;
   +listeners: { [string]: ChangeListener } = {};
   title: ?string;
   _unPushed: string[] = [];
+  _loadStateListener: ?(boolean) => void;
 
   static +displayName: ?string;
   static +registryName: string;
@@ -49,6 +51,10 @@ export default class NodeBase<Val: Object, In: ?Object, Out: ?Object> {
   }
 
   _process: (string[], boolean) => Out = (keys, force) => {
+    if (!this.outKeys().length) {
+      // $FlowIgnore
+      return {};
+    }
     const val = this.process(keys);
     // TODO: think about mutating objects in output cache. should we deep copy or not allow mutations?
     const forward = force ? val : omitBy(val, (v, k) => isEqual(v, this.outputCache[k]));
@@ -92,10 +98,19 @@ export default class NodeBase<Val: Object, In: ?Object, Out: ?Object> {
 
   requireForOutput: () => boolean = () => true;
 
+  setLoadStateListener = (listener: boolean => void) => {
+    this._loadStateListener = listener;
+  };
+
+  setLoading = (loading: boolean) => {
+    this.isLoading = loading;
+    this._loadStateListener && this._loadStateListener(loading);
+  }
+
   addInput: (input: Edge) => void = input => {
     this.beforeConnectIn(input);
     this.inputs.push(input);
-    if (input.from.requireForOutput()) {
+    if (input.from.requireForOutput() && input.from.outKeys().length) {
       const initialValue = input.from.process([input.toPort]);
       this._onInputChange(input, input.outDataFor(initialValue), true);
     } else {
@@ -344,10 +359,9 @@ export default class NodeBase<Val: Object, In: ?Object, Out: ?Object> {
     });
     return keys;
   };
-  
+
   domId = () => `n-root-${this.id}`;
   domNode = () => document.getElementById(this.domId());
-
 
   // Probably should just require display name and not need this
   static nameFrom(clazz: Class<AnyNode>) {

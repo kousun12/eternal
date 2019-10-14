@@ -98,12 +98,13 @@ export default class Performance {
   generationInterval: ?TimeoutID;
   stopped = false;
 
-  start = () => {
+  start = (onFinish?: () => void) => {
     if (this.initialized) {
+      onFinish && onFinish()
       return;
     }
     this.initialized = true;
-    Tone.Transport.start();
+    if (Tone.Transport.state !=='started') { Tone.Transport.start(); }
     fetch(`${CHECKPOINT_URL}/weights_manifest.json`)
       .then(response => response.json())
       .then((manifest: tf.WeightsManifestConfig) => tf.io.loadWeights(manifest, CHECKPOINT_URL))
@@ -117,6 +118,7 @@ export default class Performance {
         this.fcB = vars['fully_connected/biases'];
         this.fcW = vars['fully_connected/weights'];
         this.modelReady = true;
+        onFinish && onFinish()
         this.resetRnn();
       })
       .then(() => {

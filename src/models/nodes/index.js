@@ -22,6 +22,7 @@ import {
   ReverbNode,
   PlayerNode,
   VolumeNode,
+  SignalRampNode,
 } from './ToneNode';
 import { SoundFontNode, SoundFontPlayerNode } from './SoundFont';
 import MapperNode from './MapperNode';
@@ -106,6 +107,7 @@ export {
   ReverbNode,
   PlayerNode,
   VolumeNode,
+  SignalRampNode,
   SoundFontNode,
   SoundFontPlayerNode,
   DivideNode,
@@ -189,6 +191,7 @@ export const allNodes = [
   ReverbNode,
   PlayerNode,
   VolumeNode,
+  SignalRampNode,
   SoundFontNode,
   SoundFontPlayerNode,
   DivideNode,

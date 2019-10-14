@@ -109,6 +109,15 @@ export default class Base {
     this.scene = new Scene();
     window.scene = this.scene;
     this.scene.fog = fog;
+    const { renderer, composer } = this;
+    if (renderer) {
+      renderer.reset && renderer.reset();
+      renderer.dispose();
+    }
+    if (composer) {
+      composer.reset && composer.reset();
+      composer.dispose && composer.dispose();
+    }
     return this;
   };
 

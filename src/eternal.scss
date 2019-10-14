@@ -578,3 +578,39 @@ code {
   color: #b7b7b7 !important;
 }
 
+
+
+// Variables
+$circleDiam: 18px;
+$innerCircleDiam: $circleDiam/3;
+$rotatingCircleDiam: $circleDiam/5;
+
+$innerCirclePos: ($circleDiam - $innerCircleDiam)/2;
+$rotatingCirclePosLeft: ($circleDiam - $innerCircleDiam)/2 - $rotatingCircleDiam;
+$rotatingCirclePosTop: $circleDiam/2 - $rotatingCircleDiam/2;
+
+.spinner {
+  width: $circleDiam;
+  height: $circleDiam;
+  position: fixed;
+  top: 13px; right: 13px;
+  margin: -$circleDiam/2;
+  background-color: rgba(0, 0, 0, 0.4);
+  box-shadow: 0 2px 1px rgba(0,0,0,0) inset;
+  border-radius: 50%;
+
+  &:after {
+    content: '';
+    position: absolute;
+    top: $rotatingCirclePosTop;
+    left: $rotatingCirclePosLeft;
+    background-color: $connector-color;
+    height: $rotatingCircleDiam;
+    width: $rotatingCircleDiam;
+    animation: spin 1.1s linear infinite;
+    border-radius: 50%;
+    transform-origin: $innerCirclePos/2 + $rotatingCircleDiam;
+  }
+}
+
+@keyframes spin { 100% { transform: rotate(360deg); } }

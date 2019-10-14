@@ -115,12 +115,8 @@ export default class ThreeNode extends NodeBase<S, P, null> {
         renderer.setClearAlpha(newAlpha);
       }
     }
-    return [];
-  };
-
-  process = () => {
     this._start();
-    return null;
+    return [];
   };
 }
 

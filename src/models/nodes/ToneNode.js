@@ -14,6 +14,7 @@ export const TT = {
   AudioNode: Types.object.aliased('AudioNode', 'Any kind of audio node'),
   Config: Types.object.aliased('Config'),
   Synth: Types.object.aliased('Synth', 'Any kind of synth'),
+  Signal: Types.object.aliased('Signal', 'An audio signal, like volume, pan, frequency, etc.'),
   Panner: Types.object.aliased('Panner', 'An audio pan'),
   Gain: Types.object.aliased('Gain', 'An audio gain'),
   FeedbackDelay: Types.object.aliased('FeedbackDelay', 'A feedback delay'),
@@ -648,6 +649,7 @@ export class PlayerNode extends NodeBase<{}, { url: string, call: any }, { playe
   _player: Tone.Player = new Tone.Player();
 
   _makePlayer = (url: string) => {
+    this.setLoading(true)
     if (url.startsWith('/')) {
       url = URL_BASE + url;
     }
@@ -724,6 +726,53 @@ export class SetNoteNode extends NodeBase<
   };
 
   process = () => null;
+}
+
+export class SignalRampNode extends NodeBase<
+  {},
+  { signal: Tone.Signal, toValue: number, rampTime: Tone.Time },
+  null
+> {
+  static +displayName = 'Signal Ramp';
+  static +registryName = 'SignalRampNode';
+  static description = <span>Ramp a signal to a value over a time</span>;
+  static schema = {
+    input: {
+      signal: TT.Signal.desc('The signal to ramp'),
+      toValue: Types.time.desc('The value to ramp to'),
+      rampTime: Types.time.desc('The amount of time it takes to ramp'),
+    },
+    output: {},
+    state: {},
+  };
+  _deferStart: boolean = false;
+
+  onAddToGraph = () => {
+    Tone.Transport.on('start', this._manageLoop);
+  };
+
+  _manageLoop = () => {
+    if (this._deferStart) {
+      this._deferStart = false;
+      this._ramp();
+    }
+  };
+
+  _ramp = () => {
+    const { signal, toValue, rampTime } = this.props;
+    if (signal && toValue !== undefined && rampTime) {
+      if (Tone.Transport.state === 'started') {
+        signal.linearRampTo(toValue, rampTime);
+      } else {
+        this._deferStart = true;
+      }
+    }
+  };
+
+  onInputChange = (edge: Edge, change: Object) => {
+    this._ramp();
+    return [];
+  };
 }
 
 export class ArpeggiateNode extends NodeBase<
@@ -807,10 +856,12 @@ export class ArpeggiateNode extends NodeBase<
     }
   };
 
-  process = () => {
+  onInputChange = () => {
     this._manageLoop();
-    return this._out;
+    return this.outKeys();
   };
+
+  process = () => this._out;
 }
 
 export class TimeLoopNode extends NodeBase<
@@ -888,18 +939,17 @@ export class TimeLoopNode extends NodeBase<
     if (['humanize', 'loop', 'iterations', 'playbackRate'].includes(edge.toPort)) {
       this._recreateLoop();
       this.loop[edge.toPort] = edge.inDataFor(change);
+      this._manageLoop();
       return this.outKeys();
     } else if (edge.toPort === 'interval') {
       this._recreateLoop();
+      this._manageLoop();
       return this.outKeys();
     }
     return [];
   };
 
-  process = () => {
-    this._manageLoop();
-    return { i: this.count };
-  };
+  process = () => ({ i: this.count });
 }
 
 export class SynthNode extends NodeBase<
@@ -1054,7 +1104,7 @@ export class DuoSynthNode extends NodeBase<{ value: Tone.DuoSynth }, {}, { out: 
   };
 
   static defaultSynth() {
-    let envelope = { attack: 0.8, release: 4, releaseCurve: 'linear', attackCurve: 'sine' };
+    let envelope = { attack: 1.4, release: 4, releaseCurve: 'linear', attackCurve: 'sine' };
     let filterEnvelope = {
       baseFrequency: 200,
       octaves: 2,
@@ -1088,15 +1138,15 @@ export class PianoNode extends NodeBase<{}, {}, { out: Piano }> {
   };
 
   onAddToGraph = () => {
+    this.setLoading(true);
     this.piano = new Piano({ velocities: 4 });
     this.piano.load('https://storage.googleapis.com/learnjs-data/Piano/Salamander/').then(() => {
+      this.setLoading(false);
       this.loaded = true;
     });
   };
 
-  process = () => {
-    return { out: this.piano };
-  };
+  process = () => ({ out: this.piano });
 }
 
 export class TransportTimeNode extends NodeBase<{}, { bpm: number }, { out: Tone.Transport }> {

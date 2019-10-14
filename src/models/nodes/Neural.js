@@ -151,7 +151,8 @@ export class PerformanceRNNNode extends NodeBase<
   };
 
   _startModel = () => {
-    this.performance.start();
+    this.setLoading(true);
+    this.performance.start(() => this.setLoading(false));
     this.started = true;
   };
 
@@ -201,7 +202,6 @@ export class PerformanceRNNNode extends NodeBase<
     }
   };
 
-  process = () => ({ midiData: this.midiOut, toneData: this.toneOut });
   onInputChange = (edge: Edge, change: Object) => {
     if (edge.toPort === 'synth') {
       const s = edge.inDataFor(change);
@@ -214,4 +214,6 @@ export class PerformanceRNNNode extends NodeBase<
     // do not notify on input changes
     return [];
   };
+
+  process = () => ({ midiData: this.midiOut, toneData: this.toneOut });
 }

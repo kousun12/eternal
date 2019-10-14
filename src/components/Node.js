@@ -32,10 +32,33 @@ type OP = {|
   disabled: boolean,
 |};
 type P = {| ...SP, ...OP |};
+type S = { loading: boolean };
 const MoveBufferPx = 4;
 
-class Node extends React.Component<P> {
+class Node extends React.Component<P, S> {
+  state = { loading: false };
   dragStart: ?Pos;
+
+  componentDidMount() {
+    if (this.state.loading !== this.props.nis.node.isLoading) {
+      this.setState({ loading: this.props.nis.node.isLoading });
+    }
+    this.props.nis.node.setLoadStateListener(loading => this.setState({ loading }));
+  }
+
+  componentDidUpdate(prevProps: P) {
+    if (prevProps.nis.node.id !== this.props.nis.node.id) {
+      prevProps.nis.node.setLoadStateListener(null);
+      if (this.state.loading !== this.props.nis.node.isLoading) {
+        this.setState({ loading: this.props.nis.node.isLoading });
+      }
+      this.props.nis.node.setLoadStateListener(loading => this.setState({ loading }));
+    }
+  }
+
+  componentWillUnmount() {
+    this.props.nis.node.setLoadStateListener(null);
+  }
 
   _onDelete = () => this.props.onDelete && this.props.onDelete(this.props.nis.node);
 
@@ -107,6 +130,7 @@ class Node extends React.Component<P> {
   render() {
     const { selected, infoShowing, visible, pos, scale, positionOffset, disabled } = this.props;
     const { node } = this.props.nis;
+    const { loading } = this.state;
     const sel = infoShowing ? 'in-view' : selected ? 'selected' : '';
     let nodeClass = 'node' + (sel ? ` ${sel} ignore-react-onclickoutside` : '');
     if (!visible) {
@@ -150,6 +174,7 @@ class Node extends React.Component<P> {
               positionOffset={positionOffset ? addVec(pos, positionOffset) : pos}
             />
           </div>
+          {loading && <div className="spinner" />}
         </div>
       </Draggable>
     );

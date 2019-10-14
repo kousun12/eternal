@@ -7,6 +7,7 @@ import SoundFont from 'soundfont-player';
 import { TT as NTypes, type ToneData } from 'models/nodes/Neural';
 import type { MidiData } from 'performance';
 import { MIDI_EVENT_OFF, MIDI_EVENT_ON } from 'performance';
+import Edge from 'models/Edge';
 const Types = window.Types;
 
 export const TT = {
@@ -73,10 +74,12 @@ export class SoundFontNode extends NodeBase<
   };
 
   _setFont = (name: string) => {
+    this.setLoading(true);
     SoundFont.instrument(Tone.context, name, this._options()).then(inst => {
       this.instrument = inst;
       this.instrument.opts = { ...this.instrument.opts, ...this._options() };
       this.notifyAllOutputs(true);
+      this.setLoading(false);
       this._loaded = name;
     });
   };
@@ -188,7 +191,7 @@ export class SoundFontPlayerNode extends NodeBase<
     }
   };
 
-  process = () => {
+  onInputChange = (edge: Edge, change: Object) => {
     const sf = get(this.props, 'soundFont', undefined);
     if (sf) {
       this._connectMidiIn();
@@ -197,6 +200,6 @@ export class SoundFontPlayerNode extends NodeBase<
       const midi = get(this.props, 'midiData');
       if (midi) this._playMidiData(midi, sf);
     }
-    return null;
+    return [];
   };
 }
