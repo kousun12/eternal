@@ -38,7 +38,6 @@ export class ContextDestinationNode extends NodeBase<{}, {}, { node: Tone.AudioN
     output: { node: TT.AudioNode.desc('The current context destination node') },
     state: {},
   };
-
   process = () => ({ node: Tone.context.destination });
 }
 
@@ -187,10 +186,6 @@ export class PannerNode extends NodeBase<
     }
   };
 
-  /**
-   * TODO: With this pattern I am concerned that we are being too magical and should
-   * just include a connect(from, to) node for connections.
-   */
   onInputChange = (edge: Edge, change: Object) => {
     if ('node' === edge.toPort && this.state._connectedTo !== edge.id) {
       logConnect(edge.inDataFor(change), this.state.panner);
@@ -807,14 +802,14 @@ export class ArpeggiateNode extends NodeBase<
           <div>
             <p>Arpeggio pattern. Possible values are</p>
             <ul>
-              <li>`up` - cycles upward</li> <li>`down` - cycles downward</li>
-              <li>`upDown` - up then and down</li> <li>`downUp` - cycles down then and up</li>
-              <li>`alternateUp` - jump up two and down one</li>
-              <li>`alternateDown` - jump down two and up one</li>
-              <li>`random` - randomly select an index</li>
-              <li>`randomWalk` - randomly moves one index away from the current position</li>
+              <li><code>up</code> - cycles upward</li> <li>h - cycles downward</li>
+              <li><code>upDown</code> - up then and down</li> <li><code>downUp</code> - cycles down then and up</li>
+              <li><code>alternateUp</code> - jump up two and down one</li>
+              <li><code>alternateDown</code> - jump down two and up one</li>
+              <li><code>random</code> - randomly select an index</li>
+              <li><code>randomWalk</code> - randomly moves one index away from the current position</li>
               <li>
-                `randomOnce` - randomly select an index without repeating until all values have been
+                <code>randomOnce</code> - randomly select an index without repeating until all values have been
                 chosen.
               </li>
             </ul>
@@ -974,8 +969,8 @@ export class SynthNode extends NodeBase<
           'OscillatorType',
           <div>
             The type of the oscillator: either sine, square, triangle, or sawtooth. Also capable of
-            setting the first x number of partials of the oscillator. For example: `sine4` would set
-            be the first 4 partials of the sine wave and `triangle8` would set the first 8 partials
+            setting the first x number of partials of the oscillator. For example: <code>sine4</code> would set
+            be the first 4 partials of the sine wave and <code>triangle8</code> would set the first 8 partials
             of the triangle wave.
           </div>
         )

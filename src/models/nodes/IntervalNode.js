@@ -64,9 +64,7 @@ export default class IntervalNode extends NodeBase<S, P, O> {
     }
   };
 
-  process = () => {
-    return { count: this.count, value: this.props.value };
-  };
+  process = () => ({ count: this.count, value: this.props.value })
 
   // do not notify on input changes
   onInputChange = () => [];

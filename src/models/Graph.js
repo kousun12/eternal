@@ -44,11 +44,8 @@ export default class Graph {
 
   nodeWithIdF: string => NodeInSpace = id => {
     const n = this.nodeWithId(id);
-    if (n) {
-      return n;
-    } else {
-      throw new Error('not found');
-    }
+    if (!n) throw new Error('not found');
+    return n;
   };
 
   addNode: (AnyNode, Pos) => NodeInSpace = (node, pos) => {

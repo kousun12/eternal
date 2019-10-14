@@ -102,7 +102,7 @@ Connect to the dev server from your browser @ [localhost:3000](http://localhost:
 
 The page will reload if you make edits.<br>
 
-The most important general classes you need to understand the project structure are [Graph](src/models/Graph.js), [NodeBase](src/models/NodeBase.js), and [AttributeType](src/models/AttributeType.js).
+The most important general classes you need to understand the project structure are [NodeBase](src/models/NodeBase.js), [Graph](src/models/Graph.js), and [AttributeType](src/models/AttributeType.js).
 
 You will also see any lint errors in the console. The repo has eslint and flowtype integrated. 
 

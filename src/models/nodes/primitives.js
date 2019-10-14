@@ -15,11 +15,7 @@ const [number, string, boolean, date] = ['number', 'string', 'boolean', 'date']
         static displayName = _t.name;
         static registryName = _t.name;
         static isPrimitive = true;
-        static schema = {
-          input: {},
-          output: { out: _t },
-          state: { value: _t },
-        };
+        static schema = { input: {}, output: { out: _t }, state: { value: _t } };
         process = () => {
           const out = _t.serialize ? _t.serialize(this.state.value) : this.state.value;
           return { out };
