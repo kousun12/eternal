@@ -19,12 +19,11 @@ import Searcher from 'components/SearchBar';
 import type { GraphSerialization } from 'models/Graph';
 import Graph from 'models/Graph';
 import type { AnyNode } from 'models/NodeBase';
-import { downloadObj } from 'helpers';
+import { downloadObj } from 'utils';
 import FileUpload from 'components/FileUpload';
 import SaveDialog from 'components/SaveDialog';
 import NodeSearcher from 'components/NodeSearcher';
 import ExampleSearch, { examples } from 'components/ExampleSearch';
-import './docgen';
 
 import 'eternal.scss';
 import type { Pos } from 'types';
@@ -40,6 +39,7 @@ import {
 import Zoomer from 'components/Zoomer';
 import type { PosMemo, SelectedView } from 'redux/ducks/graph';
 import { subVec } from 'utils/vector';
+import { urlRe } from 'utils/url';
 
 const welcomeGraph = require('models/examples/welcome.json');
 
@@ -80,7 +80,7 @@ class App extends Component<P, S> {
 
   componentDidMount() {
     let showWelcome = true;
-    const exId = get(window.location.search.match(/[?&]e=([\w-\d% +]+)&?/), 1);
+    const exId = this._paramFor(urlRe.exId);
     if (exId) {
       const name = decodeURIComponent(exId).replace(/\+/g, ' ');
       const exFromUrl = examples.find(e => e.name === name);
@@ -95,10 +95,10 @@ class App extends Component<P, S> {
     }
     showWelcome && this._setGraph(Graph.load(welcomeGraph));
 
-    const hide = get(window.location.search.match(/[?&]h=(\d)&?/), 1);
+    const hide = this._paramFor(urlRe.hide);
     typeof hide === 'string' && this.setState({ visible: hide === '0' });
 
-    const debug = get(window.location.search.match(/[?&]d=(\d)&?/), 1);
+    const debug = this._paramFor(urlRe.debug);
     typeof debug === 'string' && debug === '1' && this._toggleDebug();
 
     document.addEventListener('mousemove', this._onMouseMove);
@@ -108,13 +108,15 @@ class App extends Component<P, S> {
     document.removeEventListener('mousemove', this._onMouseMove);
   }
 
+  _paramFor = (re: RegExp): any => get(window.location.search.match(re), 1);
+
   _onMouseMove = throttle((me: MouseEvent) => {
     this._mousePos = { x: me.clientX, y: me.clientY };
   }, 30);
 
   _setGraph = (graph: Graph) => {
     this.state.graph && this.state.graph.dispose();
-    window['$node'] = null;
+    window.$node = null;
     this.setState({ graph: null }, () => {
       this.mostRecentNode = get(graph.nodes, [0, 'node']);
       if (process.env.NODE_ENV === 'production') {
@@ -124,7 +126,7 @@ class App extends Component<P, S> {
       if (typeof graph.meta.zoom === 'number') {
         this.props.setScale(graph.meta.zoom);
       }
-      this.setState({ graph }, () => (window['$graph'] = graph));
+      this.setState({ graph }, () => (window.$graph = graph));
     });
   };
 
@@ -148,7 +150,7 @@ class App extends Component<P, S> {
   _onFileUpload = (file: File) => Graph.fromFile(file, this._loadGraph);
 
   _loadGraph = (json: GraphSerialization) => {
-    const exId = get(window.location.search.match(/[?&]e=([\w-\d% +]+)&?/), 1);
+    const exId = this._paramFor(urlRe.exId);
     if (exId) {
       this._reload();
     } else {
@@ -161,7 +163,7 @@ class App extends Component<P, S> {
   };
 
   _toggleDebug = () => {
-    window['$debug'] = !window['$debug'];
+    window.$debug = !window.$debug;
     this.setState({ visible: false }, () => this.setState({ visible: true }));
   };
 
@@ -189,7 +191,7 @@ class App extends Component<P, S> {
       if (typeof idx === 'number') {
         this.nodeIndex = idx;
       }
-      window['$node'] = node;
+      window.$node = node;
     }
     this.state.searchingNodes && this._closeSearch();
   };
@@ -276,7 +278,6 @@ class App extends Component<P, S> {
             saveFile={this._exportJSON}
           />
         )}
-        <Searcher isOpen={searchOpen} onItemSelect={this._addNode} onClose={this._closeSearch} />
         {graph && (
           <NodeSearcher
             isOpen={searchingNodes}
@@ -285,6 +286,7 @@ class App extends Component<P, S> {
             graph={graph}
           />
         )}
+        <Searcher isOpen={searchOpen} onItemSelect={this._addNode} onClose={this._closeSearch} />
         <ExampleSearch
           isOpen={searchingExamples}
           onItemSelect={this._loadExample}

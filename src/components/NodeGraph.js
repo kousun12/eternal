@@ -333,8 +333,7 @@ class NodeGraph extends React.Component<P, S> {
       this.props.selSet([]);
       this.deselectNodes = false;
     }
-    this.canvasDragStart = null;
-    this.setState({ canvasDragEnd: null });
+    this._clearCanvasDrag();
   };
 
   render() {
@@ -405,8 +404,24 @@ class NodeGraph extends React.Component<P, S> {
     );
   }
 
-  _onCanvasDoubleClick = () => Object.keys(this.props.selected).length && this.props.selSet([]);
-  _onCanvasClick = () => this.state.connecting && this.setState({ connecting: false });
+  _onCanvasDoubleClick = () => {
+    Object.keys(this.props.selected).length && this.props.selSet([]);
+    this._clearCanvasDrag();
+    this._clearConnecting();
+  };
+
+  _onCanvasClick = () => {
+    this._clearConnecting();
+    this._clearCanvasDrag();
+  };
+
+  _clearConnecting = () => {
+    this.state.connecting && this.setState({ connecting: false });
+  };
+  _clearCanvasDrag = () => {
+    this.canvasDragStart = null;
+    this.state.canvasDragEnd && this.setState({ canvasDragEnd: null });
+  };
 
   _rootStyle = () => ({ transform: `scale(${this.props.scale})` });
 

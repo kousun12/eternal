@@ -4,7 +4,7 @@
 import { type Node } from 'react';
 import { startCase, pick, omitBy, isEqual, get, set, cloneDeep, fromPairs, uniq } from 'lodash';
 import Edge from 'models/Edge';
-import { uuid } from 'helpers';
+import { uuid } from 'utils/string';
 import { TypeImpl, type TypeMap } from 'models/AttributeType';
 import { signatureFor } from 'components/util';
 
@@ -50,6 +50,14 @@ export default class NodeBase<Val: Object, In: ?Object, Out: ?Object> {
     }
   }
 
+  /**
+   * Run this node over current state to compute an output
+   * @param keys a subset of outKeys which should be processed
+   */
+  process: (string[]) => Out = keys => {
+    throw new Error('unimplemented');
+  };
+
   _process: (string[], boolean) => Out = (keys, force) => {
     if (!this.outKeys().length) {
       // $FlowIgnore
@@ -60,14 +68,6 @@ export default class NodeBase<Val: Object, In: ?Object, Out: ?Object> {
     const forward = force ? val : omitBy(val, (v, k) => isEqual(v, this.outputCache[k]));
     this.outputCache = { ...this.outputCache, ...val };
     return forward;
-  };
-
-  /**
-   * Run this node over current state to compute an output
-   * @param keys a subset of outKeys which should be processed
-   */
-  process: (string[]) => Out = keys => {
-    throw new Error('unimplemented');
   };
 
   /**
@@ -105,7 +105,7 @@ export default class NodeBase<Val: Object, In: ?Object, Out: ?Object> {
   setLoading = (loading: boolean) => {
     this.isLoading = loading;
     this._loadStateListener && this._loadStateListener(loading);
-  }
+  };
 
   addInput: (input: Edge) => void = input => {
     this.beforeConnectIn(input);
@@ -120,7 +120,7 @@ export default class NodeBase<Val: Object, In: ?Object, Out: ?Object> {
     this.afterConnectIn(input);
   };
 
-  // TODO change this to required inputs check
+  // TODO change this to required inputs check toposort on initial graph walk
   _notifyLive = (input: Edge) => {
     if (!this.live) {
       const sKeys = this.constructor.inKeys();
@@ -164,24 +164,6 @@ export default class NodeBase<Val: Object, In: ?Object, Out: ?Object> {
     onRemove && onRemove();
   };
 
-  _onInputChange: (edge: Edge, partialChange: $Shape<In>, boolean) => void = (
-    edge,
-    change,
-    force
-  ) => {
-    const oldProps = { ...this.props };
-    this.props = this.props || {};
-    // $FlowIgnore
-    change && Object.keys(change).forEach(k => (this.props[k] = change[k]));
-    let _force = force;
-    if (this._unPushed.includes(edge.id)) {
-      this._unPushed = this._unPushed.filter(id => id !== edge.id);
-      _force = true;
-    }
-    this.willReceiveProps(this.props, oldProps, false);
-    this.notifyOutputs(this.onInputChange(edge, change), _force);
-  };
-
   registerListener: ChangeListener => string = listener => {
     const key = uuid();
     this.listeners[key] = listener;
@@ -200,6 +182,24 @@ export default class NodeBase<Val: Object, In: ?Object, Out: ?Object> {
    */
   onInputChange: (edge: Edge, partialChange: $Shape<In>) => string[] = (edge, change) => {
     return [];
+  };
+
+  _onInputChange: (edge: Edge, partialChange: $Shape<In>, boolean) => void = (
+    edge,
+    change,
+    force
+  ) => {
+    const oldProps = { ...this.props };
+    this.props = this.props || {};
+    // $FlowIgnore
+    change && Object.keys(change).forEach(k => (this.props[k] = change[k]));
+    let _force = force;
+    if (this._unPushed.includes(edge.id)) {
+      this._unPushed = this._unPushed.filter(id => id !== edge.id);
+      _force = true;
+    }
+    this.willReceiveProps(this.props, oldProps, false);
+    this.notifyOutputs(this.onInputChange(edge, change), _force);
   };
 
   /**
@@ -272,17 +272,18 @@ export default class NodeBase<Val: Object, In: ?Object, Out: ?Object> {
    * @returns {[string]: Changeable[]} lists of all changeables for this node under a key category.
    */
   changeables: () => { [string]: Changeable[] } = () => {
-    let changeables = {};
     const p = this.changeableProps();
     const s = this.changeableState();
     const o = this.otherChangeables();
     const outs = this.displayableOutputs();
-    if (p.length > 0) changeables.Inputs = p;
-    if (s.length > 0) changeables.Internals = s;
-    if (o.length > 0) changeables.Other = o;
-    if (outs.length > 0) changeables.Outputs = outs;
-    // $FlowIssue - outputs, i kno TODO
-    return changeables;
+    // $FlowIssue
+    return {
+      ...(p.length && { Inputs: p }),
+      ...(s.length && { Internals: s }),
+      ...(o.length && { Other: o }),
+      // $FlowIssue - outputs, i kno TODO
+      ...(outs.length && { Outputs: outs }),
+    };
   };
 
   displayableOutputs: () => Displayable[] = () => {
@@ -372,10 +373,9 @@ export default class NodeBase<Val: Object, In: ?Object, Out: ?Object> {
     return this.registryName || this.name;
   }
 
-  signature = (maxLen: number = 0, style: ?Object = null) => {
+  signature = (maxLen: number = 0, style: ?Object = null) =>
     // $FlowIgnore
-    return signatureFor(this.constructor, maxLen, style);
-  };
+    signatureFor(this.constructor, maxLen, style);
 
   serialize: (x: number, y: number) => NodeSerialization<$Shape<Val>> = (x, y) => {
     const stateS = this.constructor.schema.state;

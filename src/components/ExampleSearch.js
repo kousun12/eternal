@@ -5,7 +5,7 @@ import FuzzySearch from 'fuzzy-search';
 import { Omnibar, ItemRenderer, type IOmnibarProps } from '@blueprintjs/select';
 import { Menu, MenuItem } from '@blueprintjs/core';
 import type { GraphSerialization } from 'models/Graph';
-import { uuid } from 'helpers';
+import { uuid } from 'utils/string';
 
 type T = GraphSerialization;
 

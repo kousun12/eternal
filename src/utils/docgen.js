@@ -11,19 +11,21 @@ const renderAttr = ([title, type]) => {
   const typeInfo =
     type.isPrimitive() || !type.typeDescription
       ? ''
-      : `\<details\>
+      : `
+\<details\>
 \<summary\>${type.name}\<\/summary\>
 ${textFrom(type.typeDescription)}
 ${defaultString}
 \<\/details\>`;
+
   return `**\`${title}\`**: \`${type.name}\`
   
 ${attrDesc}${typeInfo}`;
 };
 
 const docs = () =>
-  allNodes.map(n => {
-    return `
+  allNodes.map(
+    n => `
 ## ${n.displayName}
 
 ${n.description ? textFrom(n.description) : ''}
@@ -41,8 +43,8 @@ ${Object.entries(n.schema.output)
   .map(renderAttr)
   .join('\n\n')}
   
-`;
-  });
+`
+  );
 
 export function download(str, exportName = 'docs') {
   const dataStr = 'data:text;charset=utf-8,' + encodeURIComponent(str);
@@ -65,6 +67,6 @@ Here's a list of all ${nodes.length} current nodes, their descriptions, and i/o.
 ${nodes.join('\n\n')}    
 `;
 };
-// const output = md();
+const output = md();
 // download(output);
-// console.log(output);
+console.log(output);

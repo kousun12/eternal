@@ -3,17 +3,17 @@ import React, { type Node } from 'react';
 import type { Pos } from 'types';
 import type { AnyNode } from 'models/NodeBase';
 
-window.$eTop = 51;
-window.$eHeight = 22;
-window.$eInL = 0;
-window.$eOutL = 198;
+const fromTop = 51;
+const itemH = 22;
+const inLeft = 0;
+const outLeft = 198;
 
 export function inOffset(x: number, y: number, index: number): Pos {
-  return { x: x + window.$eInL, y: y + window.$eTop + index * window.$eHeight };
+  return { x: x + inLeft, y: y + fromTop + index * itemH };
 }
 
 export function outOffset(x: number, y: number, index: number): Pos {
-  return { x: x + window.$eOutL, y: y + window.$eTop + index * window.$eHeight };
+  return { x: x + outLeft, y: y + fromTop + index * itemH };
 }
 
 export const signatureFor = (

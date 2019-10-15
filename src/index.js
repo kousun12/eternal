@@ -4,6 +4,7 @@ import './App';
 import { Provider } from 'react-redux';
 import store from './redux/rootStore';
 
+// import './utils/docgen';
 import * as serviceWorker from './serviceWorker';
 serviceWorker.unregister();
 

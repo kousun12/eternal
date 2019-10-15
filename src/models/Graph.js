@@ -5,7 +5,7 @@ import NodeBase from 'models/NodeBase';
 import type { NodeInSpace, Pos } from 'types';
 import type { AnyNode, NodeSerialization } from 'models/NodeBase';
 import type { EdgeSerialization } from 'models/Edge';
-import { uuid } from 'helpers';
+import { uuid } from 'utils/string';
 import type { PosMemo } from 'redux/ducks/graph';
 
 type MetaData = { zoom?: number };
@@ -35,10 +35,8 @@ export default class Graph {
     meta: MetaData = {}
   ) {
     this.id = uuid();
-    const _nodes = nodes || [];
-    _nodes.forEach(nis => this.addNode(nis.node, nis.pos));
-    const _edges = edges || [];
-    _edges.forEach(this.addEdge);
+    (nodes || []).forEach(nis => this.addNode(nis.node, nis.pos));
+    (edges || []).forEach(this.addEdge);
     this.name = name;
     this.description = description || '';
     this.meta = meta;

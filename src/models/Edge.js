@@ -1,6 +1,6 @@
 // @flow
 
-import { uuid } from 'helpers';
+import { uuid } from 'utils/string';
 import type { AnyNode } from 'models/NodeBase';
 
 export type EdgeSerialization = {

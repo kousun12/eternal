@@ -38,19 +38,12 @@ const viewSlice = createSlice({
     setScale: (v: ViewState, a: PA<number>) => {
       v.zoom = a.payload;
     },
+    // todo add some pan dolly to mouse on zoom
     zoomIn: (v: ViewState, a: PA<?Pos>) => {
       v.zoom = Math.min(zooms.length - 1, v.zoom + 1);
-      // todo
-      // if (a.payload) {
-      // v.pan = subVec(v.pan, a.payload);
-      // }
     },
     zoomOut: (v: ViewState, a: PA<?Pos>) => {
       v.zoom = Math.max(0, v.zoom - 1);
-      // todo
-      // if (a.payload) {
-      // v.pan = subVec(v.pan, a.payload);
-      // }
     },
     zoomReset: (v: ViewState) => {
       v.zoom = defView.zoom;
