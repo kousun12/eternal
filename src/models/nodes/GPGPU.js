@@ -1,16 +1,14 @@
 // @flow
 import React from 'react';
 import NodeBase from 'models/NodeBase';
-import Edge from 'models/Edge';
+import type Edge from 'models/Edge';
 import * as tf from '@tensorflow/tfjs-core';
 import { webgl } from '@tensorflow/tfjs-core';
 import { arrayOf } from 'utils/typeUtils';
 
 const Types = window.Types;
 
-const TT = {
-  Program: Types.object.aliased('GPGPUProgram', 'An uncompiled GPGPU program'),
-};
+const TT = { Program: Types.object.aliased('GPGPUProgram', 'An uncompiled GPGPU program') };
 export class GPGPUProgramNode extends NodeBase<
   {},
   { userCode: string, outputShape: ?(number[]), variableNames: string[] },
@@ -29,8 +27,8 @@ export class GPGPUProgramNode extends NodeBase<
         .desc(
           <p>
             Your user code for the kernel to be uploaded to your graphics hardware. Syntax is
-            specific to your backend, but a safe bet is conforming to the OpenGL/WebGL standards
-            that your hardware supports. In order to set an output to your kernel call{' '}
+            specific to your backend, but a good strategy is conforming to the OpenGL/WebGL
+            standards that most GPUs will support. In order to set an output to your kernel call{' '}
             <code>setOutput</code> in your kernel's main function. To get the output coords in your
             computation call <code>getOutputCoords</code>.
           </p>
