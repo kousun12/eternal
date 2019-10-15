@@ -12,6 +12,7 @@ import type { AnyNode } from 'models/NodeBase';
 import type { NodeInSpace, Pos } from 'types';
 import { Hotkey, Hotkeys, HotkeysTarget } from '@blueprintjs/core';
 import { addVec } from 'utils/vector';
+import { truncate } from 'utils/string';
 
 type SP = {| pos: Pos, infoShowing: boolean |};
 type OP = {|
@@ -156,7 +157,7 @@ class Node extends React.Component<P, S> {
           id={node.domId()}
         >
           <header className="node-header">
-            <span className="node-title">{name}</span>
+            <span className="node-title">{truncate(name, 30)}</span>
           </header>
           <div className="node-content">
             <NodeInputList

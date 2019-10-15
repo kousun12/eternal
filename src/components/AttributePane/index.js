@@ -7,6 +7,7 @@ import JsonTree from 'vendor/JsonTree/js';
 import InfoPopup from 'components/AttributePane/InfoPopup';
 import { Hotkey, Hotkeys, HotkeysTarget, PopoverInteractionKind } from '@blueprintjs/core';
 import NodeBase from 'models/NodeBase';
+import { truncate } from 'utils/string';
 
 const Types = window.Types;
 
@@ -123,11 +124,6 @@ class AttributePane extends Component<P, S> {
     });
   };
 
-  truncate = (string: string, len: number = 100) => {
-    if (string.length > len) return string.substring(0, len) + '...';
-    else return string;
-  };
-
   _description = () => {
     const { node } = this.props;
     const { fullDocs } = this.state;
@@ -136,7 +132,7 @@ class AttributePane extends Component<P, S> {
     }
     const desc = node.constructor.description;
     // $FlowIssue
-    const t = fullDocs ? desc : this.truncate(desc);
+    const t = fullDocs ? desc : truncate(desc);
     return <div className={`node-description`}>{t}</div>;
   };
 
