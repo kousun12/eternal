@@ -10,10 +10,8 @@ export default class NodeInputListItem extends Component<P, S> {
 
   onMouseUp = (e: MouseEvent) => {
     e.stopPropagation();
-    e.preventDefault();
     this.props.onMouseUp(this.props.index);
   };
-
   onMouseOver = () => this.setState({ hover: true });
   onMouseOut = () => this.setState({ hover: false });
 

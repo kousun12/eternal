@@ -50,6 +50,7 @@ const AllEdges = ({
     let src = positions[nodeId] || graph.nodeWithIdF(nodeId).pos;
     creatingSpline = (
       <Spline
+        incomplete={true}
         start={addVec(outOffset(src.x, src.y, outIdx), pan)}
         end={addVec(mid, scaleVec(subVec(mousePos, mid), scaleInverse))}
       />

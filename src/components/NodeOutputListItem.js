@@ -20,12 +20,19 @@ export default class NodeOutputListItem extends React.Component<P> {
     this.props.onMouseDown(this.props.index, e, data);
   };
 
+  onClick = (e: MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    const { onMouseDown, index } = this.props;
+    onMouseDown(index, e);
+  };
+
   render() {
     const { filled, item } = this.props;
     const modifier = filled ? '' : ' unconnected';
     return (
       <DraggableCore onStart={this.onMouseDown}>
-        <li>
+        <li onClick={this.onClick}>
           <span>
             {item}
             <i className={`fa fa-circle${modifier}`} />

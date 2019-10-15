@@ -172,7 +172,7 @@ body {
 }
 
 .connector-click-area:hover + .connector,
-.connector:hover {
+.connector:hover, .connector.incomplete {
   stroke: #d5d5d5;
   cursor: pointer;
   stroke-width: 4;

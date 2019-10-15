@@ -52,7 +52,7 @@ type DP = {|
 type P = {| ...SP, ...OP, ...DP |};
 type S = {|
   source: ?[string, number],
-  dragging: boolean,
+  connecting: boolean,
   mousePos: ?Pos,
   canvasDragEnd: ?Pos,
   metaDown: boolean,
@@ -65,7 +65,7 @@ class NodeGraph extends React.Component<P, S> {
   deselectNodes: boolean = false;
   timeoutId: ?TimeoutID = null;
   deltaY: number = 0;
-  state = { source: null, dragging: false, mousePos: null, canvasDragEnd: null, metaDown: false };
+  state = { source: null, connecting: false, mousePos: null, canvasDragEnd: null, metaDown: false };
 
   componentDidMount() {
     document.addEventListener('mousemove', this.onMouseMove);
@@ -125,16 +125,16 @@ class NodeGraph extends React.Component<P, S> {
   };
 
   onMouseUp = () => {
-    this.timeoutId = setTimeout(() => this.setState({ dragging: false, mousePos: null }), 1);
+    this.timeoutId = setTimeout(() => this.setState({ mousePos: null }), 1);
   };
 
   onMouseMove = (e: MouseEvent) => {
     if (this.moving) {
       return;
     }
-    const { dragging } = this.state;
+    const { connecting } = this.state;
     const { selectCount } = this.props;
-    const set = dragging || selectCount > 0;
+    const set = connecting || selectCount > 0;
     if (!set) {
       return;
     }
@@ -192,18 +192,18 @@ class NodeGraph extends React.Component<P, S> {
     }
   };
 
-  onStartConnector = (id: string, outputIndex: number, e: MouseEvent, d: DraggableData) => {
+  onStartConnector = (id: string, outputIndex: number, e: MouseEvent) => {
     this.setState({
-      dragging: true,
+      connecting: true,
       source: [id, outputIndex],
       mousePos: { x: e.clientX, y: e.clientY },
     });
   };
 
   onCompleteConnector = (id: string, inIndex: number) => {
-    const { dragging, source } = this.state;
+    const { connecting, source } = this.state;
     const { graph } = this.props;
-    if (dragging && source) {
+    if (connecting && source) {
       const [nodeId, outIdx] = source;
       let fromNode = graph.nodeWithId(nodeId);
       let toNode = graph.nodeWithId(id);
@@ -215,7 +215,7 @@ class NodeGraph extends React.Component<P, S> {
         this.props.onCreateEdge && this.props.onCreateEdge(edge);
       }
     }
-    this.setState({ dragging: false, mousePos: null });
+    this.setState({ connecting: false, mousePos: null });
     this.forceUpdate();
   };
 
@@ -338,7 +338,7 @@ class NodeGraph extends React.Component<P, S> {
   };
 
   render() {
-    const { dragging, source, metaDown } = this.state;
+    const { connecting, source, metaDown } = this.state;
     const { visible, selected, scale, pan, graph, scaleInverse } = this.props;
     const selStyle = this._selectionBoxStyle();
     return (
@@ -351,7 +351,7 @@ class NodeGraph extends React.Component<P, S> {
         <div
           id="graph-root"
           className={
-            dragging
+            connecting
               ? 'dragging'
               : selStyle || metaDown
               ? 'selecting'
@@ -360,7 +360,8 @@ class NodeGraph extends React.Component<P, S> {
               : ''
           }
           onWheel={this.onScroll}
-          onDoubleClick={() => this.props.selSet([])}
+          onDoubleClick={this._onCanvasDoubleClick}
+          onClick={this._onCanvasClick}
         >
           <div id="graph-scalable" className="graph-scalable" style={this._rootStyle()}>
             {graph.nodes.map((nis, i) => {
@@ -387,7 +388,7 @@ class NodeGraph extends React.Component<P, S> {
             })}
             <AllEdges
               edges={get(graph, 'edges', [])}
-              dragging={dragging}
+              dragging={connecting}
               source={source}
               visible={visible}
               selected={selected}
@@ -403,6 +404,9 @@ class NodeGraph extends React.Component<P, S> {
       </DraggableCore>
     );
   }
+
+  _onCanvasDoubleClick = () => Object.keys(this.props.selected).length && this.props.selSet([]);
+  _onCanvasClick = () => this.state.connecting && this.setState({ connecting: false });
 
   _rootStyle = () => ({ transform: `scale(${this.props.scale})` });
 

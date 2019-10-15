@@ -12,7 +12,14 @@ type DP = {|
   selSet: (string[]) => void,
   setInfoOpen: (?string) => void,
 |};
-type OP = {| start: Pos, end: Pos, onRemove?: () => void, edge: ?Edge, highlighted?: boolean |};
+type OP = {|
+  start: Pos,
+  end: Pos,
+  onRemove?: () => void,
+  edge: ?Edge,
+  highlighted?: boolean,
+  incomplete?: boolean,
+|};
 type P = {| ...OP, ...DP |};
 type S = { selected: boolean };
 
@@ -71,7 +78,7 @@ class Spline extends React.Component<P, S> {
 
   render() {
     let { selected } = this.state;
-    let { start, end, highlighted, edge } = this.props;
+    let { start, end, highlighted, edge, incomplete } = this.props;
     const dist = this.distance([start.x, start.y], [end.x, end.y]);
     const selfEdge = edge && get(edge, 'from.id') === get(edge, 'to.id');
     const pathString = this.bezierCurve(
@@ -85,7 +92,11 @@ class Spline extends React.Component<P, S> {
       end.y
     );
 
-    const cls = 'connector' + (selected ? ' selected' : '') + (highlighted ? ' highlight' : '');
+    const cls =
+      'connector' +
+      (selected ? ' selected' : '') +
+      (highlighted ? ' highlight' : '') +
+      (incomplete ? ' incomplete' : '');
     return (
       <g>
         <path className="connector-click-area" d={pathString} onClick={this.handleClick} />
