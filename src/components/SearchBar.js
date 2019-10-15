@@ -41,7 +41,7 @@ const itemListRenderer = (o: {
   return <Menu ulRef={o.itemsParentRef}>{content}</Menu>;
 };
 
-const searcher = new FuzzySearch(allNodes, ['displayName', 'description']);
+const searcher = new FuzzySearch(allNodes, ['displayName']);
 const itemsPredicate = q => (Boolean(q) ? searcher.search(q) : allNodes).slice(0, 12);
 
 export default (p: IOmnibarProps<T>) => (

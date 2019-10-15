@@ -5,6 +5,7 @@ import FuzzySearch from 'fuzzy-search';
 import { Omnibar, ItemRenderer, type IOmnibarProps } from '@blueprintjs/select';
 import { Menu, MenuItem } from '@blueprintjs/core';
 import type { GraphSerialization } from 'models/Graph';
+import { uuid } from 'helpers';
 
 type T = GraphSerialization;
 
@@ -25,16 +26,16 @@ export const examples = [
 
 const titleMaxLen = 40;
 
-const renderItem: ItemRenderer<T> = (node, { handleClick, modifiers }) => {
+const renderItem: ItemRenderer<T> = (graph, { handleClick, modifiers }) => {
   return (
     <MenuItem
       className="bp3-dark"
       active={modifiers.active}
       disabled={modifiers.disabled}
-      label={`${node.nodes.length} nodes`}
-      key={node.name || 'untitled'}
+      label={graph.description || `${graph.nodes.length} nodes`}
+      key={graph.name || uuid()}
       onClick={handleClick}
-      text={(node.name || 'untitled').substring(0, titleMaxLen)}
+      text={(graph.name || 'untitled').substring(0, titleMaxLen)}
     />
   );
 };

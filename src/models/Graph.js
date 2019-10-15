@@ -12,6 +12,7 @@ type MetaData = { zoom?: number };
 
 export type GraphSerialization = {
   name?: string,
+  description?: string,
   nodes: NodeSerialization<any>[],
   edges: EdgeSerialization[],
   meta?: MetaData,
@@ -20,6 +21,7 @@ export type GraphSerialization = {
 export default class Graph {
   id: string;
   name: string = 'untitled';
+  description: string = '';
   meta: MetaData = {};
   nodes: NodeInSpace[] = [];
   _nodesById: { [string]: NodeInSpace } = {};
@@ -29,6 +31,7 @@ export default class Graph {
     nodes?: NodeInSpace[] = [],
     edges?: Edge[] = [],
     name?: string = 'untitled',
+    description?: string = '',
     meta: MetaData = {}
   ) {
     this.id = uuid();
@@ -37,6 +40,7 @@ export default class Graph {
     const _edges = edges || [];
     _edges.forEach(this.addEdge);
     this.name = name;
+    this.description = description || '';
     this.meta = meta;
   }
 
@@ -135,8 +139,9 @@ export default class Graph {
     const nodes = nodesInSpace.map(nis => nis.node);
     const edges = json.edges.map(j => Edge.load(j, nodes));
     const name = json.name || 'untitled';
+    const desc = json.description || '';
     const meta = json.meta || {};
-    return new Graph(nodesInSpace, edges, name, meta);
+    return new Graph(nodesInSpace, edges, name, desc, meta);
   }
 
   static empty(): GraphSerialization {
