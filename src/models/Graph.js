@@ -105,6 +105,7 @@ export default class Graph {
       nodes: this.nodes.map(n => n.node.serialize(n.pos.x, n.pos.y)),
       edges: this.edges.map(e => e.serialize()),
       ...(meta && { meta }),
+      description: this.description || '',
     };
   };
 

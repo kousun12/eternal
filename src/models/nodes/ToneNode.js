@@ -644,7 +644,7 @@ export class PlayerNode extends NodeBase<{}, { url: string, call: any }, { playe
   _player: Tone.Player = new Tone.Player();
 
   _makePlayer = (url: string) => {
-    this.setLoading(true)
+    this.setLoading(true);
     if (url.startsWith('/')) {
       url = URL_BASE + url;
     }
@@ -802,15 +802,31 @@ export class ArpeggiateNode extends NodeBase<
           <div>
             <p>Arpeggio pattern. Possible values are</p>
             <ul>
-              <li><code>up</code> - cycles upward</li> <li>h - cycles downward</li>
-              <li><code>upDown</code> - up then and down</li> <li><code>downUp</code> - cycles down then and up</li>
-              <li><code>alternateUp</code> - jump up two and down one</li>
-              <li><code>alternateDown</code> - jump down two and up one</li>
-              <li><code>random</code> - randomly select an index</li>
-              <li><code>randomWalk</code> - randomly moves one index away from the current position</li>
               <li>
-                <code>randomOnce</code> - randomly select an index without repeating until all values have been
-                chosen.
+                <code>up</code> - cycles upward
+              </li>{' '}
+              <li>h - cycles downward</li>
+              <li>
+                <code>upDown</code> - up then and down
+              </li>{' '}
+              <li>
+                <code>downUp</code> - cycles down then and up
+              </li>
+              <li>
+                <code>alternateUp</code> - jump up two and down one
+              </li>
+              <li>
+                <code>alternateDown</code> - jump down two and up one
+              </li>
+              <li>
+                <code>random</code> - randomly select an index
+              </li>
+              <li>
+                <code>randomWalk</code> - randomly moves one index away from the current position
+              </li>
+              <li>
+                <code>randomOnce</code> - randomly select an index without repeating until all
+                values have been chosen.
               </li>
             </ul>
           </div>
@@ -969,9 +985,9 @@ export class SynthNode extends NodeBase<
           'OscillatorType',
           <div>
             The type of the oscillator: either sine, square, triangle, or sawtooth. Also capable of
-            setting the first x number of partials of the oscillator. For example: <code>sine4</code> would set
-            be the first 4 partials of the sine wave and <code>triangle8</code> would set the first 8 partials
-            of the triangle wave.
+            setting the first x number of partials of the oscillator. For example:{' '}
+            <code>sine4</code> would set be the first 4 partials of the sine wave and{' '}
+            <code>triangle8</code> would set the first 8 partials of the triangle wave.
           </div>
         )
         .desc('The type of oscillator'),
@@ -1240,6 +1256,63 @@ export class StartTransportNode extends NodeBase<{}, { transport: Tone.Transport
 
   process = () => {
     return null;
+  };
+}
+
+export class NoiseNode extends NodeBase<
+  {},
+  { type: 'pink' | 'brown' | 'white', volume: number },
+  { noise: Tone.Noise }
+> {
+  static +displayName = 'Noise';
+  static +registryName = 'NoiseNode';
+  static description = <span>A noise source</span>;
+  static schema = {
+    input: {
+      type: Types.string.desc('The type of noise. One of pink, brown, or white.'),
+      volume: Types.number.desc('The volume of the noise, in dB'),
+      rate: Types.number.desc('The playback rate of the noise [0, 1]'),
+    },
+    output: { noise: TT.AudioNode.desc('The noise') },
+    state: {},
+  };
+  _noise: Tone.Noise = new Tone.Noise('brown');
+
+  onAddToGraph = () => {
+    Tone.Transport.on('start', this._manageNoise);
+  };
+
+  _manageNoise = () => {
+    const { volume } = this.props;
+    if (typeof volume === 'number' && this._noise.volume.value !== volume) {
+      this._noise.volume.value = volume;
+    }
+    if (this._noise.state !== 'started') {
+      this._noise.start('+1');
+    }
+  };
+
+  process = () => ({ noise: this._noise });
+
+  onInputChange = (edge: Edge, change: Object) => {
+    const data = edge.inDataFor(change);
+    if (edge.toPort === 'type' && data !== this._noise.type) {
+      this._noise.state === 'started' && this._noise.stop();
+      this._noise.dispose();
+      this._noise = new Tone.Noise(data);
+      this._manageNoise();
+      return this.outKeys();
+    } else if (edge.toPort === 'volume' && data !== this._noise.volume.value) {
+      this._manageNoise();
+      return this.outKeys();
+    } else if (edge.toPort === 'rate' && data !== this._noise._playbackRate) {
+      this._noise.state === 'started' && this._noise.stop();
+      this._noise.dispose();
+      this._noise = new Tone.Noise({ type: this.props.type || 'brown', playbackRate: data });
+      this._manageNoise();
+      return this.outKeys();
+    }
+    return [];
   };
 }
 
