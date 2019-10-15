@@ -28,6 +28,7 @@ import {
   ScanlineEffect,
   VignetteEffect,
 } from 'postprocessing';
+import { arrayOf } from 'utils/typeUtils';
 const Types = window.Types;
 const URL_BASE = process.env.PUBLIC_URL || '';
 
@@ -35,6 +36,13 @@ type P = { child: Mesh };
 type S = { base: Base, added: string[] };
 const TT = {
   Color: Types.object.aliased('RGBColor', 'RGB representation of a color'),
+  Light: Types.object.aliased('Light', 'A light source in a scene'),
+  Camera: Types.object.aliased('Camera', 'A camera that exists in a scene'),
+  PostEffect: Types.object.aliased('PostEffect', 'A post production render effect'),
+  SceneElement: Types.object.aliased(
+    'SceneElement',
+    'Anything that can be added to a scene, including Meshes, Lights, & Cameras'
+  ),
 };
 
 export default class ThreeNode extends NodeBase<S, P, null> {
@@ -48,8 +56,8 @@ export default class ThreeNode extends NodeBase<S, P, null> {
 
   static schema = {
     input: {
-      child: Types.object.desc('Any scene element[s] to be added'),
-      fx: Types.object.desc('Post render pass(es)'),
+      child: TT.SceneElement.desc('Any scene element[s] to be added'),
+      fx: arrayOf(TT.PostEffect).desc('Post render pass(es)'),
       clearColor: TT.Color.desc("The renderer's clear color"),
       clearAlpha: Types.number.desc("The alpha component for the renderer's clear color"),
     },
@@ -130,8 +138,8 @@ export class AmbientLightNode extends NodeBase<
   static description = <span>An ambient light, intended to be added to a scene</span>;
   static schema = {
     input: { color: TT.Color.desc('The color of this ambient light') },
-    output: { light: Types.object.desc('The ambient light source') },
-    state: { light: Types.object.desc('The ambient light source') },
+    output: { light: TT.Light.desc('The ambient light source') },
+    state: { light: TT.Light.desc('The ambient light source') },
   };
 
   onAddToGraph = () => {
@@ -163,8 +171,8 @@ export class DirectionalLightNode extends NodeBase<
   static description = <span>A focused light, intended to be added to a scene</span>;
   static schema = {
     input: { color: TT.Color.desc('The color of this directional light') },
-    output: { light: Types.object.desc('The directional light source') },
-    state: { light: Types.object.desc('The directional light source, directed at the scene') },
+    output: { light: TT.Light.desc('The directional light source') },
+    state: { light: TT.Light.desc('The directional light source, directed at the scene') },
   };
 
   willBecomeLive = () => {};
@@ -236,7 +244,7 @@ export class GlitchPassNode extends NodeBase<{}, {}, { glitch: Object }> {
         'the min and max delay between glitches, as a 2d vector in second units'
       ),
     },
-    output: { glitch: Types.object.desc('glitchy pass') },
+    output: { glitch: TT.PostEffect.desc('glitchy pass that can be applied to a render') },
     state: {},
   };
   assets: Map<string, any>;
@@ -325,8 +333,8 @@ export class VignettePassNode extends NodeBase<
       darkness: Types.number.desc('The vignette darkness [0,1]'),
     },
     output: {
-      pass: Types.object.desc('a vignette pass'),
-      effect: Types.object.desc('the effect itself'),
+      pass: TT.PostEffect.desc('a vignette pass that can be applied to a render'),
+      effect: Types.object.desc('the effect info'),
     },
     state: {},
   };
@@ -403,8 +411,8 @@ export class ScanlinePassNode extends NodeBase<{}, {}, { pass: Object, effect: E
   static schema = {
     input: {},
     output: {
-      pass: Types.object.desc('a scanline pass'),
-      effect: Types.object.desc('the effect itself'),
+      pass: TT.PostEffect.desc('a scanline pass that can be applied to a render'),
+      effect: Types.object.desc('the effect info'),
     },
     state: {},
   };
@@ -460,8 +468,8 @@ export class DotScreenPassNode extends NodeBase<{}, {}, { pass: Object, effect: 
   static schema = {
     input: {},
     output: {
-      pass: Types.object.desc('a dotscreen pass'),
-      effect: Types.object.desc('the effect itself'),
+      pass: TT.PostEffect.desc('a dotscreen pass that can be applied to a render'),
+      effect: Types.object.desc('the effect info'),
     },
     state: {},
   };
@@ -527,8 +535,8 @@ export class NoisePassNode extends NodeBase<
       opacity: Types.number.desc('the blending opacity'),
     },
     output: {
-      pass: Types.object.desc('a noise pass'),
-      effect: Types.object.desc('the effect itself'),
+      pass: TT.PostEffect.desc('a noise pass that can be applied to a render'),
+      effect: Types.object.desc('the effect info'),
     },
     state: {},
   };

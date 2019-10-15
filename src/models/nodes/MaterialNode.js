@@ -11,6 +11,7 @@ type S = { material: Material };
 type O = { material: Material };
 
 const TT = {
+  Material: Types.object.aliased('Material', 'An abstract material, usually applied to geometries'),
   ShaderProgram: Types.string.aliased(
     'ShaderProgram',
     <div>
@@ -41,8 +42,8 @@ export class LambertMaterialNode extends NodeBase<S, P, O> {
 
   static schema = {
     input: {},
-    output: { material: Types.object },
-    state: { material: Types.object },
+    output: { material: TT.Material.desc('The resulting material') },
+    state: { material: TT.Material },
   };
   static shortNames = { material: 'mat' };
 
@@ -92,8 +93,8 @@ export class ShaderMaterialNode extends NodeBase<S, { vertex: string, fragment: 
         'Whether or not this material responds to an alpha component'
       ),
     },
-    output: { material: Types.object },
-    state: { material: Types.object },
+    output: { material: TT.Material.desc('The resulting material') },
+    state: { material: TT.Material },
   };
   static shortNames = { material: 'mat', transparent: 'transp' };
 

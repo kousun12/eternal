@@ -11,6 +11,15 @@ type P = { geometry: Geometry, material: Material, rotation: Pos, scale: Pos3 };
 type S = { mesh: Mesh };
 type O = { mesh: Mesh };
 
+const TT = {
+  Geometry: Types.object.aliased(
+    'Geometry',
+    'An abstract geometry that describes verticies in space'
+  ),
+  Material: Types.object.aliased('Material', 'An abstract material, usually applied to geometries'),
+  Mesh: Types.object.aliased('Mesh', 'A mesh that can be added to a scene and rendered'),
+};
+
 export default class MeshNode extends NodeBase<S, P, O> {
   static +displayName = 'Mesh';
   static +registryName = 'MeshNode';
@@ -18,12 +27,12 @@ export default class MeshNode extends NodeBase<S, P, O> {
 
   static schema = {
     input: {
-      geometry: Types.object.desc('The geometry to use with this mesh'),
-      material: Types.object.desc("This mesh's material"),
+      geometry: TT.Geometry.desc('The geometry to use with this mesh'),
+      material: TT.Material.desc("This mesh's material"),
       rotation: Types.Vec2.desc('The rotation of this mesh node, in radians'),
       scale: Types.Vec3.desc('The scale of this mesh node'),
     },
-    output: { mesh: Types.object },
+    output: { mesh: TT.Mesh.desc('The resulting Mesh') },
     state: { mesh: Types.object },
   };
 

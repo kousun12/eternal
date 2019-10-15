@@ -47,6 +47,7 @@ export interface AttributeType {
 
   parse: any => any;
   serialize: ?(any) => any;
+  alias?: ?string;
 }
 
 export class TypeImpl implements AttributeType {
@@ -60,6 +61,7 @@ export class TypeImpl implements AttributeType {
   defaultValue: any;
   parse: any => any;
   serialize: ?(any) => any;
+  alias: ?string;
 
   constructor(data: AttributeType) {
     this.id = data.id;
@@ -72,6 +74,7 @@ export class TypeImpl implements AttributeType {
     this.parse = data.parse;
     this.typeDescription = data.typeDescription;
     this.serialize = data.serialize;
+    this.alias = data.alias;
   }
 
   /**
@@ -82,11 +85,11 @@ export class TypeImpl implements AttributeType {
   desc = (d: Node): TypeImpl => new TypeImpl({ ...this, description: d });
   aliased = (name: string, typeDescription?: Node): TypeImpl =>
     typeDescription
-      ? new TypeImpl({ ...this, name, typeDescription })
-      : new TypeImpl({ ...this, name });
+      ? new TypeImpl({ ...this, name, typeDescription, alias: name })
+      : new TypeImpl({ ...this, name, alias: name });
   meta = (metadata: Object): TypeImpl => new TypeImpl({ ...this, metadata });
   isA = (t: AttributeType) => t.id === this.id;
-  isPrimitive = (): boolean => this.type === 'primitive';
+  isPrimitive = (): boolean => this.type === 'primitive' && !this.alias;
   isUndescribedPrimitive = (): boolean => this.type === 'primitive' && !this.typeDescription;
   isComplex = (): boolean => this.type === 'complex';
 

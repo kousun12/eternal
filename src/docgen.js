@@ -2,33 +2,39 @@
 import ReactDOM from 'react-dom';
 import { allNodes } from 'models/nodes';
 
+const textFrom = maybeJsx => ReactDOM.render(maybeJsx, document.createElement('div')).textContent;
+
 const renderAttr = ([title, type]) => {
-  const def = type.defaultValue && JSON.stringify(type.defaultValue);
-  return `\`${title}\`: \`${type.name}\` _${type.type}_${def ? ` default: \`${def}\`` : ''}\n\n${
-    type.description
-  }`;
+  const def = type.defaultValue && JSON.stringify(type.defaultValue).replace(/"/g, '');
+  const defaultString = def ? ` default: \`${def}\`` : '';
+  const attrDesc = type.description ? `${textFrom(type.description)}\n` : '';
+  const typeInfo =
+    type.isPrimitive() || !type.typeDescription
+      ? ''
+      : `\<details\>
+\<summary\>${type.name}\<\/summary\>
+${textFrom(type.typeDescription)}
+${defaultString}
+\<\/details\>`;
+  return `\`${title}\`: \`${type.name}\`
+${attrDesc}${typeInfo}`;
 };
 
 const docs = () =>
   allNodes.map(n => {
-    let desc = '';
-    if (n.description) {
-      const r = ReactDOM.render(n.description, document.createElement('div'));
-      desc = r.textContent;
-    }
     return `
 ## ${n.displayName}
 
-${desc}
+${n.description ? textFrom(n.description) : ''}
   
 
-##### inputs (${Object.keys(n.schema.input).length})
+#### inputs
 
 ${Object.entries(n.schema.input)
   .map(renderAttr)
   .join('\n\n')}
   
-##### outputs (${Object.keys(n.schema.output).length})
+#### outputs
 
 ${Object.entries(n.schema.output)
   .map(renderAttr)

@@ -22,6 +22,12 @@ type P = {
 type S = { geometry: Geometry };
 type O = { geometry: Geometry };
 
+const TT = {
+  Geometry: Types.object.aliased(
+    'Geometry',
+    'An abstract geometry that describes verticies in space'
+  ),
+};
 export class TorusKnotGeometryNode extends NodeBase<S, P, O> {
   static +displayName = 'Torus Knot Geometry';
   static +registryName = 'TorusKnotGeometryNode';
@@ -49,8 +55,8 @@ export class TorusKnotGeometryNode extends NodeBase<S, P, O> {
       p: Types.number.desc('The torus knot p'),
       q: Types.number.desc('The torus knot q'),
     },
-    output: { geometry: Types.object.desc('this particular geometry') },
-    state: { geometry: Types.object.desc('this particular geometry') },
+    output: { geometry: TT.Geometry.desc('this particular geometry') },
+    state: { geometry: TT.Geometry.desc('this particular geometry') },
   };
 
   static shortNames = { geometry: 'geo', tubularSegments: 'tSeg', radialSegments: 'rSeg' };
@@ -83,9 +89,7 @@ export class TorusKnotGeometryNode extends NodeBase<S, P, O> {
     return notify ? this.outKeys() : [];
   };
 
-  process = () => {
-    return this.state;
-  };
+  process = () => this.state;
 }
 
 export class PlaneGeometryNode extends NodeBase<S, { width: number, height: number }, O> {
@@ -104,8 +108,8 @@ export class PlaneGeometryNode extends NodeBase<S, { width: number, height: numb
       width: Types.number.desc('The width of this plane'),
       height: Types.number.desc('The height of this plane'),
     },
-    output: { geometry: Types.object.desc('this particular geometry') },
-    state: { geometry: Types.object.desc('this particular geometry') },
+    output: { geometry: TT.Geometry.desc('this particular geometry') },
+    state: { geometry: TT.Geometry.desc('this particular geometry') },
   };
 
   static shortNames = { geometry: 'geo' };
@@ -131,9 +135,7 @@ export class PlaneGeometryNode extends NodeBase<S, { width: number, height: numb
     return notify ? this.outKeys() : [];
   };
 
-  process = () => {
-    return this.state;
-  };
+  process = () => this.state;
 }
 
 export class BoxGeometryNode extends NodeBase<
@@ -165,8 +167,8 @@ export class BoxGeometryNode extends NodeBase<
       height: Types.number.desc('The height of this box'),
       depth: Types.number.desc('The depth of this box'),
     },
-    output: { geometry: Types.object.desc('this particular geometry') },
-    state: { geometry: Types.object.desc('this particular geometry') },
+    output: { geometry: TT.Geometry.desc('this particular geometry') },
+    state: { geometry: TT.Geometry.desc('this particular geometry') },
   };
 
   static shortNames = { geometry: 'geo' };
@@ -192,9 +194,7 @@ export class BoxGeometryNode extends NodeBase<
     return notify ? this.outKeys() : [];
   };
 
-  process = () => {
-    return this.state;
-  };
+  process = () => this.state;
 }
 
 export class SphereGeometryNode extends NodeBase<
@@ -226,8 +226,8 @@ export class SphereGeometryNode extends NodeBase<
       widthSegments: Types.number.desc('The number of segments along the geometry width'),
       heightSegments: Types.number.desc('The number of segments along the geometry height'),
     },
-    output: { geometry: Types.object.desc('this particular geometry') },
-    state: { geometry: Types.object.desc('this particular geometry') },
+    output: { geometry: TT.Geometry.desc('this particular geometry') },
+    state: { geometry: TT.Geometry.desc('this particular geometry') },
   };
 
   static shortNames = { geometry: 'geo', widthSegments: 'wSeg', heightSegments: 'hSeg' };
@@ -253,7 +253,5 @@ export class SphereGeometryNode extends NodeBase<
     return notify ? this.outKeys() : [];
   };
 
-  process = () => {
-    return this.state;
-  };
+  process = () => this.state;
 }

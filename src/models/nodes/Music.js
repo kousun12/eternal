@@ -28,9 +28,9 @@ const TT = {
       <p>One of:</p>
       <p style={{ display: 'flex', flexWrap: 'wrap' }}>
         {Scale.names().map(n => (
-          <code style={{ marginRight: 5, marginBottom: 6 }} key={n}>
-            {n}
-          </code>
+          <span style={{ marginRight: 4, marginBottom: 6 }} key={n}>
+            <code>{n}</code>{' '}
+          </span>
         ))}
       </p>
     </div>
@@ -41,9 +41,9 @@ const TT = {
       <p>One of:</p>
       <p style={{ display: 'flex', flexWrap: 'wrap' }}>
         {Chord.names().map(n => (
-          <code style={{ marginRight: 5, marginBottom: 6 }} key={n}>
-            {n}
-          </code>
+          <span style={{ marginRight: 4, marginBottom: 6 }} key={n}>
+            <code>{n}</code>{' '}
+          </span>
         ))}
       </p>
     </div>
