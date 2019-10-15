@@ -16,7 +16,7 @@ const renderAttr = ([title, type]) => {
 ${textFrom(type.typeDescription)}
 ${defaultString}
 \<\/details\>`;
-  return `\`**${title}**\`: \`${type.name}\`
+  return `**\`${title}\`**: \`${type.name}\`
   
 ${attrDesc}${typeInfo}`;
 };
@@ -65,6 +65,6 @@ Here's a list of all ${nodes.length} current nodes, their descriptions, and i/o.
 ${nodes.join('\n\n')}    
 `;
 };
-// const output = md();
-// download(output);
+const output = md();
+download(output);
 // console.log(output);

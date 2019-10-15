@@ -11,17 +11,17 @@ A two dimensional vector with keys x and y
 
 #### inputs
 
-`**x**`: `number`
+**`x`**: `number`
   
 
 
-`**y**`: `number`
+**`y`**: `number`
   
 
   
 #### outputs
 
-`**out**`: `Vec2`
+**`out`**: `Vec2`
   
 <details>
 <summary>Vec2</summary>
@@ -39,7 +39,7 @@ A WebGL mesh
 
 #### inputs
 
-`**geometry**`: `Geometry`
+**`geometry`**: `Geometry`
   
 The geometry to use with this mesh
 <details>
@@ -48,7 +48,7 @@ An abstract geometry that describes verticies in space
 
 </details>
 
-`**material**`: `Material`
+**`material`**: `Material`
   
 This mesh's material
 <details>
@@ -57,7 +57,7 @@ An abstract material, usually applied to geometries
 
 </details>
 
-`**rotation**`: `Vec2`
+**`rotation`**: `Vec2`
   
 The rotation of this mesh node, in radians
 <details>
@@ -66,7 +66,7 @@ A 2D Vector with keys x and y
  default: `{x:0,y:0}`
 </details>
 
-`**scale**`: `Vec3`
+**`scale`**: `Vec3`
   
 The scale of this mesh node
 <details>
@@ -77,7 +77,7 @@ A 3D Vector with keys x, y, and z
   
 #### outputs
 
-`**mesh**`: `Mesh`
+**`mesh`**: `Mesh`
   
 The resulting Mesh
 <details>
@@ -96,39 +96,39 @@ A torus knot (buffer) geometry, with most attributes encoded in buffers so that 
 
 #### inputs
 
-`**radius**`: `number`
+**`radius`**: `number`
   
 The radius of this geometry
 
 
-`**tube**`: `number`
+**`tube`**: `number`
   
 The tube radius
 
 
-`**tubularSegments**`: `number`
+**`tubularSegments`**: `number`
   
 The number of tubular segments for this geometry
 
 
-`**radialSegments**`: `number`
+**`radialSegments`**: `number`
   
 The number of radial segments for this geometry
 
 
-`**p**`: `number`
+**`p`**: `number`
   
 The torus knot p
 
 
-`**q**`: `number`
+**`q`**: `number`
   
 The torus knot q
 
   
 #### outputs
 
-`**geometry**`: `Geometry`
+**`geometry`**: `Geometry`
   
 this particular geometry
 <details>
@@ -147,19 +147,19 @@ A plane (buffer) geometry, with most attributes encoded in buffers so that they 
 
 #### inputs
 
-`**width**`: `number`
+**`width`**: `number`
   
 The width of this plane
 
 
-`**height**`: `number`
+**`height`**: `number`
   
 The height of this plane
 
   
 #### outputs
 
-`**geometry**`: `Geometry`
+**`geometry`**: `Geometry`
   
 this particular geometry
 <details>
@@ -178,24 +178,24 @@ A sphere (buffer) geometry, with most attributes encoded in buffers so that they
 
 #### inputs
 
-`**radius**`: `number`
+**`radius`**: `number`
   
 The radius of the sphere
 
 
-`**widthSegments**`: `number`
+**`widthSegments`**: `number`
   
 The number of segments along the geometry width
 
 
-`**heightSegments**`: `number`
+**`heightSegments`**: `number`
   
 The number of segments along the geometry height
 
   
 #### outputs
 
-`**geometry**`: `Geometry`
+**`geometry`**: `Geometry`
   
 this particular geometry
 <details>
@@ -214,24 +214,24 @@ A box (buffer) geometry, with most attributes encoded in buffers so that they ar
 
 #### inputs
 
-`**width**`: `number`
+**`width`**: `number`
   
 The width of this box
 
 
-`**height**`: `number`
+**`height`**: `number`
   
 The height of this box
 
 
-`**depth**`: `number`
+**`depth`**: `number`
   
 The depth of this box
 
   
 #### outputs
 
-`**geometry**`: `Geometry`
+**`geometry`**: `Geometry`
   
 this particular geometry
 <details>
@@ -254,7 +254,7 @@ A material for non-shiny surfaces, without specular highlights.The material uses
   
 #### outputs
 
-`**material**`: `Material`
+**`material`**: `Material`
   
 The resulting material
 <details>
@@ -273,7 +273,7 @@ A material rendered with custom shaders. A shader is a small program written in 
 
 #### inputs
 
-`**vertex**`: `ShaderProgram`
+**`vertex`**: `ShaderProgram`
   
 Vertex shader for this shader material
 <details>
@@ -282,7 +282,7 @@ An OpenGL compatible GLSL shader
 
 </details>
 
-`**fragment**`: `ShaderProgram`
+**`fragment`**: `ShaderProgram`
   
 Fragment shader for this shader material
 <details>
@@ -291,14 +291,14 @@ An OpenGL compatible GLSL shader
 
 </details>
 
-`**transparent**`: `boolean`
+**`transparent`**: `boolean`
   
 Whether or not this material responds to an alpha component
 
   
 #### outputs
 
-`**material**`: `Material`
+**`material`**: `Material`
   
 The resulting material
 <details>
@@ -317,7 +317,7 @@ This node renders a WebGL scene, by default with a perspective camera
 
 #### inputs
 
-`**child**`: `SceneElement`
+**`child`**: `SceneElement`
   
 Any scene element[s] to be added
 <details>
@@ -326,7 +326,7 @@ Anything that can be added to a scene, including Meshes, Lights, & Cameras
 
 </details>
 
-`**fx**`: `PostEffect[]`
+**`fx`**: `PostEffect[]`
   
 Post render pass(es)
 <details>
@@ -335,7 +335,7 @@ An array of PostEffects. A post production render effect
 
 </details>
 
-`**clearColor**`: `RGBColor`
+**`clearColor`**: `RGBColor`
   
 The renderer's clear color
 <details>
@@ -344,7 +344,7 @@ RGB representation of a color
 
 </details>
 
-`**clearAlpha**`: `number`
+**`clearAlpha`**: `number`
   
 The alpha component for the renderer's clear color
 
@@ -363,34 +363,34 @@ A DuoSynth is a monophonic synth composed of two MonoSynths run in parallel with
 
 #### inputs
 
-`**frequency**`: `number`
+**`frequency`**: `number`
   
 The frequency control
 
 
-`**volume**`: `number`
+**`volume`**: `number`
   
 The volume of the output in decibels
 
 
-`**harmonicity**`: `number`
+**`harmonicity`**: `number`
   
 Harmonicity is the ratio between the two voices. A harmonicity of 1 is no change. Harmonicity = 2 means a change of an octave.
 
 
-`**vibratoAmount**`: `number`
+**`vibratoAmount`**: `number`
   
 The amount of vibrato
 
 
-`**vibratoRate**`: `number`
+**`vibratoRate`**: `number`
   
 The frequency of vibrato
 
   
 #### outputs
 
-`**out**`: `Synth`
+**`out`**: `Synth`
   
 Resulting Synth
 <details>
@@ -409,12 +409,12 @@ A Synth is composed by routing an OmniOscillator through a AmplitudeEnvelope.
 
 #### inputs
 
-`**volume**`: `number`
+**`volume`**: `number`
   
 The volume of the output in decibels
 
 
-`**oscillator**`: `OscillatorType`
+**`oscillator`**: `OscillatorType`
   
 The type of oscillator
 <details>
@@ -423,7 +423,7 @@ The type of the oscillator: either sine, square, triangle, or sawtooth. Also cap
 
 </details>
 
-`**envelope**`: `AmplitudeEnvelope`
+**`envelope`**: `AmplitudeEnvelope`
   
 The amplitude envelope for this synth
 <details>
@@ -434,7 +434,7 @@ AmplitudeEnvelope is an Envelope connected to a gain node. Unlike Envelope, whic
   
 #### outputs
 
-`**out**`: `Synth`
+**`out`**: `Synth`
   
 Resulting Synth
 <details>
@@ -453,7 +453,7 @@ Trigger the attack and then the release after the duration. Omitting a duration 
 
 #### inputs
 
-`**synth**`: `Synth`
+**`synth`**: `Synth`
   
 The synth to use
 <details>
@@ -462,7 +462,7 @@ Any kind of synth
 
 </details>
 
-`**note**`: `Note`
+**`note`**: `Note`
   
 The frequency to play
 <details>
@@ -471,17 +471,17 @@ Note encoding, can be something like A4, a midi index, or a raw frequency in Hz
 
 </details>
 
-`**duration**`: `time`
+**`duration`**: `time`
   
 The duration to play the note for
 
 
-`**time**`: `time`
+**`time`**: `time`
   
 When the note should be triggered
 
 
-`**call**`: `Call`
+**`call`**: `Call`
   
 Certain nodes are designated 'callable', i.e. they are operator nodes. Sending a truthy call signal will invoke that node's handler over its parameters
 <details>
@@ -492,7 +492,7 @@ Something that is callable
   
 #### outputs
 
-`**draw**`: `object`
+**`draw`**: `object`
   
 An note / duration object that is signalled when this node triggers its attack
 <details>
@@ -511,7 +511,7 @@ Connect an audio node to the master audio output
 
 #### inputs
 
-`**node**`: `AudioNode`
+**`node`**: `AudioNode`
   
 Any Audio node to connect to the audio master output
 <details>
@@ -522,7 +522,7 @@ Any kind of audio node
   
 #### outputs
 
-`**out**`: `AudioNode`
+**`out`**: `AudioNode`
   
 The same node, connected to the master output
 <details>
@@ -541,7 +541,7 @@ An equal power Left/Right stereo Panner
 
 #### inputs
 
-`**node**`: `AudioNode`
+**`node`**: `AudioNode`
   
 The audio node to connect to this panner.
 <details>
@@ -550,14 +550,14 @@ Any kind of audio node
 
 </details>
 
-`**pan**`: `number`
+**`pan`**: `number`
   
 The pan control. -1 = hard left, 1 = hard right
 
   
 #### outputs
 
-`**out**`: `Panner`
+**`out`**: `Panner`
   
 A node panned to the `pan` value
 <details>
@@ -566,7 +566,7 @@ An audio pan
 
 </details>
 
-`**node**`: `AudioNode`
+**`node`**: `AudioNode`
   
 The node that was passed in, connected to the panner
 <details>
@@ -585,7 +585,7 @@ A DelayNode in which part of output signal is fed back into the delay
 
 #### inputs
 
-`**node**`: `AudioNode`
+**`node`**: `AudioNode`
   
 The audio node to connect to this feedback delay
 <details>
@@ -594,19 +594,19 @@ Any kind of audio node
 
 </details>
 
-`**delayTime**`: `time`
+**`delayTime`**: `time`
   
 The delay applied to the incoming signal
 
 
-`**feedback**`: `number`
+**`feedback`**: `number`
   
 feedback The amount of the effected signal which is fed back through the delay.
 
   
 #### outputs
 
-`**out**`: `FeedbackDelay`
+**`out`**: `FeedbackDelay`
   
 The resulting FeedbackDelayNode
 <details>
@@ -615,7 +615,7 @@ A feedback delay
 
 </details>
 
-`**node**`: `AudioNode`
+**`node`**: `AudioNode`
   
 The node that was passed in, connected to the feedback delay
 <details>
@@ -634,7 +634,7 @@ A node which is used to delay the incoming audio signal by a certain amount of t
 
 #### inputs
 
-`**node**`: `AudioNode`
+**`node`**: `AudioNode`
   
 The audio node to connect to this feedback delay
 <details>
@@ -643,14 +643,14 @@ Any kind of audio node
 
 </details>
 
-`**delayTime**`: `number`
+**`delayTime`**: `number`
   
 An a-rate AudioParam representing the amount of delay to apply
 
   
 #### outputs
 
-`**out**`: `AudioNode`
+**`out`**: `AudioNode`
   
 The resulting DelayNode
 <details>
@@ -659,7 +659,7 @@ Any kind of audio node
 
 </details>
 
-`**node**`: `AudioNode`
+**`node`**: `AudioNode`
   
 The node that was passed in, connected to the delay
 <details>
@@ -678,7 +678,7 @@ The GainNode interface represents a change in volume. It is an AudioNode audio-p
 
 #### inputs
 
-`**node**`: `AudioNode`
+**`node`**: `AudioNode`
   
 The audio node to connect to this feedback delay
 <details>
@@ -687,14 +687,14 @@ Any kind of audio node
 
 </details>
 
-`**gain**`: `number`
+**`gain`**: `number`
   
 An a-rate AudioParam representing the amount of gain to apply
 
   
 #### outputs
 
-`**gain**`: `Gain`
+**`gain`**: `Gain`
   
 The resulting GainNode
 <details>
@@ -703,7 +703,7 @@ An audio gain
 
 </details>
 
-`**node**`: `AudioNode`
+**`node`**: `AudioNode`
   
 The node that was passed in, connected to the gain
 <details>
@@ -722,7 +722,7 @@ Any kind of audio node
 
 #### inputs
 
-`**input**`: `object`
+**`input`**: `object`
   
 <details>
 <summary>object</summary>
@@ -732,7 +732,7 @@ An object with arbitrary keys and values
   
 #### outputs
 
-`**out**`: `object`
+**`out`**: `object`
   
 <details>
 <summary>object</summary>
@@ -750,24 +750,24 @@ A node which emits any value and a count at a regular time interval.
 
 #### inputs
 
-`**value**`: `any`
+**`value`**: `any`
   
 Any input to emit at this interval
 
 
-`**interval**`: `number`
+**`interval`**: `number`
   
 The interval at which this node will emit, in miliseconds
 
   
 #### outputs
 
-`**count**`: `number`
+**`count`**: `number`
   
 The number of times this node has emitted so far.
 
 
-`**value**`: `any`
+**`value`**: `any`
   
 The input value passed in
 
@@ -782,7 +782,7 @@ Set the note for a Synth
 
 #### inputs
 
-`**synth**`: `Synth`
+**`synth`**: `Synth`
   
 The synth to use
 <details>
@@ -791,7 +791,7 @@ Any kind of synth
 
 </details>
 
-`**note**`: `Note`
+**`note`**: `Note`
   
 The frequency to set on the synth
 <details>
@@ -800,12 +800,12 @@ Note encoding, can be something like A4, a midi index, or a raw frequency in Hz
 
 </details>
 
-`**time**`: `time`
+**`time`**: `time`
   
 Time which the note should be set on the synth
 
 
-`**call**`: `Call`
+**`call`**: `Call`
   
 Certain nodes are designated 'callable', i.e. they are operator nodes. Sending a truthy call signal will invoke that node's handler over its parameters
 <details>
@@ -828,34 +828,34 @@ Set the note for a Synth
 
 #### inputs
 
-`**interval**`: `time`
+**`interval`**: `time`
   
 The interval at which this node loops
 
 
-`**playbackRate**`: `number`
+**`playbackRate`**: `number`
   
 The playback rate of the loop. The normal playback rate is 1 (no change). A playbackRate of 2 would be twice as fast
 
 
-`**iterations**`: `number`
+**`iterations`**: `number`
   
 The number of iterations of the loop. The default value is Infinity (loop eternally)
 
 
-`**mute**`: `boolean`
+**`mute`**: `boolean`
   
 Muting the Loop means that no callbacks are invoked
 
 
-`**humanize**`: `boolean`
+**`humanize`**: `boolean`
   
 Random variation +/-0.01s to the scheduled time. Or give it a time value which it will randomize by
 
   
 #### outputs
 
-`**i**`: `number`
+**`i`**: `number`
   
 The number of times this node has looped so far.
 
@@ -870,7 +870,7 @@ Start a transport time. This will put all Transport time schedules into motion
 
 #### inputs
 
-`**transport**`: `object`
+**`transport`**: `object`
   
 The Transport Time to start
 <details>
@@ -893,14 +893,14 @@ Transport for timing musical events. Supports tempo curves and time changes. Unl
 
 #### inputs
 
-`**bpm**`: `number`
+**`bpm`**: `number`
   
 The tempo to set for this transport. See the docs on the time type to understand how time can be expressed in terms of metered time.
 
   
 #### outputs
 
-`**out**`: `object`
+**`out`**: `object`
   
 Resulting transport
 <details>
@@ -919,7 +919,7 @@ Connect one audio node to another
 
 #### inputs
 
-`**from**`: `AudioNode`
+**`from`**: `AudioNode`
   
 Connect from any audio node
 <details>
@@ -928,7 +928,7 @@ Any kind of audio node
 
 </details>
 
-`**to**`: `AudioNode`
+**`to`**: `AudioNode`
   
 Connect to any audio node
 <details>
@@ -939,7 +939,7 @@ Any kind of audio node
   
 #### outputs
 
-`**from**`: `AudioNode`
+**`from`**: `AudioNode`
   
 The same node, connected
 <details>
@@ -948,7 +948,7 @@ Any kind of audio node
 
 </details>
 
-`**to**`: `AudioNode`
+**`to`**: `AudioNode`
   
 The same node, connected
 <details>
@@ -971,7 +971,7 @@ The current context destination
   
 #### outputs
 
-`**node**`: `AudioNode`
+**`node`**: `AudioNode`
   
 The current context destination node
 <details>
@@ -990,7 +990,7 @@ Connect an audio node to audio context destination
 
 #### inputs
 
-`**node**`: `AudioNode`
+**`node`**: `AudioNode`
   
 Any Audio node to connect to the context destination
 <details>
@@ -1001,7 +1001,7 @@ Any kind of audio node
   
 #### outputs
 
-`**out**`: `AudioNode`
+**`out`**: `AudioNode`
   
 The same node, connected to the context destination
 <details>
@@ -1024,7 +1024,7 @@ A virtual Salamander grand piano as a Tone Node
   
 #### outputs
 
-`**out**`: `AudioNode`
+**`out`**: `AudioNode`
   
 A piano node
 <details>
@@ -1043,7 +1043,7 @@ Arpeggiate between the given notes in a number of patterns
 
 #### inputs
 
-`**notes**`: `Note[]`
+**`notes`**: `Note[]`
   
 Notes to arpeggiate over
 <details>
@@ -1052,12 +1052,12 @@ An array of Notes. Note encoding, can be something like A4, a midi index, or a r
 
 </details>
 
-`**interval**`: `time`
+**`interval`**: `time`
   
 The interval at which this node loops
 
 
-`**pattern**`: `Pattern`
+**`pattern`**: `Pattern`
   
 The arpeggiation pattern. See the `Pattern` type for options.
 <details>
@@ -1066,19 +1066,19 @@ Arpeggio pattern. Possible values areup - cycles upward h - cycles downwardupDow
 
 </details>
 
-`**humanize**`: `boolean`
+**`humanize`**: `boolean`
   
 Random variation +/-0.01s to the scheduled time. Or give it a time value which it will randomize by
 
 
-`**probability**`: `number`
+**`probability`**: `number`
   
 probability that each iteration will play, [0,1]
 
   
 #### outputs
 
-`**note**`: `Note`
+**`note`**: `Note`
   
 The note
 <details>
@@ -1087,7 +1087,7 @@ Note encoding, can be something like A4, a midi index, or a raw frequency in Hz
 
 </details>
 
-`**time**`: `time`
+**`time`**: `time`
   
 Time accompanying the note
 
@@ -1102,7 +1102,7 @@ A node which compresses signals from its origin. Compression reduces the volume 
 
 #### inputs
 
-`**node**`: `AudioNode`
+**`node`**: `AudioNode`
   
 The audio node to connect to this compressor.
 <details>
@@ -1111,19 +1111,19 @@ Any kind of audio node
 
 </details>
 
-`**threshold**`: `number`
+**`threshold`**: `number`
   
 The value above which the compression starts to be applied.
 
 
-`**ratio**`: `number`
+**`ratio`**: `number`
   
 The gain reduction ratio
 
   
 #### outputs
 
-`**out**`: `Compressor`
+**`out`**: `Compressor`
   
 The compressor node
 <details>
@@ -1132,7 +1132,7 @@ An object with arbitrary keys and values
 
 </details>
 
-`**node**`: `AudioNode`
+**`node`**: `AudioNode`
   
 The node that was passed in, connected to the compressor
 <details>
@@ -1151,7 +1151,7 @@ A Reverb based on Freeverb (https://ccrma.stanford.edu/~jos/pasp/Freeverb.html).
 
 #### inputs
 
-`**node**`: `AudioNode`
+**`node`**: `AudioNode`
   
 The audio node to connect to this reverb node
 <details>
@@ -1160,19 +1160,19 @@ Any kind of audio node
 
 </details>
 
-`**dampening**`: `time`
+**`dampening`**: `time`
   
 The amount of dampening of the reverberant signal
 
 
-`**roomSize**`: `number`
+**`roomSize`**: `number`
   
 The roomSize value between [0,1]. A larger roomSize will result in a longer decay
 
   
 #### outputs
 
-`**out**`: `Reverb`
+**`out`**: `Reverb`
   
 The resulting Reverb Node
 <details>
@@ -1181,7 +1181,7 @@ An object with arbitrary keys and values
 
 </details>
 
-`**node**`: `AudioNode`
+**`node`**: `AudioNode`
   
 The node that was passed in, connected to the reverb
 <details>
@@ -1200,7 +1200,7 @@ Play a sound file from a remote source
 
 #### inputs
 
-`**url**`: `url`
+**`url`**: `url`
   
 the url to fetch the sound file from.
 <details>
@@ -1209,7 +1209,7 @@ A basic string type
 
 </details>
 
-`**call**`: `Call`
+**`call`**: `Call`
   
 Certain nodes are designated 'callable', i.e. they are operator nodes. Sending a truthy call signal will invoke that node's handler over its parameters
 <details>
@@ -1218,14 +1218,14 @@ Something that is callable
 
 </details>
 
-`**loop**`: `boolean`
+**`loop`**: `boolean`
   
 Whether or not the player should loop its contents indefinitely
 
   
 #### outputs
 
-`**player**`: `Player`
+**`player`**: `Player`
   
 The player node
 <details>
@@ -1244,7 +1244,7 @@ A simple volume node, useful for creating a volume fader.
 
 #### inputs
 
-`**node**`: `AudioNode`
+**`node`**: `AudioNode`
   
 The audio node to connect to this Volume node.
 <details>
@@ -1253,14 +1253,14 @@ Any kind of audio node
 
 </details>
 
-`**volume**`: `number`
+**`volume`**: `number`
   
 The volume, in decibels
 
   
 #### outputs
 
-`**out**`: `Volume`
+**`out`**: `Volume`
   
 The volume node
 <details>
@@ -1269,7 +1269,7 @@ An object with arbitrary keys and values
 
 </details>
 
-`**node**`: `AudioNode`
+**`node`**: `AudioNode`
   
 The node that was passed in, connected to this volume node
 <details>
@@ -1288,7 +1288,7 @@ Ramp a signal to a value over a time
 
 #### inputs
 
-`**signal**`: `Signal`
+**`signal`**: `Signal`
   
 The signal to ramp
 <details>
@@ -1297,12 +1297,12 @@ An audio signal, like volume, pan, frequency, etc.
 
 </details>
 
-`**toValue**`: `time`
+**`toValue`**: `time`
   
 The value to ramp to
 
 
-`**rampTime**`: `time`
+**`rampTime`**: `time`
   
 The amount of time it takes to ramp
 
@@ -1321,34 +1321,34 @@ A virtual instrument
 
 #### inputs
 
-`**name**`: `string`
+**`name`**: `string`
   
 The name of the soundfont to use. Possible values:accordion, acoustic_bass, acoustic_grand_piano, acoustic_guitar_nylon, acoustic_guitar_steel, agogo, alto_sax, applause, bagpipe, banjo, baritone_sax, bassoon, bird_tweet, blown_bottle, brass_section, breath_noise, bright_acoustic_piano, celesta, cello, choir_aahs, church_organ, clarinet, clavinet, contrabass, distortion_guitar, drawbar_organ, dulcimer, electric_bass_finger, electric_bass_pick, electric_grand_piano, electric_guitar_clean, electric_guitar_jazz, electric_guitar_muted, electric_piano_1, electric_piano_2, english_horn, fiddle, flute, french_horn, fretless_bass, fx_1_rain, fx_2_soundtrack, fx_3_crystal, fx_4_atmosphere, fx_5_brightness, fx_6_goblins, fx_7_echoes, fx_8_scifi, glockenspiel, guitar_fret_noise, guitar_harmonics, gunshot, harmonica, harpsichord, helicopter, honkytonk_piano, kalimba, koto, lead_1_square, lead_2_sawtooth, lead_3_calliope, lead_4_chiff, lead_5_charang, lead_6_voice, lead_7_fifths, lead_8_bass__lead, marimba, melodic_tom, music_box, muted_trumpet, oboe, ocarina, orchestra_hit, orchestral_harp, overdriven_guitar, pad_1_new_age, pad_2_warm, pad_3_polysynth, pad_4_choir, pad_5_bowed, pad_6_metallic, pad_7_halo, pad_8_sweep, pan_flute, percussive_organ, piccolo, pizzicato_strings, recorder, reed_organ, reverse_cymbal, rock_organ, seashore, shakuhachi, shamisen, shanai, sitar, slap_bass_1, slap_bass_2, soprano_sax, steel_drums, string_ensemble_1, string_ensemble_2, synth_bass_1, synth_bass_2, synth_brass_1, synth_brass_2, synth_choir, synth_drum, synth_strings_1, synth_strings_2, taiko_drum, tango_accordion, telephone_ring, tenor_sax, timpani, tinkle_bell, tremolo_strings, trombone, trumpet, tuba, tubular_bells, vibraphone, viola, violin, voice_oohs, whistle, woodblock, xylophone
 
 
-`**attack**`: `number`
+**`attack`**: `number`
   
 The attack to use for this instrument
 
 
-`**decay**`: `number`
+**`decay`**: `number`
   
 The decay to use for this instrument
 
 
-`**release**`: `number`
+**`release`**: `number`
   
 The release to use for this instrument
 
 
-`**sustain**`: `number`
+**`sustain`**: `number`
   
 The sustain to use for this instrument
 
   
 #### outputs
 
-`**out**`: `SoundFont`
+**`out`**: `SoundFont`
   
 Resulting SoundFont
 <details>
@@ -1367,7 +1367,7 @@ A Node which plays tone data to a SoundFont instrument
 
 #### inputs
 
-`**soundFont**`: `SoundFont`
+**`soundFont`**: `SoundFont`
   
 The particular sound font to use.
 <details>
@@ -1376,7 +1376,7 @@ A sample set assembled to be a virtual instrument
 
 </details>
 
-`**toneData**`: `ToneData`
+**`toneData`**: `ToneData`
   
 Data fed in through this channel will be sent to the sound font instrument to play
 <details>
@@ -1385,7 +1385,7 @@ Directives for an instrument / synth to play.
 
 </details>
 
-`**midiData**`: `MidiData`
+**`midiData`**: `MidiData`
   
 Data fed in through this channel will be sent to the sound font instrument to play
 <details>
@@ -1394,7 +1394,7 @@ Midi signal. Usually a note, action, velocity, and channel information
 
 </details>
 
-`**midiDevice**`: `MidiInput`
+**`midiDevice`**: `MidiInput`
   
 Optionally attach a midi input to this node to send signals to the soundfont
 <details>
@@ -1417,21 +1417,21 @@ Divide one number by another
 
 #### inputs
 
-`**dividend**`: `number`
+**`dividend`**: `number`
   
 
 
-`**divisor**`: `number`
+**`divisor`**: `number`
   
 
   
 #### outputs
 
-`**result**`: `number`
+**`result`**: `number`
   
 
 
-`**int**`: `number`
+**`int`**: `number`
   
 
   
@@ -1445,14 +1445,14 @@ Sum across numbers
 
 #### inputs
 
-`**numbers**`: `number`
+**`numbers`**: `number`
   
 All numbers to add together
 
   
 #### outputs
 
-`**result**`: `number`
+**`result`**: `number`
   
 Sum
 
@@ -1467,14 +1467,14 @@ Multiply over numbers
 
 #### inputs
 
-`**numbers**`: `number`
+**`numbers`**: `number`
   
 All numbers to multiply together
 
   
 #### outputs
 
-`**result**`: `number`
+**`result`**: `number`
   
 Product
 
@@ -1489,7 +1489,7 @@ Admittedly a node borne of laziness -- given a standard js math package operatio
 
 #### inputs
 
-`**fn**`: `MathFn`
+**`fn`**: `MathFn`
   
 The function name. Check type info for options
 <details>
@@ -1498,13 +1498,13 @@ Signatures for the available functionsE: number; LN10: number; LN2: number; LOG1
 
 </details>
 
-`**in**`: `number`
+**`in`**: `number`
   
 
   
 #### outputs
 
-`**result**`: `number`
+**`result`**: `number`
   
 
   
@@ -1518,29 +1518,29 @@ A color representation
 
 #### inputs
 
-`**r**`: `number`
+**`r`**: `number`
   
 red channel, [0,255]
 
 
-`**g**`: `number`
+**`g`**: `number`
   
 green channel, [0,255]
 
 
-`**b**`: `number`
+**`b`**: `number`
   
 blue channel, [0,255]
 
   
 #### outputs
 
-`**hex**`: `number`
+**`hex`**: `number`
   
 hex representation of this color
 
 
-`**rgb**`: `RGBColor`
+**`rgb`**: `RGBColor`
   
 rgb representation
 <details>
@@ -1559,7 +1559,7 @@ A focused light, intended to be added to a scene
 
 #### inputs
 
-`**color**`: `RGBColor`
+**`color`**: `RGBColor`
   
 The color of this directional light
 <details>
@@ -1570,7 +1570,7 @@ RGB representation of a color
   
 #### outputs
 
-`**light**`: `Light`
+**`light`**: `Light`
   
 The directional light source
 <details>
@@ -1589,7 +1589,7 @@ An ambient light, intended to be added to a scene
 
 #### inputs
 
-`**color**`: `RGBColor`
+**`color`**: `RGBColor`
   
 The color of this ambient light
 <details>
@@ -1600,7 +1600,7 @@ RGB representation of a color
   
 #### outputs
 
-`**light**`: `Light`
+**`light`**: `Light`
   
 The ambient light source
 <details>
@@ -1619,7 +1619,7 @@ A holy perturbation
 
 #### inputs
 
-`**delay**`: `Vec2`
+**`delay`**: `Vec2`
   
 the min and max delay between glitches, as a 2d vector in second units
 <details>
@@ -1630,7 +1630,7 @@ A 2D Vector with keys x and y
   
 #### outputs
 
-`**glitch**`: `PostEffect`
+**`glitch`**: `PostEffect`
   
 glitchy pass that can be applied to a render
 <details>
@@ -1653,7 +1653,7 @@ A scanline post-process effect
   
 #### outputs
 
-`**pass**`: `PostEffect`
+**`pass`**: `PostEffect`
   
 a scanline pass that can be applied to a render
 <details>
@@ -1662,7 +1662,7 @@ A post production render effect
 
 </details>
 
-`**effect**`: `object`
+**`effect`**: `object`
   
 the effect info
 <details>
@@ -1685,7 +1685,7 @@ A Dot-screen post-process effect
   
 #### outputs
 
-`**pass**`: `PostEffect`
+**`pass`**: `PostEffect`
   
 a dotscreen pass that can be applied to a render
 <details>
@@ -1694,7 +1694,7 @@ A post production render effect
 
 </details>
 
-`**effect**`: `object`
+**`effect`**: `object`
   
 the effect info
 <details>
@@ -1713,24 +1713,24 @@ A Vignette post-process effect
 
 #### inputs
 
-`**opacity**`: `number`
+**`opacity`**: `number`
   
 The vignette opacity [0,1]
 
 
-`**offset**`: `number`
+**`offset`**: `number`
   
 The vignette offset [0,1]
 
 
-`**darkness**`: `number`
+**`darkness`**: `number`
   
 The vignette darkness [0,1]
 
   
 #### outputs
 
-`**pass**`: `PostEffect`
+**`pass`**: `PostEffect`
   
 a vignette pass that can be applied to a render
 <details>
@@ -1739,7 +1739,7 @@ A post production render effect
 
 </details>
 
-`**effect**`: `object`
+**`effect`**: `object`
   
 the effect info
 <details>
@@ -1758,14 +1758,14 @@ A noise post-process effect
 
 #### inputs
 
-`**opacity**`: `number`
+**`opacity`**: `number`
   
 the blending opacity
 
   
 #### outputs
 
-`**pass**`: `PostEffect`
+**`pass`**: `PostEffect`
   
 a noise pass that can be applied to a render
 <details>
@@ -1774,7 +1774,7 @@ A post production render effect
 
 </details>
 
-`**effect**`: `object`
+**`effect`**: `object`
   
 the effect info
 <details>
@@ -1793,21 +1793,21 @@ A two dimensional vector with x y and y components
 
 #### inputs
 
-`**x**`: `number`
+**`x`**: `number`
   
 
 
-`**y**`: `number`
+**`y`**: `number`
   
 
 
-`**z**`: `number`
+**`z`**: `number`
   
 
   
 #### outputs
 
-`**out**`: `Vec3`
+**`out`**: `Vec3`
   
 <details>
 <summary>Vec3</summary>
@@ -1825,14 +1825,14 @@ Logical AND over inputs
 
 #### inputs
 
-`**input**`: `any`
+**`input`**: `any`
   
 Any set of members to logical `AND` over
 
   
 #### outputs
 
-`**result**`: `number`
+**`result`**: `number`
   
 Logical and of inputs
 
@@ -1847,14 +1847,14 @@ Logical OR over inputs
 
 #### inputs
 
-`**input**`: `any`
+**`input`**: `any`
   
 Any set of members to logical `OR` over
 
   
 #### outputs
 
-`**result**`: `number`
+**`result`**: `number`
   
 Logical OR of inputs
 
@@ -1869,14 +1869,14 @@ logical not
 
 #### inputs
 
-`**in**`: `any`
+**`in`**: `any`
   
 anything. negation follows regular js semantics
 
   
 #### outputs
 
-`**result**`: `boolean`
+**`result`**: `boolean`
   
 
   
@@ -1890,14 +1890,14 @@ Strict equals operator
 
 #### inputs
 
-`**input**`: `any`
+**`input`**: `any`
   
 Any set of members to perform strict equals over
 
   
 #### outputs
 
-`**result**`: `number`
+**`result`**: `number`
   
 Logical equals over inputs
 
@@ -1912,24 +1912,24 @@ An If-Else switch on value equality
 
 #### inputs
 
-`**value**`: `any`
+**`value`**: `any`
   
 Any value, as input to the switch
 
 
-`**not**`: `any`
+**`not`**: `any`
   
 Any value to use to compare the input to
 
 
-`**else**`: `any`
+**`else`**: `any`
   
 Any value to return if not logically equal
 
   
 #### outputs
 
-`**result**`: `any`
+**`result`**: `any`
   
 Result of the switch
 
@@ -1944,7 +1944,7 @@ Sample an RNN model trained on the Yamaha e-Piano Competition dataset
 
 #### inputs
 
-`**scale**`: `PitchHistogram`
+**`scale`**: `PitchHistogram`
   
 This pitch distribution will be used as a tonic to condition this model
 <details>
@@ -1953,17 +1953,17 @@ A scale represented as a distribution of pitch classes. Valid inputs are either 
 
 </details>
 
-`**density**`: `number`
+**`density`**: `number`
   
 A density conditioning variable between 0-6 that serves as a directive for how many notes will be generated per step, in exponential scale. i.e. notes generated per step will be 2^density
 
 
-`**stepsPerSecond**`: `number`
+**`stepsPerSecond`**: `number`
   
 number of steps per second. effectively a tempo measure for note generation / playback
 
 
-`**synth**`: `Synth`
+**`synth`**: `Synth`
   
 Optionally attach a synth to this node and trigger its attack / release
 <details>
@@ -1972,7 +1972,7 @@ Any kind of synth
 
 </details>
 
-`**midiOut**`: `MidiOut`
+**`midiOut`**: `MidiOut`
   
 Optionally attach a midi output to this node and send midi signals to that device
 <details>
@@ -1983,7 +1983,7 @@ A connected MIDI output
   
 #### outputs
 
-`**midiData**`: `object`
+**`midiData`**: `object`
   
 midi data out
 <details>
@@ -1992,7 +1992,7 @@ An object with arbitrary keys and values
 
 </details>
 
-`**toneData**`: `ToneData`
+**`toneData`**: `ToneData`
   
 tone out node
 <details>
@@ -2011,14 +2011,14 @@ Log any inputs as they come to console info
 
 #### inputs
 
-`**anything**`: `any`
+**`anything`**: `any`
   
 Anything you would like to log
 
   
 #### outputs
 
-`**anything**`: `any`
+**`anything`**: `any`
   
 The input, passed through
 
@@ -2033,12 +2033,12 @@ A Musical scale
 
 #### inputs
 
-`**tonic**`: `string`
+**`tonic`**: `string`
   
 The tonic for this scale, e.g. "C" or "Ab4". You can optionally specify the scale name here too, and omit the name input, e.g. "C minor pentatonic" See the name param info for possible scale names.
 
 
-`**name**`: `ScaleName`
+**`name`**: `ScaleName`
   
 The name of the scale. Check type for possible values
 <details>
@@ -2049,7 +2049,7 @@ One of:aeolian altered augmented augmented heptatonic balinese bebop bebop domin
   
 #### outputs
 
-`**notes**`: `Note[]`
+**`notes`**: `Note[]`
   
 The notes in this scale
 <details>
@@ -2058,7 +2058,7 @@ An array of Notes. Note encoding, can be something like A4, a midi index, or a r
 
 </details>
 
-`**intervals**`: `Interval[]`
+**`intervals`**: `Interval[]`
   
 The intervals between notes in this scale
 <details>
@@ -2077,7 +2077,7 @@ A chroma representation of a pitchset as a 12-digit binary array, with each inde
 
 #### inputs
 
-`**notes**`: `Note[]`
+**`notes`**: `Note[]`
   
 A list of notes to compute a chroma for
 <details>
@@ -2088,7 +2088,7 @@ An array of Notes. Note encoding, can be something like A4, a midi index, or a r
   
 #### outputs
 
-`**chroma**`: `number[]`
+**`chroma`**: `number[]`
   
 the chroma output: 12-digit binary array, with each index presenting one semitone of the octave
 <details>
@@ -2107,12 +2107,12 @@ A Chord
 
 #### inputs
 
-`**tonic**`: `string`
+**`tonic`**: `string`
   
 The tonic for this scale, e.g. "C" or "Ab4". You can optionally specify the chord name here too, and omit the name input, e.g. "E Maj7" See the name param info for recognized chord names.
 
 
-`**name**`: `ChordName`
+**`name`**: `ChordName`
   
 The name of the chord. Check type for possible values
 <details>
@@ -2123,7 +2123,7 @@ One of:+add#9 11 11b9 13 13#11 13#9 13#9#11 13b5 13b9 13b9#11 13no5 13sus4 4 5 6
   
 #### outputs
 
-`**notes**`: `Note[]`
+**`notes`**: `Note[]`
   
 The notes in this chord
 <details>
@@ -2132,7 +2132,7 @@ An array of Notes. Note encoding, can be something like A4, a midi index, or a r
 
 </details>
 
-`**intervals**`: `Interval[]`
+**`intervals`**: `Interval[]`
   
 The intervals between notes in this chord
 <details>
@@ -2151,19 +2151,19 @@ Transpose a note by an interval. e.g. transpose(A4, M3) -> C#5
 
 #### inputs
 
-`**note**`: `string`
+**`note`**: `string`
   
 The note to transpose. This can be abstract or a concrete pitch, i.e. C or C4
 
 
-`**interval**`: `string`
+**`interval`**: `string`
   
 The interval to transpose by, e.g. P5 or M3
 
   
 #### outputs
 
-`**out**`: `string`
+**`out`**: `string`
   
 The note, transposed by the interval
 
@@ -2178,14 +2178,14 @@ Triads For a Key
 
 #### inputs
 
-`**key**`: `string`
+**`key`**: `string`
   
 The name of the key (a tonic + a mode), e.g. C major, Db dorian
 
   
 #### outputs
 
-`**notes**`: `Note[]`
+**`notes`**: `Note[]`
   
 Triad lead-sheet symbols for this key
 <details>
@@ -2204,14 +2204,14 @@ A midi output device. If no id / name are provided, the first midi device found 
 
 #### inputs
 
-`**id**`: `string`
+**`id`**: `string`
   
 The midi out device id *or* name. The first matching one will be used in the case of collisions
 
   
 #### outputs
 
-`**device**`: `object`
+**`device`**: `object`
   
 The midi output, or none if none were found
 <details>
@@ -2230,14 +2230,14 @@ A midi input device. If no id / name are provided, the first midi device found w
 
 #### inputs
 
-`**id**`: `string`
+**`id`**: `string`
   
 The midi in device id *or* name. The first matching one will be used in the case of collisions
 
   
 #### outputs
 
-`**device**`: `object`
+**`device`**: `object`
   
 The midi input, or none if none were found
 <details>
@@ -2256,14 +2256,14 @@ Parse a string into an object
 
 #### inputs
 
-`**in**`: `string`
+**`in`**: `string`
   
 String serialization
 
   
 #### outputs
 
-`**out**`: `object`
+**`out`**: `object`
   
 Parsed object
 <details>
@@ -2282,7 +2282,7 @@ Extract a value from an object. Complement of SetNode
 
 #### inputs
 
-`**from**`: `object`
+**`from`**: `object`
   
 Object to extract from
 <details>
@@ -2291,14 +2291,14 @@ An object with arbitrary keys and values
 
 </details>
 
-`**get**`: `string`
+**`get`**: `string`
   
 The key to get. You can traverse an object with dot notation, i.e. foo.bar
 
   
 #### outputs
 
-`**out**`: `any`
+**`out`**: `any`
   
 The extracted value, or undefined
 
@@ -2313,7 +2313,7 @@ Set a value on any object / array. Complement of ExtractNode
 
 #### inputs
 
-`**target**`: `object`
+**`target`**: `object`
   
 Object / array to set to
 <details>
@@ -2322,19 +2322,19 @@ An object with arbitrary keys and values
 
 </details>
 
-`**path**`: `string`
+**`path`**: `string`
   
 The path to set at. You can use dot notation, i.e. foo.bar
 
 
-`**value**`: `any`
+**`value`**: `any`
   
 The value to set at path.
 
   
 #### outputs
 
-`**out**`: `any`
+**`out`**: `any`
   
 The extracted value, or undefined
 
@@ -2349,17 +2349,17 @@ Stephen Wolfram is an operator that, when given a 1D cellular automata rule numb
 
 #### inputs
 
-`**rule**`: `number`
+**`rule`**: `number`
   
 The rule number. Given a binary state and two neighbors (2^3 states), a transition rule set can be encoded with a binary number with each digit slot representing the next state of that configuration (2^(2^3) rule sets).
 
 
-`**initialState**`: `any`
+**`initialState`**: `any`
   
 He doesn't know or care where it comes from, but Wolfram needs an initial state in order to operate. His world is probably circular, so the first index and last index are assumed to be neighbors for rule application. Both binary strings and binary arrays are acceptable.
 
 
-`**call**`: `Call`
+**`call`**: `Call`
   
 Certain nodes are designated 'callable', i.e. they are operator nodes. Sending a truthy call signal will invoke that node's handler over its parameters
 <details>
@@ -2370,7 +2370,7 @@ Something that is callable
   
 #### outputs
 
-`**out**`: `number[]`
+**`out`**: `number[]`
   
 The resulting binary array
 <details>
@@ -2389,19 +2389,19 @@ Buffer values from an input stream. If memory capacity is reached, oldest values
 
 #### inputs
 
-`**capacity**`: `number`
+**`capacity`**: `number`
   
 The max number of elements to keep. Omitting this means no limit
 
 
-`**value**`: `any`
+**`value`**: `any`
   
 Any value. This will be pushed into the output collector
 
   
 #### outputs
 
-`**out**`: `any[]`
+**`out`**: `any[]`
   
 The collected queue, oldest to newest.
 <details>
@@ -2420,7 +2420,7 @@ Join an array of values together with a separator
 
 #### inputs
 
-`**array**`: `object`
+**`array`**: `object`
   
 Array of any data. Ideally this data is string serializable.
 <details>
@@ -2429,14 +2429,14 @@ An object with arbitrary keys and values
 
 </details>
 
-`**separator**`: `string`
+**`separator`**: `string`
   
 Separator string to join elements together with
 
   
 #### outputs
 
-`**out**`: `string`
+**`out`**: `string`
   
 The joined array, as a string
 
@@ -2451,24 +2451,24 @@ Replace a regex match with something else
 
 #### inputs
 
-`**string**`: `string`
+**`string`**: `string`
   
 The string over which to perform the replace
 
 
-`**regex**`: `string`
+**`regex`**: `string`
   
 the regexp
 
 
-`**replacement**`: `string`
+**`replacement`**: `string`
   
 The string to replace matches with
 
   
 #### outputs
 
-`**out**`: `string`
+**`out`**: `string`
   
 The joined array, as a string
 
@@ -2483,19 +2483,19 @@ Create an array filled with a value
 
 #### inputs
 
-`**length**`: `number`
+**`length`**: `number`
   
 The length of this array
 
 
-`**fillWith**`: `any`
+**`fillWith`**: `any`
   
 The value to fill with
 
   
 #### outputs
 
-`**out**`: `any[]`
+**`out`**: `any[]`
   
 An array, filled to length by value
 <details>
@@ -2518,7 +2518,7 @@ Create an array filled with a value
   
 #### outputs
 
-`**count**`: `number`
+**`count`**: `number`
   
 The output count
 
@@ -2533,29 +2533,29 @@ Zip elements from an input stream
 
 #### inputs
 
-`**arg1**`: `any`
+**`arg1`**: `any`
   
 Any object to zip
 
 
-`**arg2**`: `any`
+**`arg2`**: `any`
   
 Any object to zip
 
 
-`**arg3**`: `any`
+**`arg3`**: `any`
   
 Any object to zip
 
 
-`**arg4**`: `any`
+**`arg4`**: `any`
   
 Any object to zip
 
   
 #### outputs
 
-`**zipped**`: `any[]`
+**`zipped`**: `any[]`
   
 The zipped object
 <details>
@@ -2574,17 +2574,17 @@ A node that renders HTML to the screen
 
 #### inputs
 
-`**html**`: `string`
+**`html`**: `string`
   
 The html for this element
 
 
-`**text**`: `string`
+**`text`**: `string`
   
 The inner text of this element
 
 
-`**style**`: `string`
+**`style`**: `string`
   
 The style attribute for this node
 
@@ -2603,19 +2603,19 @@ A plus operator. Usable with both strings and numbers.
 
 #### inputs
 
-`**left**`: `any`
+**`left`**: `any`
   
 left hand side
 
 
-`**right**`: `any`
+**`right`**: `any`
   
 right hand side
 
   
 #### outputs
 
-`**out**`: `any`
+**`out`**: `any`
   
 The result
 
@@ -2630,7 +2630,7 @@ Define a GPGPU program to be run on your machine's compatible backend
 
 #### inputs
 
-`**userCode**`: `GPGPUKernel`
+**`userCode`**: `GPGPUKernel`
   
 Your user code for the kernel to be uploaded to your graphics hardware. Syntax is specific to your backend, but a good strategy is conforming to the OpenGL/WebGL standards that most GPUs will support. In order to set an output to your kernel call setOutput in your kernel's main function. To get the output coords in your computation call getOutputCoords.
 <details>
@@ -2639,7 +2639,7 @@ An open frameworks compliant shader program
 
 </details>
 
-`**outputShape**`: `number[]`
+**`outputShape`**: `number[]`
   
 A tensor shape describing the kernel output, e.g. [100, 100]. if omitted, output shape is assumed to be the same as the input shape
 <details>
@@ -2648,7 +2648,7 @@ An array of numbers. A basic number type
 
 </details>
 
-`**variableNames**`: `string[]`
+**`variableNames`**: `string[]`
   
 A list of variable names that your kernel will use. This gives you access to functions inside your program kernel. i.e. variable named X gives you the methods getXAtOutCoords and getX
 <details>
@@ -2659,7 +2659,7 @@ An array of strings. A basic string type
   
 #### outputs
 
-`**program**`: `GPGPUProgram`
+**`program`**: `GPGPUProgram`
   
 Program info output. Use the "Run GPGPU" node to compile and run this over inputs
 <details>
@@ -2678,7 +2678,7 @@ Compile and run a GPGPU program. Kernels passed in will be compiled and cached, 
 
 #### inputs
 
-`**program**`: `GPGPUProgram`
+**`program`**: `GPGPUProgram`
   
 The uncompiled program info to be turned into a full WebGL shader
 <details>
@@ -2687,7 +2687,7 @@ An uncompiled GPGPU program
 
 </details>
 
-`**input**`: `any[]`
+**`input`**: `any[]`
   
 The input tensor to run through the compiled program kernel
 <details>
@@ -2698,7 +2698,7 @@ An array of anys. This can be anything
   
 #### outputs
 
-`**result**`: `any[]`
+**`result`**: `any[]`
   
 Program output
 <details>
@@ -2717,7 +2717,7 @@ Define arbitrary JS code in this node. Runtime compatibility is based on your br
 
 #### inputs
 
-`**userCode**`: `JSFunction`
+**`userCode`**: `JSFunction`
   
 A JS code block that returns something over the inputs. You can reference variables by input name, e.g. arg1
 <details>
@@ -2726,34 +2726,34 @@ A valid JS code block. You should call return at the end of your function to pro
 
 </details>
 
-`**arg1**`: `any`
+**`arg1`**: `any`
   
 Any arg to supply to the user code block, accessible via arg1
 
 
-`**arg2**`: `any`
+**`arg2`**: `any`
   
 Any arg to supply to the user code block, accessible via arg2
 
 
-`**arg3**`: `any`
+**`arg3`**: `any`
   
 Any arg to supply to the user code block, accessible via arg3
 
 
-`**arg4**`: `any`
+**`arg4`**: `any`
   
 Any arg to supply to the user code block, accessible via arg4
 
 
-`**arg5**`: `any`
+**`arg5`**: `any`
   
 Any arg to supply to the user code block, accessible via arg5
 
   
 #### outputs
 
-`**return**`: `any`
+**`return`**: `any`
   
 Whatever was returned in the userCode block
 
@@ -2772,7 +2772,7 @@ Whatever was returned in the userCode block
   
 #### outputs
 
-`**out**`: `number`
+**`out`**: `number`
   
 
   
@@ -2790,7 +2790,7 @@ Whatever was returned in the userCode block
   
 #### outputs
 
-`**out**`: `string`
+**`out`**: `string`
   
 
   
@@ -2808,7 +2808,7 @@ Whatever was returned in the userCode block
   
 #### outputs
 
-`**out**`: `boolean`
+**`out`**: `boolean`
   
 
   
@@ -2826,7 +2826,7 @@ Whatever was returned in the userCode block
   
 #### outputs
 
-`**out**`: `date`
+**`out`**: `date`
   
 
   
