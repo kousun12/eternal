@@ -65,6 +65,6 @@ Here's a list of all ${nodes.length} current nodes, their descriptions, and i/o.
 ${nodes.join('\n\n')}    
 `;
 };
-const output = md();
-download(output);
+// const output = md();
+// download(output);
 // console.log(output);
