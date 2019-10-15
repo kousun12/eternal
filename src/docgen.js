@@ -16,7 +16,8 @@ const renderAttr = ([title, type]) => {
 ${textFrom(type.typeDescription)}
 ${defaultString}
 \<\/details\>`;
-  return `\`${title}\`: \`${type.name}\`
+  return `\`**${title}**\`: \`${type.name}\`
+  
 ${attrDesc}${typeInfo}`;
 };
 
