@@ -200,13 +200,9 @@ export default class Performance {
       tf.basicLSTMCell(this.forgetBias, this.lstmKernel3, this.lstmBias3, data, c, h);
 
     const [_c, _h, outputs] = tf.tidy(() => {
-      // Generate some notes.
       const innerOuts: tf.Scalar[] = [];
       for (let i = 0; i < STEPS_PER_GENERATE_CALL; i++) {
-        // Use last sampled output as the next input.
         const eventInput = tf.oneHot(this.lastSample.as1D(), EVENT_SIZE).as1D();
-        // Dispose the last sample from the previous generate call, since we
-        // kept it.
         if (i === 0) {
           this.lastSample.dispose();
         }

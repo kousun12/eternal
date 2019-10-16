@@ -408,16 +408,19 @@ class NodeGraph extends React.Component<P, S> {
     Object.keys(this.props.selected).length && this.props.selSet([]);
     this._clearCanvasDrag();
     this._clearConnecting();
+    this.moving = false;
   };
 
   _onCanvasClick = () => {
     this._clearConnecting();
     this._clearCanvasDrag();
+    this.moving = false;
   };
 
   _clearConnecting = () => {
     this.state.connecting && this.setState({ connecting: false });
   };
+
   _clearCanvasDrag = () => {
     this.canvasDragStart = null;
     this.state.canvasDragEnd && this.setState({ canvasDragEnd: null });
