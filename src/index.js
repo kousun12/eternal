@@ -6,7 +6,7 @@ import store from './redux/rootStore';
 
 // import './utils/docgen';
 import * as serviceWorker from './serviceWorker';
-serviceWorker.unregister();
+serviceWorker.register();
 
 const render = () => {
   const Eternal = require('./App').default;
