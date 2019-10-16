@@ -26,9 +26,7 @@ export default class extends React.PureComponent {
       newExpanded.push(this.state.expanded[j]);
     }
     newExpanded[i] = !newExpanded[i];
-    this.setState({
-      expanded: newExpanded,
-    });
+    this.setState({ expanded: newExpanded });
   };
 
   getExpandedIcon(i) {
@@ -54,8 +52,8 @@ export default class extends React.PureComponent {
       ...rest
     } = this.props;
 
-    let expanded_icon,
-      object_padding_left = 0;
+    let expanded_icon;
+    let object_padding_left = 0;
 
     const array_group_padding_left = this.props.indentWidth * SINGLE_INDENT;
 
@@ -71,7 +69,8 @@ export default class extends React.PureComponent {
         className="object-key-val"
         {...Theme(theme, jsvRoot ? 'jsv-root' : 'objectKeyVal', {
           paddingLeft: object_padding_left,
-        })}>
+        })}
+      >
         <ObjectName {...this.props} />
 
         <span>
@@ -84,14 +83,14 @@ export default class extends React.PureComponent {
             {...Theme(theme, 'objectKeyVal', {
               marginLeft: 6,
               paddingLeft: array_group_padding_left,
-            })}>
+            })}
+          >
             <span {...Theme(theme, 'brace-row')}>
               <div
                 className="icon-container"
                 {...Theme(theme, 'icon-container')}
-                onClick={e => {
-                  this.toggleCollapsed(i);
-                }}>
+                onClick={e => this.toggleCollapsed(i)}
+              >
                 {this.getExpandedIcon(i)}
               </div>
               {this.state.expanded[i] ? (
@@ -112,10 +111,9 @@ export default class extends React.PureComponent {
               ) : (
                 <span
                   {...Theme(theme, 'brace')}
-                  onClick={e => {
-                    this.toggleCollapsed(i);
-                  }}
-                  className="array-group-brace">
+                  onClick={e => this.toggleCollapsed(i)}
+                  className="array-group-brace"
+                >
                   [
                   <div {...Theme(theme, 'array-group-meta-data')} className="array-group-meta-data">
                     <span className="object-size" {...Theme(theme, 'object-size')}>

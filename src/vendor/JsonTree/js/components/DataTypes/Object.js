@@ -87,7 +87,8 @@ class RjvObject extends React.PureComponent {
       <div className="pushed-content object-container">
         <div
           className="object-content"
-          {...Theme(this.props.theme, 'pushed-content', overrideStyle)}>
+          {...Theme(this.props.theme, 'pushed-content', overrideStyle)}
+        >
           {this.renderObjectContents(src, props)}
         </div>
       </div>
@@ -104,7 +105,8 @@ class RjvObject extends React.PureComponent {
         <div
           {...Theme(this.props.theme, 'ellipsis')}
           className="node-ellipsis"
-          onClick={this.toggleCollapsed}>
+          onClick={this.toggleCollapsed}
+        >
           ...
         </div>
       );
@@ -116,7 +118,7 @@ class RjvObject extends React.PureComponent {
     return <VariableMeta size={size} {...this.props} />;
   };
 
-  getBraceStart(object_type, expanded) {
+  getBraceStart = (object_type, expanded) => {
     const { attrType, theme, iconStyle, parent_type } = this.props;
 
     if (parent_type === 'array_group') {
@@ -145,7 +147,7 @@ class RjvObject extends React.PureComponent {
         {expanded ? this.getObjectMetaData() : null}
       </span>
     );
-  }
+  };
 
   getBraceEnd = () => {
     const { theme, attrType } = this.props;
@@ -159,7 +161,8 @@ class RjvObject extends React.PureComponent {
           style={{
             ...Theme(theme, 'brace').style,
             paddingLeft: expanded ? '3px' : '0px',
-          }}>
+          }}
+        >
           {object_type === 'array' ? ']' : '}'}
         </span>
         {expanded ? null : this.getObjectMetaData()}
@@ -194,7 +197,8 @@ class RjvObject extends React.PureComponent {
     return (
       <div
         className="object-key-val"
-        {...Theme(theme, jsvRoot ? 'jsv-root' : 'objectKeyVal', styles)}>
+        {...Theme(theme, jsvRoot ? 'jsv-root' : 'objectKeyVal', styles)}
+      >
         {this.getBraceStart(object_type, expanded)}
         {expanded
           ? this.getObjectContent(depth, src, {
