@@ -174,7 +174,8 @@ class App extends Component<P, S> {
   };
 
   _loadExample = (json: GraphSerialization) => {
-    window.location.search = `?e=${encodeURIComponent((json.name || '').replace(/ /g, '+'))}`;
+    sessionStorage.setItem('graph', JSON.stringify(json));
+    window.location.replace('/');
   };
 
   _toggleDebug = () => {
