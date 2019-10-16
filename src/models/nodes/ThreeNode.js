@@ -97,6 +97,29 @@ export default class ThreeNode extends NodeBase<S, P, null> {
     }
   };
 
+  removePass = (pass: Pass) => {
+    const composer = this.state.base.composer;
+    if (composer) {
+      composer.removePass(pass);
+      pass.renderToScreen = false;
+      pass.dispose();
+    }
+  };
+
+  beforeDisconnectIn = (edge: Edge) => {
+    const { toPort } = edge;
+    if (toPort === 'child') {
+      if (this.state.added.includes(edge.from.id)) {
+        this.state.added = this.state.added.filter(id => id !== edge.from.id);
+        Object.values(edge.from.outputCache).forEach(child => {
+          if (child instanceof Object3D) {
+            this.state.base.scene.remove(child);
+          }
+        });
+      }
+    }
+  };
+
   onInputChange = (edge: Edge, change: $Shape<P>) => {
     const { toPort } = edge;
     if (toPort === 'child') {
@@ -251,6 +274,7 @@ export class GlitchPassNode extends NodeBase<{}, {}, { glitch: Object }> {
   glitch: GlitchEffect;
   aberration: ChromaticAberrationEffect;
   rendered: boolean = false;
+  passes: EffectPass[] = [];
 
   load = (callback: () => void) => {
     const assets = new Map();
@@ -282,8 +306,22 @@ export class GlitchPassNode extends NodeBase<{}, {}, { glitch: Object }> {
           const chromaticAberrationPass = new EffectPass(camera, this.aberration);
           threeN.addPass(glitchPass);
           threeN.addPass(chromaticAberrationPass);
+          this.passes = [chromaticAberrationPass, glitchPass];
           this.rendered = true;
         }
+      }
+    });
+  };
+
+  beforeDisconnectOut = () => {
+    this.rendered = false;
+    this.outputs.forEach(edge => {
+      if (edge.to instanceof ThreeNode) {
+        const threeN: ThreeNode = edge.to;
+        this.passes.forEach(pass => {
+          pass.enabled = false;
+          threeN.removePass(pass);
+        });
       }
     });
   };
@@ -309,7 +347,7 @@ export class GlitchPassNode extends NodeBase<{}, {}, { glitch: Object }> {
   process = () => ({ glitch: this.glitch });
 
   onInputChange = (edge: Edge, change: Object) => {
-    this._render();
+    this.outputs.length && this._render();
     if ('delay' === edge.toPort) {
       this.glitch.delay = edge.inDataFor(change);
     }
@@ -368,6 +406,16 @@ export class VignettePassNode extends NodeBase<
     });
   };
 
+  beforeDisconnectOut = () => {
+    this.rendered = false;
+    this.outputs.forEach(edge => {
+      if (edge.to instanceof ThreeNode) {
+        const threeN: ThreeNode = edge.to;
+        threeN.removePass(this.pass);
+      }
+    });
+  };
+
   willReceiveProps = (newProps: Object, prevProps: Object) => {
     const effect = this.effect;
     if (!effect) return;
@@ -398,7 +446,7 @@ export class VignettePassNode extends NodeBase<
   process = () => ({ pass: this.pass, effect: this.effect });
 
   onInputChange = (edge: Edge, change: Object) => {
-    this._render();
+    this.outputs.length && this._render();
     return this.outKeys();
   };
 }
@@ -444,6 +492,16 @@ export class ScanlinePassNode extends NodeBase<{}, {}, { pass: Object, effect: E
 
   willBecomeLive = () => {};
 
+  beforeDisconnectOut = () => {
+    this.rendered = false;
+    this.outputs.forEach(edge => {
+      if (edge.to instanceof ThreeNode) {
+        const threeN: ThreeNode = edge.to;
+        threeN.removePass(this.pass);
+      }
+    });
+  };
+
   onAddToGraph = () => {
     this._render();
   };
@@ -455,7 +513,7 @@ export class ScanlinePassNode extends NodeBase<{}, {}, { pass: Object, effect: E
   process = () => ({ pass: this.pass, effect: this.effect });
 
   onInputChange = (edge: Edge, change: Object) => {
-    this._render();
+    this.outputs.length && this._render();
     return this.outKeys();
   };
 }
@@ -505,6 +563,16 @@ export class DotScreenPassNode extends NodeBase<{}, {}, { pass: Object, effect: 
 
   willBecomeLive = () => {};
 
+  beforeDisconnectOut = () => {
+    this.rendered = false;
+    this.outputs.forEach(edge => {
+      if (edge.to instanceof ThreeNode) {
+        const threeN: ThreeNode = edge.to;
+        threeN.removePass(this.pass);
+      }
+    });
+  };
+
   onAddToGraph = () => {
     this._render();
   };
@@ -516,7 +584,7 @@ export class DotScreenPassNode extends NodeBase<{}, {}, { pass: Object, effect: 
   process = () => ({ pass: this.pass, effect: this.effect });
 
   onInputChange = (edge: Edge, change: Object) => {
-    this._render();
+    this.outputs.length && this._render();
     return this.outKeys();
   };
 }
@@ -582,6 +650,16 @@ export class NoisePassNode extends NodeBase<
     this._render();
   };
 
+  beforeDisconnectOut = () => {
+    this.rendered = false;
+    this.outputs.forEach(edge => {
+      if (edge.to instanceof ThreeNode) {
+        const threeN: ThreeNode = edge.to;
+        threeN.removePass(this.pass);
+      }
+    });
+  };
+
   afterConnectOut = (edge: Edge) => {
     this._render();
   };
@@ -589,7 +667,7 @@ export class NoisePassNode extends NodeBase<
   process = () => ({ pass: this.pass, effect: this.effect });
 
   onInputChange = (edge: Edge, change: Object) => {
-    this._render();
+    this.outputs.length && this._render();
     return this.outKeys();
   };
 }
