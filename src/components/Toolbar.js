@@ -17,18 +17,19 @@ type P = {
   title: string,
   toggleInfo: () => any,
   infoShowing: boolean,
+  reBake: () => any,
 };
 const Toolbar = ({
   loadExample,
   insertNode,
   toggleVis,
   graphVisible,
-  toggleDebug,
   exportJSON,
   loadJSON,
   title,
   toggleInfo,
   infoShowing,
+  reBake,
 }: P) => {
   return (
     <div className="graph-toolbar ignore-react-onclickoutside">
@@ -47,23 +48,17 @@ const Toolbar = ({
             onClick={toggleVis}
           />
         </Tooltip>
-        <Tooltip content="toggle debug mode">
-          <AnchorButton minimal icon="build" large onClick={toggleDebug} />
+        <Tooltip content="clean & rerun">
+          <AnchorButton minimal icon="clean" large onClick={reBake} />
+        </Tooltip>
+        <Tooltip content="clear everything">
+          <AnchorButton minimal icon="reset" large onClick={_reload} />
         </Tooltip>
         <Tooltip content="export graph as JSON">
           <AnchorButton minimal icon="download" large onClick={exportJSON} />
         </Tooltip>
         <Tooltip content="open JSON file">
           <AnchorButton minimal icon="upload" large onClick={loadJSON} />
-        </Tooltip>
-        <Tooltip content="node list API docs">
-          <AnchorButton
-            minimal
-            icon="panel-stats"
-            large
-            href="https://github.com/kousun12/eternal/blob/master/docs.md"
-            target="_blank"
-          />
         </Tooltip>
       </div>
       <h2 className="graph-title">{title}</h2>
@@ -74,6 +69,15 @@ const Toolbar = ({
             icon="git-repo"
             large
             href="https://github.com/kousun12/eternal"
+            target="_blank"
+          />
+        </Tooltip>
+        <Tooltip content="node API docs">
+          <AnchorButton
+            minimal
+            icon="panel-stats"
+            large
+            href="https://github.com/kousun12/eternal/blob/master/docs.md"
             target="_blank"
           />
         </Tooltip>
@@ -92,6 +96,8 @@ const Toolbar = ({
     </div>
   );
 };
+
+const _reload = () => window.location.replace('/');
 
 const selector = createSelector(
   [selectInfoOpen],

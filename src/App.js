@@ -80,6 +80,16 @@ class App extends Component<P, S> {
 
   componentDidMount() {
     let showWelcome = true;
+    const fromSession = sessionStorage.getItem('graph');
+    if (fromSession) {
+      const gs = Graph.serialization(JSON.parse(fromSession));
+      const g = gs && Graph.load(gs);
+      if (g) {
+        showWelcome = false;
+        this._setGraph(g);
+        sessionStorage.removeItem('graph');
+      }
+    }
     const exId = this._paramFor(urlRe.exId);
     if (exId) {
       const name = decodeURIComponent(exId).replace(/\+/g, ' ');
@@ -137,12 +147,17 @@ class App extends Component<P, S> {
     !this.state.searchingExamples && this.setState({ searchingExamples: true });
 
   _exportJSON = (name: string) => {
+    const gs = this._getSerialization(name);
+    gs && downloadObj(gs, gs.name || name);
+    this._closeSave();
+  };
+
+  _getSerialization = (name?: string): ?GraphSerialization => {
     const { graph } = this.state;
     const {
       view: { zoom },
     } = this.props;
-    graph && downloadObj(graph.serialize(name, { zoom }), name);
-    this._closeSave();
+    return graph && graph.serialize(name || graph.name, { zoom });
   };
 
   _loadJSON = () => this.fileUpload && this.fileUpload.openFileInput();
@@ -206,7 +221,7 @@ class App extends Component<P, S> {
   _loadUrl = (example?: GraphSerialization) => {
     const { promptLoad } = this.state;
     const exJson = Graph.serialization(example);
-    if (promptLoad || exJson) {
+    if (exJson || promptLoad) {
       const json = exJson || examples.find(e => e.name === promptLoad);
       json && this._setGraph(Graph.load(json));
     }
@@ -233,6 +248,11 @@ class App extends Component<P, S> {
     this.props.setInfoOpen(this.props.showNode ? null : get(this.mostRecentNode, 'id'));
 
   _reload = () => window.location.replace('/');
+
+  _reBake = () => {
+    sessionStorage.setItem('graph', JSON.stringify(this._getSerialization()));
+    window.location.replace('/');
+  };
 
   _closePrompt = () => {
     this.setState({ promptLoad: null });
@@ -264,6 +284,7 @@ class App extends Component<P, S> {
           loadJSON={this._loadJSON}
           title={title}
           toggleInfo={this._toggleInfo}
+          reBake={this._reBake}
         />
         {graph && (
           <NodeGraph visible={visible} graph={graph} onNodeSelectionChange={this._onNodeSelect} />
@@ -336,7 +357,8 @@ class App extends Component<P, S> {
         />
         <Hotkey global combo="shift + meta + s" label="Export as JSON" onKeyDown={this._showSave} />
         <Hotkey global combo="shift + meta + o" label="Load from JSON" onKeyDown={this._loadJSON} />
-        <Hotkey global combo="shift + meta + x" label="Clear All" onKeyDown={this._reload} />
+        <Hotkey global combo="alt + r" label="Clean & Rerun" onKeyDown={this._reBake} />
+        <Hotkey global combo="shift + meta + x" label="Clear Everything" onKeyDown={this._reload} />
         <Hotkey global combo="alt + d" label="Debug Mode" onKeyDown={this._toggleDebug} />
         <Hotkey global combo="j" label="Next Node" onKeyDown={this._nextNode} />
         <Hotkey global combo="k" label="Prev Node" onKeyDown={this._prevNode} />
