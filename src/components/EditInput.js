@@ -33,7 +33,7 @@ export default class EditInput extends React.Component<P, S> {
   render() {
     const { editing } = this.state;
     const { style, value, onChange } = this.props;
-    return editing || true ? (
+    return editing ? (
       <div className="bp3-dark">
         <input
           ref={input => (this.input = input)}
