@@ -2,6 +2,7 @@
 import React, { type Node } from 'react';
 import type { Pos } from 'types';
 import type { AnyNode } from 'models/NodeBase';
+import { addVec, scaleVec, subVec } from 'utils/vector';
 
 const fromTop = 51;
 const itemH = 22;
@@ -15,6 +16,11 @@ export function inOffset(x: number, y: number, index: number): Pos {
 export function outOffset(x: number, y: number, index: number): Pos {
   return { x: x + outLeft, y: y + fromTop + index * itemH };
 }
+
+export const worldToGraph = (mousePos: Pos, scaleInverse: number): Pos => {
+  const mid = window.centerP || { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+  return addVec(mid, scaleVec(subVec(mousePos, mid), scaleInverse));
+};
 
 export const signatureFor = (
   clazz: Class<AnyNode>,

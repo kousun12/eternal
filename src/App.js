@@ -38,6 +38,7 @@ import Zoomer from 'components/Zoomer';
 import type { PosMemo, SelectedView } from 'redux/ducks/graph';
 import { subVec } from 'utils/vector';
 import { urlRe } from 'utils/url';
+import { worldToGraph } from 'components/util';
 
 const welcomeGraph = require('models/examples/welcome.json');
 
@@ -183,16 +184,19 @@ class App extends Component<P, S> {
 
   _addNode = (cls: Class<AnyNode>) => {
     const { graph } = this.state;
+    const { view, updatePos, showNode } = this.props;
     this.setState({ searchOpen: false });
     if (graph) {
       const node = new cls();
-      const pos = this._insertPos || subVec(this._mousePos, { x: 30, y: 30 });
+      const pos =
+        this._insertPos ||
+        subVec(worldToGraph(this._mousePos, view.scaleInverse), { x: 30, y: 30 });
       graph.addNode(node, pos);
       // only show node info if pane is already open
-      if (this.props.showNode) {
+      if (showNode) {
         this._onNodeSelect(node);
       }
-      this.props.updatePos({ [node.id]: pos });
+      updatePos({ [node.id]: pos });
     }
     this._insertPos = null;
   };

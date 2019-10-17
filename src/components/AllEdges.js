@@ -2,13 +2,13 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { createSelector } from 'redux-starter-kit';
-import { inOffset, outOffset } from 'components/util';
+import { inOffset, outOffset, worldToGraph } from 'components/util';
 import SVGComponent from 'components/SVGComponent';
 import Spline from 'components/Spline';
 import { selectInfoOpen, selectPositions } from 'redux/ducks/graph';
 import type { Pos } from 'types';
 import type Edge from 'models/Edge';
-import { addVec, scaleVec, subVec } from 'utils/vector';
+import { addVec } from 'utils/vector';
 import type { PosMemo } from 'redux/ducks/graph';
 import type Graph from 'models/Graph';
 
@@ -44,15 +44,14 @@ const AllEdges = ({
     return null;
   }
   let creatingSpline = null;
-  const mid = window.centerP;
-  if (dragging && source && mousePos && mid) {
+  if (dragging && source && mousePos) {
     const [nodeId, outIdx] = source;
     let src = positions[nodeId] || graph.nodeWithIdF(nodeId).pos;
     creatingSpline = (
       <Spline
         incomplete={true}
         start={addVec(outOffset(src.x, src.y, outIdx), pan)}
-        end={addVec(mid, scaleVec(subVec(mousePos, mid), scaleInverse))}
+        end={worldToGraph(mousePos, scaleInverse)}
       />
     );
   }
