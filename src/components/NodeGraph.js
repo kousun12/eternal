@@ -396,17 +396,23 @@ class NodeGraph extends React.Component<P, S> {
     );
   }
 
-  _onCanvasDoubleClick = () => {
+  _onCanvasDoubleClick = (e: MouseEvent) => {
     Object.keys(this.props.selected).length && this.props.selSet([]);
     this._clearCanvasDrag();
     this._clearConnecting();
     this.moving = false;
+    if (e.metaKey !== this.state.metaDown) {
+      this.setState({ metaDown: e.metaKey });
+    }
   };
 
   _onCanvasClick = (e: MouseEvent) => {
     this._clearConnecting();
     this._clearCanvasDrag();
     this.moving = false;
+    if (e.metaKey !== this.state.metaDown) {
+      this.setState({ metaDown: e.metaKey });
+    }
   };
 
   _clearConnecting = () => {
