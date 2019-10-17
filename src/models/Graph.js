@@ -106,6 +106,8 @@ export default class Graph {
       description: this.description || '',
     };
   };
+  
+  setName = (name: string) => { this.name = name }
 
   duplicate: (NodeInSpace[]) => NodeInSpace[] = nodes => {
     const ids = nodes.map(nis => nis.node.id);

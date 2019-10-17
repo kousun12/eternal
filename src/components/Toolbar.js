@@ -5,6 +5,7 @@ import { createSelector } from 'redux-starter-kit';
 import { AnchorButton, Tooltip } from '@blueprintjs/core';
 import { connect } from 'react-redux';
 import { selectInfoOpen } from 'redux/ducks/graph';
+import EditInput from 'components/EditInput';
 
 type P = {
   loadExample: () => any,
@@ -18,6 +19,7 @@ type P = {
   toggleInfo: () => any,
   infoShowing: boolean,
   reBake: () => any,
+  setTitle: string => any,
 };
 const Toolbar = ({
   loadExample,
@@ -30,6 +32,7 @@ const Toolbar = ({
   toggleInfo,
   infoShowing,
   reBake,
+  setTitle,
 }: P) => {
   return (
     <div className="graph-toolbar ignore-react-onclickoutside">
@@ -61,7 +64,7 @@ const Toolbar = ({
           <AnchorButton minimal icon="upload" large onClick={loadJSON} />
         </Tooltip>
       </div>
-      <h2 className="graph-title">{title}</h2>
+      <EditInput value={title} onChange={setTitle} style={styles.title} />
       <div style={{ ...styles.toolSection, ...styles.rightAlign }}>
         <Tooltip content="open github repo">
           <AnchorButton
@@ -116,4 +119,5 @@ const styles = {
   toolSection: { flex: 1, display: 'flex', alignItems: 'center' },
   leftAlign: { justifyContent: 'flex-start' },
   rightAlign: { justifyContent: 'flex-end' },
+  title: { fontSize: 16, fontFamily: 'Monaco, "Source Code Pro", monospace, sans-serif' },
 };

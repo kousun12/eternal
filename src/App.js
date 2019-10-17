@@ -262,6 +262,19 @@ class App extends Component<P, S> {
     this._reload();
   };
 
+  _setName = (name: string) => {
+    const { graph } = this.state;
+    if (graph) {
+      graph.setName(name);
+      this.setState({ graph });
+    }
+  };
+
+  _manualInsert = () => {
+    this._onSearch();
+    this._insertPos = defaultNodePos;
+  };
+
   render() {
     const {
       graph,
@@ -288,6 +301,7 @@ class App extends Component<P, S> {
           title={title}
           toggleInfo={this._toggleInfo}
           reBake={this._reBake}
+          setTitle={this._setName}
         />
         {graph && (
           <NodeGraph visible={visible} graph={graph} onNodeSelectionChange={this._onNodeSelect} />
@@ -323,11 +337,6 @@ class App extends Component<P, S> {
       </>
     );
   }
-
-  _manualInsert = () => {
-    this._onSearch();
-    this._insertPos = defaultNodePos;
-  };
 
   // noinspection JSUnusedGlobalSymbols
   renderHotkeys() {
