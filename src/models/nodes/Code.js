@@ -8,9 +8,10 @@ const Types = window.Types;
 export class JSCodeNode extends NodeBase<
   {},
   { userCode: string, arg1: any, arg2: any, arg3: any, arg4: any, arg5: any },
-  { return: any }
+  { return: any, error: any }
 > {
-  static +displayName = 'JS Code';
+  static +displayName = 'JavaScript';
+  static +defaultProps = { userCode: '' };
   static +registryName = 'JSCodeNode';
   static description = (
     <span>
@@ -59,29 +60,38 @@ export class JSCodeNode extends NodeBase<
         </p>
       ),
     },
-    output: { return: Types.any.desc('Whatever was returned in the userCode block') },
+    output: {
+      return: Types.any.desc('Whatever was returned in the userCode block'),
+      error: Types.any.desc('If the user code errored, this is the exception and function'),
+    },
     state: {},
   };
 
-  _argsCode = () => `
-  const arg1 = ${this.props.arg1};
-  const arg2 = ${this.props.arg2};
-  const arg3 = ${this.props.arg3};
-  const arg4 = ${this.props.arg4};
-  const arg5 = ${this.props.arg5};
-  `;
-
   make = () =>
-    window.Function(`
-  "use strict";
-  ${this._argsCode()}
-  ${this.props.userCode}
-  `);
+    window
+      .Function(
+        `"use strict";
+const arg1 = this.arg1;
+const arg2 = this.arg2;
+const arg3 = this.arg3;
+const arg4 = this.arg4;
+const arg5 = this.arg5;
+${this.props.userCode}`
+      )
+      .bind(this.props);
 
   requireForOutput = () => Boolean(this.props.userCode);
   process = () => {
-    const r = { return: this.make()() };
-    return r;
+    const fn = this.make();
+    let r;
+    try {
+      r = fn();
+    } catch (e) {
+      return { error: { error: e, fn }, return: undefined };
+    }
+
+    return { return: r, error: undefined };
   };
+
   onInputChange = (edge: Edge, change: Object) => this.outKeys();
 }

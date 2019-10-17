@@ -14,7 +14,7 @@ export default class Vector3D extends NodeBase<S, P, O> {
 
   static description = (
     <span>
-      A two dimensional vector with <code>x</code> <code>y</code> and <code>y</code> components
+      A two dimensional vector with <code>x</code> <code>y</code> and <code>z</code> components
     </span>
   );
 

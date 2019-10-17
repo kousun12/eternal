@@ -252,8 +252,11 @@ class App extends Component<P, S> {
 
   _reload = () => window.location.replace('/');
 
-  _reBake = () => {
+  _saveGraphToSession = () =>
     sessionStorage.setItem('graph', JSON.stringify(this._getSerialization()));
+
+  _reBake = () => {
+    this._saveGraphToSession();
     window.location.replace('/');
   };
 

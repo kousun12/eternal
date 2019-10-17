@@ -193,45 +193,45 @@ class VariableEditor extends React.PureComponent {
     );
   };
 
-  getValue = (variable, editMode) => {
+  getValue = (forVar, editMode) => {
     if (editMode) {
       return this.getEditInput();
     }
     const { attrType } = this.props;
-    if (attrType.name === 'JSFunction') {
+    if (forVar.value && attrType.name === 'JSFunction') {
       return (
         <SyntaxHighlighter
           language="javascript"
           style={syntaxTheme}
           codeTagProps={{ className: 'syntax-highlighter' }}
         >
-          {variable.value}
+          {forVar.value}
         </SyntaxHighlighter>
       );
-    } else if (['GPGPUKernel', 'ShaderProgram'].includes(attrType.name)) {
+    } else if (forVar.value && ['GPGPUKernel', 'ShaderProgram'].includes(attrType.name)) {
       return (
         <SyntaxHighlighter
           language="glsl"
           style={syntaxTheme}
           codeTagProps={{ className: 'syntax-highlighter' }}
         >
-          {variable.value}
+          {forVar.value}
         </SyntaxHighlighter>
       );
     }
-    const type = variable.type;
+    const type = forVar.type;
     const { props } = this;
     switch (type) {
       case 'string':
-        return <JsonString value={variable.value} {...props} />;
+        return <JsonString value={forVar.value} {...props} />;
       case 'integer':
-        return <JsonInteger value={variable.value} {...props} />;
+        return <JsonInteger value={forVar.value} {...props} />;
       case 'float':
-        return <JsonFloat value={variable.value} {...props} />;
+        return <JsonFloat value={forVar.value} {...props} />;
       case 'boolean':
-        return <JsonBoolean value={variable.value} {...props} />;
+        return <JsonBoolean value={forVar.value} {...props} />;
       case 'function':
-        return <JsonFunction value={variable.value} {...props} />;
+        return <JsonFunction value={forVar.value} {...props} />;
       case 'null':
         return <JsonNull {...props} />;
       case 'nan':
@@ -239,12 +239,12 @@ class VariableEditor extends React.PureComponent {
       case 'undefined':
         return <JsonUndefined {...props} />;
       case 'date':
-        return <JsonDate value={variable.value} {...props} />;
+        return <JsonDate value={forVar.value} {...props} />;
       case 'regexp':
-        return <JsonRegexp value={variable.value} {...props} />;
+        return <JsonRegexp value={forVar.value} {...props} />;
       default:
         // catch-all for types that weren't anticipated
-        return <div className="object-value">{JSON.stringify(variable.value)}</div>;
+        return <div className="object-value">{JSON.stringify(forVar.value)}</div>;
     }
   };
 
