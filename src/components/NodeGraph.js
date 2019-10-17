@@ -353,7 +353,6 @@ class NodeGraph extends React.Component<P, S> {
           onWheel={this.onScroll}
           onDoubleClick={this._onCanvasDoubleClick}
           onClick={this._onCanvasClick}
-          onContextMenu={e => e.preventDefault() || console.log('ctx')}
         >
           <div id="graph-scalable" style={this._rootStyle()}>
             {graph.nodes.map((nis, i) => {
