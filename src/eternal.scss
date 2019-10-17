@@ -38,7 +38,7 @@ body {
   min-height: 100vh;
   min-width: 100vw;
   margin: auto;
-  font-family: Monaco, "Source Code Pro", monospace, sans-serif;
+  font-family: monaco, Monaco, Consolas, "Lucida Console", "Source Code Pro", monospace, sans-serif;
   color: #323232;
   line-height: 20px;
   font-size: 14px;
@@ -68,7 +68,7 @@ body {
 .graph-toolbar {
   position: absolute;
   top: 0;
-  font-family: Monaco, "Source Code Pro", monospace, sans-serif;
+  font-family: monaco, Monaco, Consolas, "Lucida Console", "Source Code Pro", monospace, sans-serif;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -129,7 +129,7 @@ body {
 }
 
 .node-header {
-  font-family: Monaco, "Source Code Pro", monospace, sans-serif;
+  font-family: monaco, Monaco, Consolas, "Lucida Console", "Source Code Pro", monospace, sans-serif;
   background: rgba(76, 170, 77, 0.1);
   border-top-left-radius: 6px;
   border-top-right-radius: 6px;
@@ -473,7 +473,7 @@ code:not(.syntax-highlighter) {
 }
 
 code {
-  font-family: Monaco, "Source Code Pro", monospace, sans-serif;
+  font-family: monaco, Monaco, Consolas, "Lucida Console", "Source Code Pro", monospace, sans-serif;
 }
 
 // JSON VIEWER STYLES
@@ -598,7 +598,7 @@ $rotatingCirclePosTop: $circleDiam/2 - $rotatingCircleDiam/2;
 }
 
 .bp3-portal {
-  font-family: Monaco, "Source Code Pro", monospace, sans-serif;
+  font-family: monaco, Monaco, Consolas, "Lucida Console", "Source Code Pro", monospace, sans-serif;
 }
 
 .bp3-popover.bp3-dark .bp3-popover-content {
@@ -624,7 +624,7 @@ $rotatingCirclePosTop: $circleDiam/2 - $rotatingCircleDiam/2;
 }
 
 input {
-  font-family: Monaco, "Source Code Pro", monospace, sans-serif;
+  font-family: monaco, Monaco, Consolas, "Lucida Console", "Source Code Pro", monospace, sans-serif;
 }
 
 $blue1: #8a8a8a;

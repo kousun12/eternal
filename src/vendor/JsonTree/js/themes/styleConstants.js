@@ -3,7 +3,7 @@ export default {
   black: '#000',
   transparent: 'rgba(1, 1, 1, 0)',
 
-  globalFontFamily: 'Monaco, "Source Code Pro", monospace, sans-serif',
+  globalFontFamily: 'monaco, Monaco, Consolas, "Lucida Console", "Source Code Pro", monospace, sans-serif',
   globalCursor: 'default',
 
   indentBlockWidth: '5px',
@@ -64,7 +64,7 @@ export default {
   editInputBorderRadius: '3px',
   editInputPadding: '10px 8px',
   editInputMarginRight: '4px',
-  editInputFontFamily: 'Monaco, "Source Code Pro", monospace, sans-serif',
+  editInputFontFamily: 'monaco, Monaco, Consolas, "Lucida Console", "Source Code Pro", monospace, sans-serif',
 
   iconCursor: 'pointer',
   iconFontSize: '15px',
