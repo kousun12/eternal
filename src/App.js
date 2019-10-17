@@ -7,10 +7,9 @@ import { createSelector } from 'redux-starter-kit';
 import { get, throttle } from 'lodash';
 import { Hotkey, Hotkeys, HotkeysTarget, setHotkeysDialogProps } from '@blueprintjs/core';
 
+import 'eternal.scss';
 import 'font-awesome/css/font-awesome.css';
 import 'font-awesome/scss/font-awesome.scss';
-import '@blueprintjs/core/lib/css/blueprint.css';
-import '@blueprintjs/select/lib/css/blueprint-select.css';
 import '@blueprintjs/icons/lib/css/blueprint-icons.css';
 
 import NodeGraph from 'components/NodeGraph';
@@ -25,7 +24,6 @@ import SaveDialog from 'components/SaveDialog';
 import NodeSearcher from 'components/NodeSearcher';
 import ExampleSearch, { examples } from 'components/ExampleSearch';
 
-import 'eternal.scss';
 import type { Pos } from 'types';
 import Toolbar from 'components/Toolbar';
 import LoadPrompt from 'components/dialogs/LoadPrompt';

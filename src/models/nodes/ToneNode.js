@@ -804,11 +804,13 @@ export class ArpeggiateNode extends NodeBase<
             <ul>
               <li>
                 <code>up</code> - cycles upward
-              </li>{' '}
-              <li>h - cycles downward</li>
+              </li>
+              <li>
+                <code>down</code> - cycles downward
+              </li>
               <li>
                 <code>upDown</code> - up then and down
-              </li>{' '}
+              </li>
               <li>
                 <code>downUp</code> - cycles down then and up
               </li>

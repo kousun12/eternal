@@ -349,20 +349,12 @@ class NodeGraph extends React.Component<P, S> {
       >
         <div
           id="graph-root"
-          className={
-            connecting
-              ? 'dragging'
-              : selStyle || metaDown
-              ? 'selecting'
-              : this.moving
-              ? 'moving-node'
-              : ''
-          }
+          className={this._rootClassName()}
           onWheel={this.onScroll}
           onDoubleClick={this._onCanvasDoubleClick}
           onClick={this._onCanvasClick}
         >
-          <div id="graph-scalable" className="graph-scalable" style={this._rootStyle()}>
+          <div id="graph-scalable" style={this._rootStyle()}>
             {graph.nodes.map((nis, i) => {
               return (
                 <Node
@@ -427,6 +419,15 @@ class NodeGraph extends React.Component<P, S> {
   };
 
   _rootStyle = () => ({ transform: `scale(${this.props.scale})` });
+
+  _rootClassName = () =>
+    this.state.connecting
+      ? 'dragging'
+      : this.canvasDragStart || this.state.metaDown
+      ? 'selecting'
+      : this.moving
+      ? 'moving-node'
+      : '';
 
   _selectionBoxStyle = () => {
     const {

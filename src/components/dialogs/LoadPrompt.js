@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react';
-import { Button, Classes, Dialog } from '@blueprintjs/core';
+import { Button, Classes, Dialog, Intent } from '@blueprintjs/core';
 
 type P = { title: string, onClose: () => void, load: () => void };
 const btnTxt = '👾 ok computer';
@@ -19,7 +19,9 @@ export default ({ title, onClose, load }: P) => (
         <p>~{title}~</p>
       </div>
       <div className={Classes.DIALOG_FOOTER_ACTIONS}>
-        <Button onClick={load}>{btnTxt}</Button>
+        <Button onClick={load} minimal intent={Intent.PRIMARY}>
+          {btnTxt}
+        </Button>
       </div>
     </div>
   </Dialog>

@@ -1,4 +1,4 @@
-$bg-color: #1b1c1d;
+$bg-color: #242526;
 $dot-color: #4c4e4f;
 $dot-size: 0.1rem;
 $dot-space: 2rem;
@@ -27,6 +27,7 @@ body {
   background-repeat: repeat;
 }
 
+
 .body::-webkit-scrollbar, html::-webkit-scrollbar {
   display: none;
 }
@@ -53,13 +54,13 @@ body {
   height: 100%;
 }
 
-.graph-scalable {
+#graph-scalable {
   width: 100vw;
   height: 100vh;
   overflow: visible;
 }
 
-.graph-scalable svg {
+#graph-scalable svg {
   position: absolute;
   overflow: visible;
 }
@@ -464,12 +465,21 @@ $attrs-pad-sides: 16px;
 .attr-help-content {
   overflow-y: scroll;
   max-height: 400px;
+  
+  ul {
+    list-style: none;
+    padding-left: 0;
+  }
+  li {
+    margin-bottom: 10px;;
+  }
 }
 
 code:not(.syntax-highlighter) {
   border-radius: 2px;
   background-color: rgba(0, 0, 0, 0.2);
-  padding: 1px 4px 3px 4px;
+  padding: 2px 4px 3px 4px;
+  color: #bababa;
 }
 
 code {
@@ -496,6 +506,15 @@ code {
 
   .click-to-edit {
     visibility: hidden;
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+  }
+  
+  .click-to-edit-icon {
+    padding: 8px 8px 6px 2px;
+    cursor: pointer;
+    border-radius: 3px;
   }
 
   .variable-editor {
@@ -539,47 +558,13 @@ code {
 
     &:hover .click-to-edit {
       visibility: visible;
+      .click-to-edit-icon {
+        //background-color: rgba(0, 0, 0, 0.3);
+        color: #d7d7d7;
+      }
     }
   }
 }
-
-// BluePrint Overrides
-.bp3-menu-item.bp3-intent-primary.bp3-active {
-  background-color: rgba(0, 0, 0, 0.3) !important;
-}
-
-.bp3-portal {
-  font-family: Monaco, "Source Code Pro", monospace, sans-serif;
-}
-
-.bp3-popover.bp3-dark .bp3-popover-content {
-  background: rgba(75, 75, 75, 1) !important;
-  font-size: 12px;
-  padding: 12px !important;
-}
-
-.bp3-popover-arrow-fill {
-  fill: rgba(75, 75, 75, 1) !important;
-}
-
-.bp3-slider-track {
-  background: $connector-color;
-  height: 3px;
-  top: 6.5px;
-  border-radius: 1.5px;
-}
-
-.bp3-slider-label {
-  color: $connector-color;
-  font-size: 11px;
-}
-
-.bp3-slider-handle .bp3-slider-label {
-  background: #101011 !important;
-  color: #b7b7b7 !important;
-}
-
-
 
 // Variables
 $circleDiam: 18px;
@@ -615,3 +600,50 @@ $rotatingCirclePosTop: $circleDiam/2 - $rotatingCircleDiam/2;
 }
 
 @keyframes spin { 100% { transform: rotate(360deg); } }
+
+// BluePrint Overrides
+
+.bp3-menu-item.bp3-intent-primary.bp3-active {
+  background-color: rgba(0, 0, 0, 0.3) !important;
+}
+
+.bp3-portal {
+  font-family: Monaco, "Source Code Pro", monospace, sans-serif;
+}
+
+.bp3-popover.bp3-dark .bp3-popover-content {
+  font-size: 12px;
+  padding: 12px !important;
+}
+
+.bp3-slider-track {
+  background: $connector-color;
+  height: 3px;
+  top: 6.5px;
+  border-radius: 1.5px;
+}
+
+.bp3-slider-label {
+  color: $connector-color;
+  font-size: 11px;
+}
+
+.bp3-slider-handle .bp3-slider-label {
+  background: #101011 !important;
+  color: #b7b7b7 !important;
+}
+
+$blue1: #8a8a8a;
+$blue2: #a1a1a1;
+$blue3: #bdbdbd;
+$blue4: #d4d4d4;
+$blue5: #f0f0f0;
+
+$dark-gray1: darken($bg-color, 12%);
+$dark-gray2: darken($bg-color, 5%);
+$dark-gray3: $bg-color;
+$dark-gray4: lighten($bg-color, 8%);
+$dark-gray5: lighten($bg-color, 15%);;;
+
+@import "~@blueprintjs/core/src/blueprint.scss";
+@import "~@blueprintjs/select/src/blueprint-select.scss";

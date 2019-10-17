@@ -33,15 +33,17 @@ export default class SaveDialog extends React.Component<P, S> {
     return (
       <Dialog
         className="bp3-dark"
-        icon="save"
         onClose={handleClose}
         title="Export Graph"
-        isOpen={isOpen}>
+        isOpen={isOpen}
+        icon="download"
+      >
         <div className={Classes.DIALOG_BODY}>
           <p>Save a serialized version of this graph</p>
           <Label>
             Save As...
             <input
+              style={styles.input}
               onKeyUp={this._onInputKeyUp}
               autoFocus
               className={Classes.INPUT}
@@ -55,8 +57,10 @@ export default class SaveDialog extends React.Component<P, S> {
         </div>
         <div className={Classes.DIALOG_FOOTER}>
           <div className={Classes.DIALOG_FOOTER_ACTIONS}>
-            <Button onClick={handleClose}>Cancel</Button>
-            <Button intent={Intent.PRIMARY} onClick={this._onSave}>
+            <Button onClick={handleClose} minimal>
+              Cancel
+            </Button>
+            <Button intent={Intent.PRIMARY} onClick={this._onSave} minimal>
               Download
             </Button>
           </div>
@@ -65,3 +69,7 @@ export default class SaveDialog extends React.Component<P, S> {
     );
   }
 }
+
+const styles = {
+  input: { marginTop: 18 },
+};

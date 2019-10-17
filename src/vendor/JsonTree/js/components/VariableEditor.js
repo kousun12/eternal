@@ -147,9 +147,7 @@ class VariableEditor extends React.PureComponent {
         <Edit
           className="click-to-edit-icon"
           {...Theme(theme, 'editVarIcon')}
-          onClick={() => {
-            this.prepopInput(variable);
-          }}
+          onClick={() => this.prepopInput(variable)}
         />
       </span>
     );
