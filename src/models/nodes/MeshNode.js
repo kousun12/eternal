@@ -3,13 +3,9 @@ import React from 'react';
 import { get } from 'lodash';
 import NodeBase from 'models/NodeBase';
 import Edge from 'models/Edge';
-import { Geometry, Material, Mesh } from 'three';
+import { Geometry, Material, Mesh, Points, Line } from 'three';
 import type { Pos, Pos3 } from 'types';
 const Types = window.Types;
-
-type P = { geometry: Geometry, material: Material, rotation: Pos, scale: Pos3 };
-type S = { mesh: Mesh };
-type O = { mesh: Mesh };
 
 const TT = {
   Geometry: Types.object.aliased(
@@ -20,7 +16,11 @@ const TT = {
   Mesh: Types.object.aliased('Mesh', 'A mesh that can be added to a scene and rendered'),
 };
 
-export default class MeshNode extends NodeBase<S, P, O> {
+export default class MeshNode extends NodeBase<
+  { mesh: Mesh },
+  { geometry: Geometry, material: Material, rotation: Pos, scale: Pos3 },
+  { mesh: Mesh }
+> {
   static +displayName = 'Mesh';
   static +registryName = 'MeshNode';
   static description = <span>A WebGL mesh</span>;
@@ -77,7 +77,29 @@ export default class MeshNode extends NodeBase<S, P, O> {
     return this.outKeys();
   };
 
-  process = () => {
-    return this.state;
-  };
+  process = () => this.state;
 }
+
+export const [LineNode, PointsNode] = [Line, Points].map(
+  clazz =>
+    class _MeshNode extends MeshNode {
+      static +displayName = clazz.name;
+      static +registryName = `${clazz.name}Node`;
+      static description = <span>A WebGL {clazz.name}</span>;
+
+      static schema = {
+        ...super.schema,
+        output: { mesh: TT.Mesh.desc(`The resulting ${clazz.name} object`) },
+      };
+
+      willBecomeLive = () => {
+        const { geometry, material } = this.props;
+        this.state.mesh = new clazz(geometry, material);
+        this.notifyAllOutputs(true);
+      };
+
+      onAddToGraph = () => {
+        this.state.mesh = new clazz();
+      };
+    }
+);

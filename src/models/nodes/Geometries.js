@@ -8,7 +8,10 @@ import {
   PlaneBufferGeometry,
   BoxBufferGeometry,
   SphereBufferGeometry,
+  Vector3,
+  BufferAttribute,
 } from 'three';
+import { arrayOf } from 'utils/typeUtils';
 const Types = window.Types;
 
 type P = {
@@ -28,6 +31,62 @@ const TT = {
     'An abstract geometry that describes verticies in space'
   ),
 };
+
+class GeometryBase extends NodeBase<S, { vertices: Vector3[], appendVerts: boolean }, O> {
+  static +displayName = 'Geometry Base';
+  static +registryName = 'GeometryBase';
+  static +defaultProps = { vertices: [], appendVerts: true };
+  static description = (
+    <span>Geometries store attributes, e.g. vertex positions, faces, colors.</span>
+  );
+
+  static schema = {
+    input: {
+      vertices: arrayOf(Types.Vec3).desc(
+        <span>
+          The array of vertices holds the position of every vertex in the model. To signal an update
+          in this array, <code>verticesNeedUpdate</code> needs to be set to true
+        </span>
+      ),
+      appendVerts: Types.boolean.desc(
+        'Whether or not incoming verticies param should be appended. If false, incoming params will override verticies.'
+      ),
+    },
+    output: { geometry: TT.Geometry.desc('this particular geometry') },
+    state: { geometry: TT.Geometry.desc('this particular geometry') },
+  };
+
+  static shortNames = { geometry: 'geo' };
+
+  _setGeo = () => {
+    const { vertices, appendVerts } = this.props;
+    if (appendVerts) {
+      if (!this.state.geometry) {
+        this.state.geometry = new Geometry();
+      }
+      this.state.geometry.vertices.push(vertices || []);
+      this.state.geometry.verticesNeedUpdate = true;
+    } else {
+      this.state.geometry && this.state.geometry.dispose();
+      this.state.geometry = new Geometry();
+      this.state.geometry.vertices.push(vertices || []);
+    }
+  };
+
+  onAddToGraph = () => {
+    this._setGeo();
+  };
+
+  onInputChange = (edge: Edge) => {
+    if (edge.toPort === 'vertices') {
+      this._setGeo();
+    }
+    return [];
+  };
+
+  process = () => this.state;
+}
+
 export class TorusKnotGeometryNode extends NodeBase<S, P, O> {
   static +displayName = 'Torus Knot Geometry';
   static +registryName = 'TorusKnotGeometryNode';

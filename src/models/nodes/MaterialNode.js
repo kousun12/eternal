@@ -2,15 +2,23 @@
 import React from 'react';
 import { get } from 'lodash';
 import NodeBase from 'models/NodeBase';
-import { Material, MeshLambertMaterial, ShaderMaterial } from 'three';
+import {
+  Material,
+  MeshLambertMaterial,
+  ShaderMaterial,
+  AdditiveBlending,
+  PointsMaterial,
+} from 'three';
 import Base, { uniforms } from 'threeUtil/Base';
+import Edge from 'models/Edge';
 const Types = window.Types;
 
-type P = {};
+type P = { color: number };
 type S = { material: Material };
 type O = { material: Material };
 
 const TT = {
+  Color: Types.number.aliased('Color', 'Hex color'),
   Material: Types.object.aliased('Material', 'An abstract material, usually applied to geometries'),
   ShaderProgram: Types.string.aliased(
     'ShaderProgram',
@@ -20,12 +28,11 @@ const TT = {
   ),
 };
 
-let color = Base.rgbToHex(28, 5, 9);
-
 export class LambertMaterialNode extends NodeBase<S, P, O> {
   static +displayName = 'Lambert Material';
   static +registryName = 'LambertMaterialNode';
-  static description = (
+  static +defaultProps = { color: Base.rgbToHex(28, 5, 9) };
+  static +description = (
     <div>
       <p>A material for non-shiny surfaces, without specular highlights.</p>
       <p>
@@ -41,7 +48,7 @@ export class LambertMaterialNode extends NodeBase<S, P, O> {
   );
 
   static schema = {
-    input: {},
+    input: { color: TT.Color.desc('Color of this material') },
     output: { material: TT.Material.desc('The resulting material') },
     state: { material: TT.Material },
   };
@@ -50,14 +57,66 @@ export class LambertMaterialNode extends NodeBase<S, P, O> {
   onAddToGraph = () => {
     this.state.material = new MeshLambertMaterial({
       transparent: false,
-      color: color,
+      color: this.props.color,
       wireframe: false,
+      size: 0.1,
     });
   };
 
-  process = () => {
-    return this.state;
+  onInputChange = (edge: Edge, change: $Shape<P>) => {
+    if (edge.toPort === 'color') {
+      const data = edge.inDataFor(change);
+      if (typeof data === 'object' && typeof data.r === 'number') {
+        this.state.material.color.setRGB(data.r, data.g, data.b);
+      } else {
+        this.state.material.color.setHex(edge.inDataFor(change));
+      }
+    }
+    return [];
   };
+
+  process = () => this.state;
+}
+
+export class ParticleMaterialNode extends NodeBase<S, P, O> {
+  static +displayName = 'Particle Material';
+  static +registryName = 'ParticleMaterialNode';
+  static +defaultProps = { color: Base.rgbToHex(28, 5, 9) };
+  static description = (
+    <div>
+      <p>A material of particles</p>
+    </div>
+  );
+
+  static schema = {
+    input: { color: TT.Color.desc('Color of this material') },
+    output: { material: TT.Material.desc('The resulting material') },
+    state: { material: TT.Material },
+  };
+  static shortNames = { material: 'mat' };
+
+  onAddToGraph = () => {
+    this.state.material = new PointsMaterial({
+      color: this.props.color,
+      size: 0.2,
+      transparent: true,
+      blending: AdditiveBlending,
+    });
+  };
+
+  onInputChange = (edge: Edge, change: $Shape<P>) => {
+    if (edge.toPort === 'color') {
+      const data = edge.inDataFor(change);
+      if (typeof data === 'object' && typeof data.r === 'number') {
+        this.state.material.color.setRGB(data.r, data.g, data.b);
+      } else {
+        this.state.material.color.setHex(edge.inDataFor(change));
+      }
+    }
+    return [];
+  };
+
+  process = () => this.state;
 }
 
 export class ShaderMaterialNode extends NodeBase<S, { vertex: string, fragment: string }, O> {
@@ -126,7 +185,5 @@ export class ShaderMaterialNode extends NodeBase<S, { vertex: string, fragment: 
     });
   };
 
-  process = () => {
-    return this.state;
-  };
+  process = () => this.state;
 }

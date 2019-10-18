@@ -44,9 +44,9 @@ import {
   SphereGeometryNode,
   BoxGeometryNode,
 } from './Geometries';
-import { LambertMaterialNode, ShaderMaterialNode } from './MaterialNode';
+import { LambertMaterialNode, ShaderMaterialNode, ParticleMaterialNode } from './MaterialNode';
 import { AndNode, OrNode, NotNode, EqualsNode, SwitchNode } from './Logic';
-import MeshNode from './MeshNode';
+import MeshNode, { PointsNode, LineNode } from './MeshNode';
 import { MidiOutNode, MidiInNode } from './Midi';
 import {
   InfoLog,
@@ -81,9 +81,12 @@ import { number, string, boolean, date } from './primitives';
 export {
   Vector2D,
   MeshNode,
+  PointsNode,
+  LineNode,
   TorusKnotGeometryNode,
   LambertMaterialNode,
   ShaderMaterialNode,
+  ParticleMaterialNode,
   ThreeNode,
   DuoSynthNode,
   SynthNode,
@@ -163,12 +166,15 @@ export {
 export const allNodes = [
   Vector2D,
   MeshNode,
+  PointsNode,
+  LineNode,
   TorusKnotGeometryNode,
   PlaneGeometryNode,
   SphereGeometryNode,
   BoxGeometryNode,
   LambertMaterialNode,
   ShaderMaterialNode,
+  ParticleMaterialNode,
   ThreeNode,
   DuoSynthNode,
   SynthNode,
