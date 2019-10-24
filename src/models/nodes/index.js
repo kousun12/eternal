@@ -43,6 +43,7 @@ import {
   PlaneGeometryNode,
   SphereGeometryNode,
   BoxGeometryNode,
+  GeometryBase,
 } from './Geometries';
 import { LambertMaterialNode, ShaderMaterialNode, ParticleMaterialNode } from './MaterialNode';
 import { AndNode, OrNode, NotNode, EqualsNode, SwitchNode } from './Logic';
@@ -60,6 +61,7 @@ import {
   ArrayFillNode,
   CountSourceNode,
   ZipNode,
+  NullNode,
 } from './UtilNodes';
 import Vector2D from './Vector2D';
 import Vector3D from './Vector3D';
@@ -87,6 +89,8 @@ export {
   LambertMaterialNode,
   ShaderMaterialNode,
   ParticleMaterialNode,
+  BoxGeometryNode,
+  GeometryBase,
   ThreeNode,
   DuoSynthNode,
   SynthNode,
@@ -152,6 +156,7 @@ export {
   ArrayFillNode,
   CountSourceNode,
   ZipNode,
+  NullNode,
   DomNode,
   PlusNode,
   GPGPUProgramNode,
@@ -172,6 +177,7 @@ export const allNodes = [
   PlaneGeometryNode,
   SphereGeometryNode,
   BoxGeometryNode,
+  GeometryBase,
   LambertMaterialNode,
   ShaderMaterialNode,
   ParticleMaterialNode,
@@ -240,6 +246,7 @@ export const allNodes = [
   ArrayFillNode,
   CountSourceNode,
   ZipNode,
+  NullNode,
   DomNode,
   PlusNode,
   GPGPUProgramNode,

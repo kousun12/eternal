@@ -47,12 +47,6 @@ export const cMajor = [2, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1];
 export const fMajor = [1, 0, 1, 0, 1, 2, 0, 1, 0, 1, 1, 0];
 export const dMinor = [1, 0, 2, 0, 1, 1, 0, 1, 0, 1, 1, 0];
 
-const notes = ['c', 'c#', 'd', 'd#', 'e', 'f', 'f#', 'g', 'g#', 'a', 'a#', 'b'];
-const map = {};
-for (let i = 0; i < 128; i++) {
-  map[i] = notes[i % 12];
-}
-
 export type ToneAction = 'attack' | 'release' | 'attackRelease';
 // [event, note, velocity]
 export type MidiData = [number, number, number];
@@ -100,11 +94,13 @@ export default class Performance {
 
   start = (onFinish?: () => void) => {
     if (this.initialized) {
-      onFinish && onFinish()
+      onFinish && onFinish();
       return;
     }
     this.initialized = true;
-    if (Tone.Transport.state !=='started') { Tone.Transport.start(); }
+    if (Tone.Transport.state !== 'started') {
+      Tone.Transport.start();
+    }
     fetch(`${CHECKPOINT_URL}/weights_manifest.json`)
       .then(response => response.json())
       .then((manifest: tf.WeightsManifestConfig) => tf.io.loadWeights(manifest, CHECKPOINT_URL))
@@ -118,7 +114,7 @@ export default class Performance {
         this.fcB = vars['fully_connected/biases'];
         this.fcW = vars['fully_connected/weights'];
         this.modelReady = true;
-        onFinish && onFinish()
+        onFinish && onFinish();
         this.resetRnn();
       })
       .then(() => {

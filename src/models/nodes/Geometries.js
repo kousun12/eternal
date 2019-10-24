@@ -9,7 +9,6 @@ import {
   BoxBufferGeometry,
   SphereBufferGeometry,
   Vector3,
-  BufferAttribute,
 } from 'three';
 import { arrayOf } from 'utils/typeUtils';
 const Types = window.Types;
@@ -32,7 +31,7 @@ const TT = {
   ),
 };
 
-class GeometryBase extends NodeBase<S, { vertices: Vector3[], appendVerts: boolean }, O> {
+export class GeometryBase extends NodeBase<S, { vertices: Vector3[], appendVerts: boolean }, O> {
   static +displayName = 'Geometry Base';
   static +registryName = 'GeometryBase';
   static +defaultProps = { vertices: [], appendVerts: true };

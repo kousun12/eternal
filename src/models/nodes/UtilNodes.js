@@ -344,3 +344,16 @@ export class ZipNode extends NodeBase<
   process = () => ({ zipped: this.forAllConnectedInputs((k, v) => v) });
   onInputChange = () => this.outKeys();
 }
+
+export class NullNode extends NodeBase<{}, { input: any }, { output: any }> {
+  static +displayName = 'Null';
+  static +registryName = 'NullNode';
+  static description = <span>A passthrough node. Useful to name streams or to organize edges</span>;
+  static schema = {
+    input: { input: Types.any.desc('Any input. Will be passed directly to output') },
+    output: { output: Types.any.desc('The input, passed through') },
+    state: {},
+  };
+  process = () => ({ output: this.props.input });
+  onInputChange = () => this.outKeys();
+}

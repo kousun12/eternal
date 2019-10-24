@@ -120,6 +120,7 @@ export class RunGPGPUProgramNode extends NodeBase<
         .backend()
         .compileAndRun(program, [i])
         .data();
+      i.dispose();
       this._result && this.notifyOutputs('result');
     });
     this._inputQ = [];
