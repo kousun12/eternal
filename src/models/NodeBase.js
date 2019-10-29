@@ -54,20 +54,23 @@ export default class NodeBase<Val: Object, In: ?Object, Out: ?Object> {
    * Run this node over current state to compute an output
    * @param keys a subset of outKeys which should be processed
    */
-  process: (string[]) => Out = keys => {
+  process: (string[]) => Out | Promise<Out> = keys => {
     throw new Error('unimplemented');
   };
 
-  _process: (string[], boolean) => Out = (keys, force) => {
+  _process: (string[], boolean) => Out = async (keys, force) => {
     if (!this.outKeys().length) {
       // $FlowIgnore
       return {};
     }
-    const val = this.process(keys);
+    const _val = this.process(keys);
+    const val: Out = _val instanceof Promise ? await _val : _val;
+
     // TODO: think about mutating objects in output cache. should we deep copy or not allow mutations?
-    const forward = force ? val : omitBy(val, (v, k) => isEqual(v, this.outputCache[k]));
+    const fwd = force ? val : omitBy(val, (v, k) => isEqual(v, this.outputCache[k]));
     this.outputCache = { ...this.outputCache, ...val };
-    return forward;
+    // $FlowIssue
+    return fwd;
   };
 
   /**
@@ -225,10 +228,18 @@ export default class NodeBase<Val: Object, In: ?Object, Out: ?Object> {
     }
     const asList = Array.isArray(ofKeyChanges) ? ofKeyChanges : [ofKeyChanges];
     const val = this._process(asList, force);
-    const changes = pick(val, asList);
-    for (let listener in this.listeners) {
-      this.listeners[listener](this);
+    if (val instanceof Promise) {
+      val.then(v => this._notif(v, asList, force));
+    } else {
+      // $FlowIssue
+      this._notif(val, asList, force);
     }
+  };
+
+  _notif = (v: Out, params: string[], force: boolean) => {
+    const changes = pick(v, params);
+    // $FlowIssue
+    Object.values(this.listeners).forEach(l => l(this));
     this.outputs
       .filter(e => e.from.id === this.id && e.fromPort in changes)
       .forEach(edge => {

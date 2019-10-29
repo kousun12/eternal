@@ -375,8 +375,8 @@ class App extends Component<P, S> {
         <Hotkey global combo="alt + r" label="Clean & Rerun" onKeyDown={this._reBake} />
         <Hotkey global combo="shift + meta + x" label="Clear Everything" onKeyDown={this._reload} />
         <Hotkey global combo="alt + d" label="Debug Mode" onKeyDown={this._toggleDebug} />
-        <Hotkey global combo="j" label="Next Node" onKeyDown={this._nextNode} />
-        <Hotkey global combo="k" label="Prev Node" onKeyDown={this._prevNode} />
+        <Hotkey global combo="j" label="Next Node" onKeyDown={this._nextNode} group="Selection" />
+        <Hotkey global combo="k" label="Prev Node" onKeyDown={this._prevNode} group="Selection" />
       </Hotkeys>
     );
   }

@@ -68,7 +68,7 @@ import Vector3D from './Vector3D';
 import { DomNode } from './Dom';
 import { PlusNode } from './String';
 import { ScaleNode, ChromaNode, ChordNode, TransposeNode, KeyTriadsNode } from './Music';
-import { PerformanceRNNNode } from './Neural';
+import { PerformanceRNNNode, LSTMCellNode, MultiRNNCellNode } from './Neural';
 import { DivideNode, SumNode, ProductNode, IntToIntMathNode } from './MathNodes';
 import { GPGPUProgramNode, RunGPGPUProgramNode } from './GPGPU';
 import { JSCodeNode } from './Code';
@@ -138,6 +138,8 @@ export {
   EqualsNode,
   SwitchNode,
   PerformanceRNNNode,
+  MultiRNNCellNode,
+  LSTMCellNode,
   InfoLog,
   ScaleNode,
   ChromaNode,
@@ -228,6 +230,8 @@ export const allNodes = [
   EqualsNode,
   SwitchNode,
   PerformanceRNNNode,
+  MultiRNNCellNode,
+  LSTMCellNode,
   InfoLog,
   ScaleNode,
   ChromaNode,
