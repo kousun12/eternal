@@ -1,3 +1,4 @@
+/* eslint-disable */
 // vendored from threejs examples
 
 const WEBVR = {
@@ -134,7 +135,7 @@ const WEBVR = {
 
       return button;
     } else if ('getVRDisplays' in navigator) {
-      var button = document.createElement('button');
+      const button = document.createElement('button');
       button.style.display = 'none';
 
       stylizeElement(button);
@@ -184,7 +185,7 @@ const WEBVR = {
 
       return button;
     } else {
-      var message = document.createElement('a');
+      const message = document.createElement('a');
       message.href = 'https://webvr.info';
       message.innerHTML = 'WEBVR NOT SUPPORTED';
 
