@@ -650,6 +650,7 @@ export class PlayerNode extends NodeBase<{}, { url: string, call: any }, { playe
     }
     this._player = new Tone.Player(url, () => {
       this.notifyAllOutputs(true);
+      this.setLoading(false);
       this._loaded = url;
       this._checkStarted();
     });
