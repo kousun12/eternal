@@ -13,6 +13,7 @@ import {
 import { throttle } from 'lodash';
 import OrbitControls from 'orbit-controls-es6';
 import Stats from 'threeUtil/Stats';
+import WEBVR from 'threeUtil/WebVR';
 import { EffectComposer, RenderPass } from 'postprocessing';
 // const THREE = require('three');
 // window.THREE = THREE;
@@ -139,12 +140,16 @@ export default class Base {
       depthTexture: true,
     });
     const renderer = composer.renderer;
-    // TODO enable this or not?
-    // const controls = new OrbitControls(this.camera, renderer.domElement);
+    new OrbitControls(this.camera, renderer.domElement);
     renderer.domElement.style.visibility = 'hidden';
-    if (document.body) {
-      document.body.appendChild(renderer.domElement);
-    }
+    document.body && document.body.appendChild(renderer.domElement);
+    WEBVR.checkAvailability().then(avail => {
+      if (avail && document.body) {
+        document.body.appendChild(WEBVR.createButton(renderer));
+        renderer.vr.enabled = true;
+      }
+    });
+
     composer.reset();
     this.load(() => {
       const renderPass = new RenderPass(this.scene, this.camera);
@@ -185,11 +190,9 @@ export default class Base {
 
   _startRendering = (renderer: Renderable) => {
     const clock = new Clock();
-    let animationId;
     const render = () => {
       const delta = clock.getDelta();
       if (this.update(delta) !== Base.Signals.STOP) {
-        animationId = requestAnimationFrame(render);
         uniforms.u_time.value += delta;
         if (renderer instanceof EffectComposer) {
           renderer.render(delta);
@@ -197,18 +200,16 @@ export default class Base {
           renderer.render(this.scene, this.camera);
         }
       } else {
-        cancelAnimationFrame(animationId);
+        renderer.setAnimationLoop(null);
       }
       if (this.stats) {
         this.stats.update();
       }
     };
-    render();
+    renderer.renderer.setAnimationLoop(render);
   };
 
-  _listenForWindowChanges = () => {
-    window.addEventListener('resize', this.resize);
-  };
+  _listenForWindowChanges = () => window.addEventListener('resize', this.resize);
 
   resize = throttle((event: Event) => {
     // $FlowIssue
