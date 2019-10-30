@@ -166,12 +166,15 @@ class NodeGraph extends React.Component<P, S> {
 
   onNodeStopMove = (node: NodeInSpace, data: DraggableData) => {
     this.onNodeMove(node, data);
-    const { graph } = this.props;
     const updates = mapValues(this.dragOffsets, offset => subVec(data, offset));
-    graph.updatePositions(updates);
-    this._setPosFromGraph();
+    this._posUpdate(updates);
     this.dragOffsets = {};
     this.moving = false;
+  };
+
+  _posUpdate = (updates: PosMemo) => {
+    this.props.graph.updatePositions(updates);
+    this._setPosFromGraph();
   };
 
   lastData: ?DraggableData;
@@ -263,9 +266,7 @@ class NodeGraph extends React.Component<P, S> {
     this._onNodeChange(null);
   };
 
-  _setPosFromGraph = () => {
-    this.props.updatePos(this.props.graph.nodePositions());
-  };
+  _setPosFromGraph = () => this.props.updatePos(this.props.graph.nodePositions());
 
   _onNodeChange = (n: ?AnyNode, idx?: number) => {
     if (this.props.onNodeSelectionChange) {
@@ -457,6 +458,26 @@ class NodeGraph extends React.Component<P, S> {
     this.props.selSet(selected);
   };
 
+  _vAlign = () => {
+    const selected = this._getSelected();
+    if (selected.length < 2) {
+      return;
+    }
+    const x = selected[0].pos.x;
+    const updates = fromPairs(selected.map(nis => [nis.node.id, { ...nis.pos, x }]));
+    this._posUpdate(updates);
+  };
+
+  _hAlign = () => {
+    const selected = this._getSelected();
+    if (selected.length < 2) {
+      return;
+    }
+    const y = selected[0].pos.y;
+    const updates = fromPairs(selected.map(nis => [nis.node.id, { ...nis.pos, y }]));
+    this._posUpdate(updates);
+  };
+
   _selectAll = () => this.props.selSet(this.props.graph.nodeIds());
 
   _pan = throttle((dir: Direction) => {
@@ -472,34 +493,52 @@ class NodeGraph extends React.Component<P, S> {
   // noinspection JSUnusedGlobalSymbols
   renderHotkeys() {
     const { selectCount, zoomIn, zoomOut, zoomReset } = this.props;
-    const showCopy = selectCount > 0;
+    const multi = selectCount > 0;
     return (
       <Hotkeys>
-        {showCopy && (
+        {multi && (
           <Hotkey
             group="Node Actions"
             combo="shift + meta + c"
             label="Duplicate Node(s)"
-            global={true}
+            global
             onKeyDown={this._onCopy}
             preventDefault
           />
         )}
-        <Hotkey global combo="shift + meta + a" label="Select All" onKeyDown={this._selectAll} />
-        <Hotkey global combo="alt + =" label="Zoom in" onKeyDown={() => zoomIn()} group="View" />
-        <Hotkey global combo="alt + -" label="Zoom out" onKeyDown={() => zoomOut()} group="View" />
-        <Hotkey
-          global
-          combo="alt + 0"
-          label="Home View"
-          onKeyDown={() => zoomReset()}
-          group="View"
-        />
+        {multi && (
+          <Hotkey
+            group="Node Actions"
+            combo="h"
+            label="Horizontal Align"
+            global
+            onKeyDown={this._hAlign}
+          />
+        )}
+        {multi && (
+          <Hotkey
+            group="Node Actions"
+            combo="v"
+            label="Vertical Align"
+            global
+            onKeyDown={this._vAlign}
+          />
+        )}
+        <Hotkey global combo="alt + =" label="Zoom in" onKeyDown={zoomIn} group="View" />
+        <Hotkey global combo="alt + -" label="Zoom out" onKeyDown={zoomOut} group="View" />
+        <Hotkey global combo="alt + 0" label="Home View" onKeyDown={zoomReset} group="View" />
         <Hotkey global combo="right" label="Pan right" onKeyDown={this._panR} group="View" />
         <Hotkey global combo="left" label="Pan left" onKeyDown={this._panL} group="View" />
         <Hotkey global combo="down" label="Pan down" onKeyDown={this._panD} group="View" />
         <Hotkey global combo="up" label="Pan up" onKeyDown={this._panU} group="View" />
 
+        <Hotkey
+          global
+          combo="shift + meta + a"
+          label="Select All"
+          onKeyDown={this._selectAll}
+          group="Selection"
+        />
         <Hotkey global combo="meta + drag" label="Select Area" group="Selection" />
         <Hotkey global combo="meta + alt + drag" label="Subtract Selection" group="Selection" />
         <Hotkey global combo="meta + shift + drag" label="Add Selection" group="Selection" />

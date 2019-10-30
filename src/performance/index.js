@@ -194,7 +194,6 @@ export default class Performance {
       tf.basicLSTMCell(this.forgetBias, this.lstmKernel2, this.lstmBias2, data, c, h);
     const lstm3 = (data, c, h) =>
       tf.basicLSTMCell(this.forgetBias, this.lstmKernel3, this.lstmBias3, data, c, h);
-
     const [_c, _h, outputs] = tf.tidy(() => {
       const innerOuts: tf.Scalar[] = [];
       for (let i = 0; i < STEPS_PER_GENERATE_CALL; i++) {
@@ -239,10 +238,8 @@ export default class Performance {
   playOutput = (index: number) => {
     if (this.stopped) return;
     let offset = 0;
-    for (const eventRange of EVENT_RANGES) {
-      const eventType = eventRange[0];
-      const minValue = eventRange[1];
-      const maxValue = eventRange[2];
+    for (const [eventType, minValue, maxValue] of EVENT_RANGES) {
+      // EVENT_RANGES.forEach(([eventType, minValue, maxValue]) => {
       if (offset <= index && index <= offset + maxValue - minValue) {
         if (eventType === 'note_on') {
           const noteNum = index - offset;

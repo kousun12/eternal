@@ -1,12 +1,14 @@
 // @flow
 import React from 'react';
-import { compact } from 'lodash';
+import { compact, zipObject } from 'lodash';
 import Tone from 'tone';
 import NodeBase from 'models/NodeBase';
 import Edge from 'models/Edge';
 import Performance from 'performance';
 import { TT as ToneTypes } from 'models/nodes/ToneNode';
 import type { MidiData, ToneAction } from 'performance';
+import * as tf from '@tensorflow/tfjs-core';
+import type { Scalar, Tensor1D, Tensor2D, TensorLike, LSTMCellFunc } from '@tensorflow/tfjs-core';
 const Piano = require('tone-piano').Piano;
 const Types = window.Types;
 
@@ -26,6 +28,7 @@ export const TT = {
       </p>
     </div>
   ),
+  Tensor: Types.object.aliased('Tensor', 'n-dimensional tensor'),
   ToneData: Types.object.aliased('ToneData', 'Directives for an instrument / synth to play.'),
   MidiData: Types.object.aliased(
     'MidiData',
@@ -216,4 +219,104 @@ export class PerformanceRNNNode extends NodeBase<
   };
 
   process = () => ({ midiData: this.midiOut, toneData: this.toneOut });
+}
+
+export class LSTMCellNode extends NodeBase<
+  {},
+  {
+    forgetBias: Scalar | TensorLike,
+    lstmKernel: Tensor2D | TensorLike,
+    lstmBias: Tensor1D | TensorLike,
+    data: Tensor2D | TensorLike,
+    c: Tensor2D | TensorLike,
+    h: Tensor2D | TensorLike,
+  },
+  { newC: Tensor2D, newH: Tensor2D }
+> {
+  static +displayName = 'LSTM Cell';
+  static +registryName = 'LSTMCell';
+  static description = <span>Computes the next state and output of a BasicLSTMCell</span>;
+  static schema = {
+    input: {
+      forgetBias: TT.Tensor.desc('Forget bias for the cell'),
+      lstmKernel: TT.Tensor.desc('The weights for the cell'),
+      lstmBias: TT.Tensor.desc('The bias for the cell'),
+      data: TT.Tensor.desc('The input to the cell'),
+      c: TT.Tensor.desc('Previous cell state'),
+      h: TT.Tensor.desc('Previous cell output'),
+    },
+    output: {
+      newC: TT.Tensor.desc('Next cell state'),
+      newH: TT.Tensor.desc('Next cell output'),
+    },
+    state: {},
+  };
+
+  requireForOutput = () =>
+    [
+      this.props.forgetBias,
+      this.props.lstmKernel,
+      this.props.lstmBias,
+      this.props.data,
+      this.props.c,
+      this.props.h,
+    ]
+      .map(v => typeof v)
+      .filter(t => t === 'undefined').length === 0;
+
+  process = () =>
+    zipObject(
+      ['newC', 'newH'],
+      tf.basicLSTMCell(
+        this.props.forgetBias,
+        this.props.lstmKernel,
+        this.props.lstmBias,
+        this.props.data,
+        this.props.c,
+        this.props.h
+      )
+    );
+
+  onInputChange = () => this.outKeys();
+}
+
+export class MultiRNNCellNode extends NodeBase<
+  {},
+  {
+    lstmCells: LSTMCellFunc[],
+    data: Tensor2D | TensorLike,
+    c: Array<Tensor2D | TensorLike>,
+    h: Array<Tensor2D | TensorLike>,
+  },
+  { newC: Tensor2D[], newH: Tensor2D[] }
+> {
+  static +displayName = 'MultiRNN Cell';
+  static +registryName = 'MultiRNNCell';
+  static description = <span>Computes the next states and outputs of a stack of LSTMCells.</span>;
+  static schema = {
+    input: {
+      lstmCells: TT.Tensor.desc('The weights for the cell'),
+      data: TT.Tensor.desc('The input to the cell'),
+      c: TT.Tensor.desc('Previous cell state'),
+      h: TT.Tensor.desc('Previous cell output'),
+    },
+    output: {
+      newC: TT.Tensor.desc('Next cell state'),
+      newH: TT.Tensor.desc('Next cell output'),
+    },
+    state: {},
+  };
+
+  requireForOutput = () =>
+    [this.props.lstmCells, this.props.data, this.props.c, this.props.h]
+      .map(v => typeof v)
+      .filter(t => t === 'undefined').length === 0;
+
+  process = () =>
+    zipObject(
+      ['newC', 'newH'],
+      tf.multiRNNCell(this.props.lstmCells, this.props.data, this.props.c, this.props.h)
+    );
+
+  onInputChange = () => this.outKeys();
 }
