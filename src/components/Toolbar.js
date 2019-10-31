@@ -119,5 +119,5 @@ const styles = {
   toolSection: { flex: 1, display: 'flex', alignItems: 'center' },
   leftAlign: { justifyContent: 'flex-start' },
   rightAlign: { justifyContent: 'flex-end' },
-  title: { fontSize: 16 },
+  title: { fontSize: 16, textAlign: 'center' },
 };

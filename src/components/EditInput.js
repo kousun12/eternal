@@ -6,6 +6,7 @@ import { get } from 'lodash';
 type P = {
   onChange: string => void,
   onFinish?: string => void,
+  editing?: boolean | typeof undefined,
   style?: Object,
   value: string,
 };
@@ -23,21 +24,40 @@ export default class EditInput extends React.Component<P, S> {
     }
   };
 
-  _toEdit = () => this.setState({ editing: true }, () => this.input && this.input.focus());
+  _toEdit = (e: MouseEvent) => {
+    if (this._isControlled()) {
+      return;
+    }
+    e.stopPropagation();
+    this.setState({ editing: true }, this._focusInput);
+  };
+
   _onBlur = (e: SyntheticInputEvent<*>) => {
     const { onFinish } = this.props;
     onFinish && onFinish(e.target.value);
-    this.setState({ editing: false });
+    if (!this._isControlled()) {
+      this.setState({ editing: false });
+    }
   };
 
+  _focusInput = () => this.input && this.input.focus();
+
+  _isControlled = (): boolean => this.props.editing !== undefined;
+
+  componentDidUpdate(prevProps: P) {
+    if (prevProps.editing === false && this.props.editing) {
+      this._focusInput();
+    }
+  }
+
   render() {
-    const { editing } = this.state;
     const { style, value, onChange } = this.props;
+    const editing = this.props.editing === undefined ? this.state.editing : this.props.editing;
     return editing ? (
       <div className="bp3-dark">
         <input
           ref={input => (this.input = input)}
-          style={style}
+          style={{ ...styles.input, ...style }}
           onKeyUp={this._onInputKeyUp}
           className={Classes.INPUT}
           type="text"
@@ -55,3 +75,7 @@ export default class EditInput extends React.Component<P, S> {
     );
   }
 }
+
+const styles = {
+  input: { textAlign: 'inherit' },
+};

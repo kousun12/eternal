@@ -33,6 +33,7 @@ import {
   updatePos as _updatePos,
   selectView,
   setScale as _setScale,
+  selSet as _selSet,
 } from 'redux/ducks/graph';
 import Zoomer from 'components/Zoomer';
 import type { PosMemo, SelectedView } from 'redux/ducks/graph';
@@ -48,6 +49,7 @@ type P = {
   updatePos: PosMemo => void,
   view: SelectedView,
   setScale: number => void,
+  selSet: (string[]) => void,
 };
 type S = {
   graph: ?Graph,
@@ -184,7 +186,7 @@ class App extends Component<P, S> {
 
   _addNode = (cls: Class<AnyNode>) => {
     const { graph } = this.state;
-    const { view, updatePos, showNode } = this.props;
+    const { view, updatePos, showNode, selSet } = this.props;
     this.setState({ searchOpen: false });
     if (graph) {
       const node = new cls();
@@ -196,6 +198,7 @@ class App extends Component<P, S> {
       if (showNode) {
         this._onNodeSelect(node);
       }
+      selSet([node.id]);
       updatePos({ [node.id]: pos });
     }
     this._insertPos = null;
@@ -394,5 +397,6 @@ export default connect(
     setInfoOpen: n => d(_setInfoOpen(n)),
     updatePos: (pos: PosMemo) => d(_updatePos(pos)),
     setScale: s => d(_setScale(s)),
+    selSet: id => d(_selSet(id)),
   })
 )(AppWithHK);

@@ -13,6 +13,7 @@ import type { NodeInSpace, Pos } from 'types';
 import { Hotkey, Hotkeys, HotkeysTarget } from '@blueprintjs/core';
 import { addVec } from 'utils/vector';
 import { truncate } from 'utils/string';
+import EditInput from 'components/EditInput';
 
 type SP = {| pos: Pos, infoShowing: boolean |};
 type OP = {|
@@ -33,11 +34,11 @@ type OP = {|
   disabled: boolean,
 |};
 type P = {| ...SP, ...OP |};
-type S = { loading: boolean };
+type S = { loading: boolean, renaming: boolean };
 const MoveBufferPx = 4;
 
 class Node extends React.Component<P, S> {
-  state = { loading: false };
+  state = { loading: false, renaming: false };
   dragStart: ?Pos;
 
   componentDidMount() {
@@ -128,17 +129,24 @@ class Node extends React.Component<P, S> {
     onNodeDeselect && onNodeDeselect(nis, false);
   };
 
+  _rename = () => this.setState({ renaming: true });
+  _noRename = () => this.setState({ renaming: false });
+
+  _setTitle = (s: string) => {
+    this.props.nis.node.setTitle(s);
+    this.forceUpdate();
+  };
+
   render() {
     const { selected, infoShowing, visible, pos, scale, positionOffset, disabled } = this.props;
     const { node } = this.props.nis;
-    const { loading } = this.state;
+    const { loading, renaming } = this.state;
     const sel = infoShowing ? 'in-view' : selected ? 'selected' : '';
     let nodeClass = 'node' + (sel ? ` ${sel} ignore-react-onclickoutside` : '');
     if (!visible) {
       return <div />;
     }
 
-    const name = node.name();
     return (
       <Draggable
         disabled={disabled}
@@ -156,8 +164,16 @@ class Node extends React.Component<P, S> {
           onDoubleClick={() => this._selectNode(true)}
           id={node.domId()}
         >
-          <header className="node-header">
-            <span className="node-title">{truncate(name, 30)}</span>
+          <header
+            className={`node-header${renaming ? ' node-header-edit' : ''}`}
+            onDoubleClick={this._rename}
+          >
+            <EditInput
+              editing={renaming}
+              value={renaming ? node.title || '' : truncate(node.name(), 16)}
+              onChange={this._setTitle}
+              onFinish={this._noRename}
+            />
           </header>
           <div className="node-content">
             <NodeInputList

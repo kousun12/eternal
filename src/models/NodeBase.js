@@ -265,6 +265,10 @@ export default class NodeBase<Val: Object, In: ?Object, Out: ?Object> {
     }
   };
 
+  setTitle = (title: string) => {
+    this.title = title;
+  };
+
   /**
    * All the dynamic user-changeable attributes for this node.
    * You probably shouldn't override this method, but instead use other
