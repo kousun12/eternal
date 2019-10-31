@@ -478,6 +478,38 @@ class NodeGraph extends React.Component<P, S> {
     this._posUpdate(updates);
   };
 
+  _autoFmt = () => {
+    const byId = fromPairs(this.props.graph.nodes.map(nis => [nis.node.id, nis]));
+    let next = get(this.props.graph.nodes, [0, 'node', 'id']);
+    const groups = [];
+    while (next) {
+      const nis = byId[next];
+      delete byId[next];
+      const group = [nis];
+      for (const id in byId) {
+        if (byId[id] && Math.abs(byId[id].pos.x - nis.pos.x) < 12) {
+          group.push(byId[id]);
+          delete byId[id];
+        }
+      }
+      groups.push(group);
+      const ids = Object.keys(byId);
+      if (ids.length) {
+        next = ids[0];
+      } else {
+        next = undefined;
+      }
+    }
+    const updates = {};
+    for (const group of groups) {
+      const x = group[0].pos.x;
+      group.forEach(nis => {
+        updates[nis.node.id] = { ...nis.pos, x };
+      });
+    }
+    Object.keys(updates).length && this._posUpdate(updates);
+  };
+
   _selectAll = () => this.props.selSet(this.props.graph.nodeIds());
 
   _pan = throttle((dir: Direction) => {
@@ -524,6 +556,14 @@ class NodeGraph extends React.Component<P, S> {
             onKeyDown={this._vAlign}
           />
         )}
+        <Hotkey
+          group="Node Actions"
+          combo="meta + alt + l"
+          label="Auto Format"
+          global
+          onKeyDown={this._autoFmt}
+          preventDefault
+        />
         <Hotkey global combo="alt + =" label="Zoom in" onKeyDown={zoomIn} group="View" />
         <Hotkey global combo="alt + -" label="Zoom out" onKeyDown={zoomOut} group="View" />
         <Hotkey global combo="alt + 0" label="Home View" onKeyDown={zoomReset} group="View" />
