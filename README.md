@@ -57,7 +57,7 @@ but i bet they sing aloud in the silence of space
   Demonstrates music scale / chroma, RNN model, raw fragment shaders in glsl, MIDI device connections.
 </details>
 
-###### [stephen wolfram](https://kousun12.github.io/eternal?e=wolfram+gpu)
+###### [stephen wolfram](https://kousun12.github.io/eternal?e=gpgpu+wolfram)
 Stephen Wolfram is an operator that, when given a 1D cellular automata rule number [0-255] and a representation of the world, outputs the subsequent state of the world according to that rule. He will do this indefinitely and is, in fact, Earth's first eternal human.
 <details>
   <summary>desc</summary>

@@ -56,7 +56,7 @@ const AllEdges = ({
     );
   }
   return (
-    <SVGComponent height="100%" width="100%">
+    <SVGComponent height="100%" width="100%" className="edge-svg">
       {edges.map(e => {
         const [fromId, toId] = [e.from.id, e.to.id];
         const [i, o] = [graph.nodeWithIdF(toId), graph.nodeWithIdF(fromId)];
