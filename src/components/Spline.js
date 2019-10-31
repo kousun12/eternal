@@ -21,12 +21,13 @@ type OP = {|
   incomplete?: boolean,
 |};
 type P = {| ...OP, ...DP |};
-type S = { selected: boolean };
+type S = { selected: boolean, transmitting: boolean };
 
 class Spline extends React.Component<P, S> {
   el: ?Element;
-  state = { selected: false };
+  state = { selected: false, transmitting: false };
   listeningOnEdge: string;
+  lastTransmit: ?number = null;
 
   handleClick = () => {
     this.setState({ selected: true });
@@ -49,18 +50,21 @@ class Spline extends React.Component<P, S> {
     }
   };
 
+  transTime: ?TimeoutID = null;
+
+  _schedTransOff = () => {
+    this.transTime && clearTimeout(this.transTime);
+    this.transTime = setTimeout(() => {
+      this.setState({ transmitting: false });
+      this.transTime = null;
+    }, 420);
+  };
+
   _onNotify = () => {
-    !this.state.selected &&
-      this.el &&
-      // $FlowIssue
-      this.el.animate(
-        [
-          { stroke: '#999999', strokeWidth: 4, filter: 'blur(0)' },
-          { stroke: '#4caa4d', strokeWidth: 6, filter: 'blur(20px)' },
-          { stroke: '#999999', strokeWidth: 4, filter: 'blur(0)' },
-        ],
-        { duration: 500, iterations: 1 }
-      );
+    if (!this.state.transmitting) {
+      this.setState({ transmitting: true });
+    }
+    this._schedTransOff();
   };
 
   // noinspection JSUnusedGlobalSymbols
@@ -77,7 +81,7 @@ class Spline extends React.Component<P, S> {
   };
 
   render() {
-    let { selected } = this.state;
+    let { selected, transmitting } = this.state;
     let { start, end, highlighted, edge, incomplete } = this.props;
     const dist = this.distance([start.x, start.y], [end.x, end.y]);
     const selfEdge = edge && get(edge, 'from.id') === get(edge, 'to.id');
@@ -96,7 +100,8 @@ class Spline extends React.Component<P, S> {
       'connector' +
       (selected ? ' selected' : '') +
       (highlighted ? ' highlight' : '') +
-      (incomplete ? ' incomplete' : '');
+      (incomplete ? ' incomplete' : '') +
+      (transmitting ? ' transmitting' : '');
     return (
       <g>
         <path className="connector-click-area" d={pathString} onClick={this.handleClick} />

@@ -182,6 +182,11 @@ body {
   z-index: 11;
 }
 
+.connector.transmitting {
+  stroke: $primary-graph-color;
+  stroke-width: 5;
+}
+
 .node-content li {
   height: 22px;
 }

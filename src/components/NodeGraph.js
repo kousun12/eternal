@@ -479,15 +479,27 @@ class NodeGraph extends React.Component<P, S> {
   };
 
   _autoFmt = () => {
-    const byId = fromPairs(this.props.graph.nodes.map(nis => [nis.node.id, nis]));
-    let next = get(this.props.graph.nodes, [0, 'node', 'id']);
+    const selected = this._getSelected();
+    let set = [];
+    let buffer = 24;
+    if (selected.length < 2) {
+      set = this.props.graph.nodes;
+    } else {
+      set = selected;
+      buffer = 60;
+    }
+    if (set.length < 2) {
+      return;
+    }
+    const byId = fromPairs(set.map(nis => [nis.node.id, nis]));
+    let next = get(set, [0, 'node', 'id']);
     const groups = [];
     while (next) {
       const nis = byId[next];
       delete byId[next];
       const group = [nis];
       for (const id in byId) {
-        if (byId[id] && Math.abs(byId[id].pos.x - nis.pos.x) < 12) {
+        if (byId[id] && Math.abs(byId[id].pos.x - nis.pos.x) < buffer) {
           group.push(byId[id]);
           delete byId[id];
         }
@@ -532,7 +544,7 @@ class NodeGraph extends React.Component<P, S> {
           <Hotkey
             group="Node Actions"
             combo="shift + meta + c"
-            label="Duplicate Node(s)"
+            label="Duplicate node(s)"
             global
             onKeyDown={this._onCopy}
             preventDefault
@@ -542,7 +554,7 @@ class NodeGraph extends React.Component<P, S> {
           <Hotkey
             group="Node Actions"
             combo="h"
-            label="Horizontal Align"
+            label="Horizontal align"
             global
             onKeyDown={this._hAlign}
           />
@@ -551,7 +563,7 @@ class NodeGraph extends React.Component<P, S> {
           <Hotkey
             group="Node Actions"
             combo="v"
-            label="Vertical Align"
+            label="Vertical align"
             global
             onKeyDown={this._vAlign}
           />
@@ -559,14 +571,14 @@ class NodeGraph extends React.Component<P, S> {
         <Hotkey
           group="Node Actions"
           combo="meta + alt + l"
-          label="Auto Format"
+          label={`Auto-format ${selectCount < 2 ? 'all' : 'selected'}`}
           global
           onKeyDown={this._autoFmt}
           preventDefault
         />
         <Hotkey global combo="alt + =" label="Zoom in" onKeyDown={zoomIn} group="View" />
         <Hotkey global combo="alt + -" label="Zoom out" onKeyDown={zoomOut} group="View" />
-        <Hotkey global combo="alt + 0" label="Home View" onKeyDown={zoomReset} group="View" />
+        <Hotkey global combo="alt + 0" label="Home view" onKeyDown={zoomReset} group="View" />
         <Hotkey global combo="right" label="Pan right" onKeyDown={this._panR} group="View" />
         <Hotkey global combo="left" label="Pan left" onKeyDown={this._panL} group="View" />
         <Hotkey global combo="down" label="Pan down" onKeyDown={this._panD} group="View" />
@@ -575,13 +587,13 @@ class NodeGraph extends React.Component<P, S> {
         <Hotkey
           global
           combo="shift + meta + a"
-          label="Select All"
+          label="Select all"
           onKeyDown={this._selectAll}
           group="Selection"
         />
-        <Hotkey global combo="meta + drag" label="Select Area" group="Selection" />
-        <Hotkey global combo="meta + alt + drag" label="Subtract Selection" group="Selection" />
-        <Hotkey global combo="meta + shift + drag" label="Add Selection" group="Selection" />
+        <Hotkey global combo="meta + drag" label="Select area" group="Selection" />
+        <Hotkey global combo="meta + alt + drag" label="Subtract selection" group="Selection" />
+        <Hotkey global combo="meta + shift + drag" label="Add selection" group="Selection" />
       </Hotkeys>
     );
   }
