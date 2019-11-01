@@ -54,7 +54,7 @@ i do not know much about the gods<br>
 but i bet they sing aloud in the silence of space
 <details>
   <summary>desc</summary>
-  Demonstrates music scale / chroma, RNN model, raw fragment shaders in glsl, MIDI device connections.
+  Demonstrates music scale / chroma, RNN model, raw fragment shaders in glsl, uniform texture loading, MIDI device connections.
 </details>
 
 ###### [stephen wolfram](https://kousun12.github.io/eternal?e=gpgpu+wolfram)
