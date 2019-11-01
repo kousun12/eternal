@@ -68,5 +68,5 @@ ${nodes.join('\n\n')}
 `;
 };
 const output = md();
-// download(output);
+download(output);
 console.log(output);

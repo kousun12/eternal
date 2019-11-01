@@ -1,7 +1,7 @@
 
 # Node Docs
 
-Here's a list of all 81 current nodes, their descriptions, and i/o.
+Here's a list of all 89 current nodes, their descriptions, and i/o.
 
 
 ## Vector 2D
@@ -23,6 +23,7 @@ A two dimensional vector with keys x and y
 
 **`out`**: `Vec2`
   
+
 <details>
 <summary>Vec2</summary>
 A 2D Vector with keys x and y
@@ -42,6 +43,7 @@ A WebGL mesh
 **`geometry`**: `Geometry`
   
 The geometry to use with this mesh
+
 <details>
 <summary>Geometry</summary>
 An abstract geometry that describes verticies in space
@@ -51,6 +53,7 @@ An abstract geometry that describes verticies in space
 **`material`**: `Material`
   
 This mesh's material
+
 <details>
 <summary>Material</summary>
 An abstract material, usually applied to geometries
@@ -60,6 +63,7 @@ An abstract material, usually applied to geometries
 **`rotation`**: `Vec2`
   
 The rotation of this mesh node, in radians
+
 <details>
 <summary>Vec2</summary>
 A 2D Vector with keys x and y
@@ -69,6 +73,7 @@ A 2D Vector with keys x and y
 **`scale`**: `Vec3`
   
 The scale of this mesh node
+
 <details>
 <summary>Vec3</summary>
 A 3D Vector with keys x, y, and z
@@ -80,6 +85,131 @@ A 3D Vector with keys x, y, and z
 **`mesh`**: `Mesh`
   
 The resulting Mesh
+
+<details>
+<summary>Mesh</summary>
+A mesh that can be added to a scene and rendered
+
+</details>
+  
+
+
+
+## Points
+
+A WebGL Points
+  
+
+#### inputs
+
+**`geometry`**: `Geometry`
+  
+The geometry to use with this mesh
+
+<details>
+<summary>Geometry</summary>
+An abstract geometry that describes verticies in space
+
+</details>
+
+**`material`**: `Material`
+  
+This mesh's material
+
+<details>
+<summary>Material</summary>
+An abstract material, usually applied to geometries
+
+</details>
+
+**`rotation`**: `Vec2`
+  
+The rotation of this mesh node, in radians
+
+<details>
+<summary>Vec2</summary>
+A 2D Vector with keys x and y
+ default: `{x:0,y:0}`
+</details>
+
+**`scale`**: `Vec3`
+  
+The scale of this mesh node
+
+<details>
+<summary>Vec3</summary>
+A 3D Vector with keys x, y, and z
+ default: `{x:0,y:0,z:0}`
+</details>
+  
+#### outputs
+
+**`mesh`**: `Mesh`
+  
+The resulting Points object
+
+<details>
+<summary>Mesh</summary>
+A mesh that can be added to a scene and rendered
+
+</details>
+  
+
+
+
+## Line
+
+A WebGL Line
+  
+
+#### inputs
+
+**`geometry`**: `Geometry`
+  
+The geometry to use with this mesh
+
+<details>
+<summary>Geometry</summary>
+An abstract geometry that describes verticies in space
+
+</details>
+
+**`material`**: `Material`
+  
+This mesh's material
+
+<details>
+<summary>Material</summary>
+An abstract material, usually applied to geometries
+
+</details>
+
+**`rotation`**: `Vec2`
+  
+The rotation of this mesh node, in radians
+
+<details>
+<summary>Vec2</summary>
+A 2D Vector with keys x and y
+ default: `{x:0,y:0}`
+</details>
+
+**`scale`**: `Vec3`
+  
+The scale of this mesh node
+
+<details>
+<summary>Vec3</summary>
+A 3D Vector with keys x, y, and z
+ default: `{x:0,y:0,z:0}`
+</details>
+  
+#### outputs
+
+**`mesh`**: `Mesh`
+  
+The resulting Line object
+
 <details>
 <summary>Mesh</summary>
 A mesh that can be added to a scene and rendered
@@ -131,6 +261,7 @@ The torus knot q
 **`geometry`**: `Geometry`
   
 this particular geometry
+
 <details>
 <summary>Geometry</summary>
 An abstract geometry that describes verticies in space
@@ -162,6 +293,7 @@ The height of this plane
 **`geometry`**: `Geometry`
   
 this particular geometry
+
 <details>
 <summary>Geometry</summary>
 An abstract geometry that describes verticies in space
@@ -198,6 +330,7 @@ The number of segments along the geometry height
 **`geometry`**: `Geometry`
   
 this particular geometry
+
 <details>
 <summary>Geometry</summary>
 An abstract geometry that describes verticies in space
@@ -234,6 +367,44 @@ The depth of this box
 **`geometry`**: `Geometry`
   
 this particular geometry
+
+<details>
+<summary>Geometry</summary>
+An abstract geometry that describes verticies in space
+
+</details>
+  
+
+
+
+## Geometry Base
+
+Geometries store attributes, e.g. vertex positions, faces, colors.
+  
+
+#### inputs
+
+**`vertices`**: `Vec3[]`
+  
+The array of vertices holds the position of every vertex in the model. To signal an update in this array, verticesNeedUpdate needs to be set to true
+
+<details>
+<summary>Vec3[]</summary>
+An array of Vec3s. A 3D Vector with keys x, y, and z
+
+</details>
+
+**`appendVerts`**: `boolean`
+  
+Whether or not incoming verticies param should be appended. If false, incoming params will override verticies.
+
+  
+#### outputs
+
+**`geometry`**: `Geometry`
+  
+this particular geometry
+
 <details>
 <summary>Geometry</summary>
 An abstract geometry that describes verticies in space
@@ -250,13 +421,22 @@ A material for non-shiny surfaces, without specular highlights.The material uses
 
 #### inputs
 
+**`color`**: `Color`
+  
+Color of this material
 
+<details>
+<summary>Color</summary>
+Hex color
+
+</details>
   
 #### outputs
 
 **`material`**: `Material`
   
 The resulting material
+
 <details>
 <summary>Material</summary>
 An abstract material, usually applied to geometries
@@ -276,6 +456,7 @@ A material rendered with custom shaders. A shader is a small program written in 
 **`vertex`**: `ShaderProgram`
   
 Vertex shader for this shader material
+
 <details>
 <summary>ShaderProgram</summary>
 An OpenGL compatible GLSL shader
@@ -285,6 +466,7 @@ An OpenGL compatible GLSL shader
 **`fragment`**: `ShaderProgram`
   
 Fragment shader for this shader material
+
 <details>
 <summary>ShaderProgram</summary>
 An OpenGL compatible GLSL shader
@@ -301,6 +483,39 @@ Whether or not this material responds to an alpha component
 **`material`**: `Material`
   
 The resulting material
+
+<details>
+<summary>Material</summary>
+An abstract material, usually applied to geometries
+
+</details>
+  
+
+
+
+## Particle Material
+
+A material of particles
+  
+
+#### inputs
+
+**`color`**: `Color`
+  
+Color of this material
+
+<details>
+<summary>Color</summary>
+Hex color
+
+</details>
+  
+#### outputs
+
+**`material`**: `Material`
+  
+The resulting material
+
 <details>
 <summary>Material</summary>
 An abstract material, usually applied to geometries
@@ -320,6 +535,7 @@ This node renders a WebGL scene, by default with a perspective camera
 **`child`**: `SceneElement`
   
 Any scene element[s] to be added
+
 <details>
 <summary>SceneElement</summary>
 Anything that can be added to a scene, including Meshes, Lights, & Cameras
@@ -329,6 +545,7 @@ Anything that can be added to a scene, including Meshes, Lights, & Cameras
 **`fx`**: `PostEffect[]`
   
 Post render pass(es)
+
 <details>
 <summary>PostEffect[]</summary>
 An array of PostEffects. A post production render effect
@@ -338,6 +555,7 @@ An array of PostEffects. A post production render effect
 **`clearColor`**: `RGBColor`
   
 The renderer's clear color
+
 <details>
 <summary>RGBColor</summary>
 RGB representation of a color
@@ -393,6 +611,7 @@ The frequency of vibrato
 **`out`**: `Synth`
   
 Resulting Synth
+
 <details>
 <summary>Synth</summary>
 Any kind of synth
@@ -417,6 +636,7 @@ The volume of the output in decibels
 **`oscillator`**: `OscillatorType`
   
 The type of oscillator
+
 <details>
 <summary>OscillatorType</summary>
 The type of the oscillator: either sine, square, triangle, or sawtooth. Also capable of setting the first x number of partials of the oscillator. For example: sine4 would set be the first 4 partials of the sine wave and triangle8 would set the first 8 partials of the triangle wave.
@@ -426,6 +646,7 @@ The type of the oscillator: either sine, square, triangle, or sawtooth. Also cap
 **`envelope`**: `AmplitudeEnvelope`
   
 The amplitude envelope for this synth
+
 <details>
 <summary>AmplitudeEnvelope</summary>
 AmplitudeEnvelope is an Envelope connected to a gain node. Unlike Envelope, which outputs the envelope’s value, AmplitudeEnvelope accepts an audio signal as the input and will apply the envelope to the amplitude of the signal.
@@ -437,6 +658,7 @@ AmplitudeEnvelope is an Envelope connected to a gain node. Unlike Envelope, whic
 **`out`**: `Synth`
   
 Resulting Synth
+
 <details>
 <summary>Synth</summary>
 Any kind of synth
@@ -456,6 +678,7 @@ Trigger the attack and then the release after the duration. Omitting a duration 
 **`synth`**: `Synth`
   
 The synth to use
+
 <details>
 <summary>Synth</summary>
 Any kind of synth
@@ -465,6 +688,7 @@ Any kind of synth
 **`note`**: `Note`
   
 The frequency to play
+
 <details>
 <summary>Note</summary>
 Note encoding, can be something like A4, a midi index, or a raw frequency in Hz
@@ -484,6 +708,7 @@ When the note should be triggered
 **`call`**: `Call`
   
 Certain nodes are designated 'callable', i.e. they are operator nodes. Sending a truthy call signal will invoke that node's handler over its parameters
+
 <details>
 <summary>Call</summary>
 Something that is callable
@@ -495,6 +720,7 @@ Something that is callable
 **`draw`**: `object`
   
 An note / duration object that is signalled when this node triggers its attack
+
 <details>
 <summary>object</summary>
 An object with arbitrary keys and values
@@ -514,6 +740,7 @@ Connect an audio node to the master audio output
 **`node`**: `AudioNode`
   
 Any Audio node to connect to the audio master output
+
 <details>
 <summary>AudioNode</summary>
 Any kind of audio node
@@ -525,6 +752,7 @@ Any kind of audio node
 **`out`**: `AudioNode`
   
 The same node, connected to the master output
+
 <details>
 <summary>AudioNode</summary>
 Any kind of audio node
@@ -544,6 +772,7 @@ An equal power Left/Right stereo Panner
 **`node`**: `AudioNode`
   
 The audio node to connect to this panner.
+
 <details>
 <summary>AudioNode</summary>
 Any kind of audio node
@@ -560,6 +789,7 @@ The pan control. -1 = hard left, 1 = hard right
 **`out`**: `Panner`
   
 A node panned to the `pan` value
+
 <details>
 <summary>Panner</summary>
 An audio pan
@@ -569,6 +799,7 @@ An audio pan
 **`node`**: `AudioNode`
   
 The node that was passed in, connected to the panner
+
 <details>
 <summary>AudioNode</summary>
 Any kind of audio node
@@ -588,6 +819,7 @@ A DelayNode in which part of output signal is fed back into the delay
 **`node`**: `AudioNode`
   
 The audio node to connect to this feedback delay
+
 <details>
 <summary>AudioNode</summary>
 Any kind of audio node
@@ -609,6 +841,7 @@ feedback The amount of the effected signal which is fed back through the delay.
 **`out`**: `FeedbackDelay`
   
 The resulting FeedbackDelayNode
+
 <details>
 <summary>FeedbackDelay</summary>
 A feedback delay
@@ -618,6 +851,7 @@ A feedback delay
 **`node`**: `AudioNode`
   
 The node that was passed in, connected to the feedback delay
+
 <details>
 <summary>AudioNode</summary>
 Any kind of audio node
@@ -637,6 +871,7 @@ A node which is used to delay the incoming audio signal by a certain amount of t
 **`node`**: `AudioNode`
   
 The audio node to connect to this feedback delay
+
 <details>
 <summary>AudioNode</summary>
 Any kind of audio node
@@ -653,6 +888,7 @@ An a-rate AudioParam representing the amount of delay to apply
 **`out`**: `AudioNode`
   
 The resulting DelayNode
+
 <details>
 <summary>AudioNode</summary>
 Any kind of audio node
@@ -662,6 +898,7 @@ Any kind of audio node
 **`node`**: `AudioNode`
   
 The node that was passed in, connected to the delay
+
 <details>
 <summary>AudioNode</summary>
 Any kind of audio node
@@ -681,6 +918,7 @@ The GainNode interface represents a change in volume. It is an AudioNode audio-p
 **`node`**: `AudioNode`
   
 The audio node to connect to this feedback delay
+
 <details>
 <summary>AudioNode</summary>
 Any kind of audio node
@@ -697,6 +935,7 @@ An a-rate AudioParam representing the amount of gain to apply
 **`gain`**: `Gain`
   
 The resulting GainNode
+
 <details>
 <summary>Gain</summary>
 An audio gain
@@ -706,6 +945,7 @@ An audio gain
 **`node`**: `AudioNode`
   
 The node that was passed in, connected to the gain
+
 <details>
 <summary>AudioNode</summary>
 Any kind of audio node
@@ -724,6 +964,7 @@ Any kind of audio node
 
 **`input`**: `object`
   
+
 <details>
 <summary>object</summary>
 An object with arbitrary keys and values
@@ -734,6 +975,7 @@ An object with arbitrary keys and values
 
 **`out`**: `object`
   
+
 <details>
 <summary>object</summary>
 An object with arbitrary keys and values
@@ -785,6 +1027,7 @@ Set the note for a Synth
 **`synth`**: `Synth`
   
 The synth to use
+
 <details>
 <summary>Synth</summary>
 Any kind of synth
@@ -794,6 +1037,7 @@ Any kind of synth
 **`note`**: `Note`
   
 The frequency to set on the synth
+
 <details>
 <summary>Note</summary>
 Note encoding, can be something like A4, a midi index, or a raw frequency in Hz
@@ -808,6 +1052,7 @@ Time which the note should be set on the synth
 **`call`**: `Call`
   
 Certain nodes are designated 'callable', i.e. they are operator nodes. Sending a truthy call signal will invoke that node's handler over its parameters
+
 <details>
 <summary>Call</summary>
 Something that is callable
@@ -873,6 +1118,7 @@ Start a transport time. This will put all Transport time schedules into motion
 **`transport`**: `object`
   
 The Transport Time to start
+
 <details>
 <summary>object</summary>
 An object with arbitrary keys and values
@@ -903,6 +1149,7 @@ The tempo to set for this transport. See the docs on the time type to understand
 **`out`**: `object`
   
 Resulting transport
+
 <details>
 <summary>object</summary>
 An object with arbitrary keys and values
@@ -922,6 +1169,7 @@ Connect one audio node to another
 **`from`**: `AudioNode`
   
 Connect from any audio node
+
 <details>
 <summary>AudioNode</summary>
 Any kind of audio node
@@ -931,6 +1179,7 @@ Any kind of audio node
 **`to`**: `AudioNode`
   
 Connect to any audio node
+
 <details>
 <summary>AudioNode</summary>
 Any kind of audio node
@@ -942,6 +1191,7 @@ Any kind of audio node
 **`from`**: `AudioNode`
   
 The same node, connected
+
 <details>
 <summary>AudioNode</summary>
 Any kind of audio node
@@ -951,6 +1201,7 @@ Any kind of audio node
 **`to`**: `AudioNode`
   
 The same node, connected
+
 <details>
 <summary>AudioNode</summary>
 Any kind of audio node
@@ -974,6 +1225,7 @@ The current context destination
 **`node`**: `AudioNode`
   
 The current context destination node
+
 <details>
 <summary>AudioNode</summary>
 Any kind of audio node
@@ -993,6 +1245,7 @@ Connect an audio node to audio context destination
 **`node`**: `AudioNode`
   
 Any Audio node to connect to the context destination
+
 <details>
 <summary>AudioNode</summary>
 Any kind of audio node
@@ -1004,6 +1257,7 @@ Any kind of audio node
 **`out`**: `AudioNode`
   
 The same node, connected to the context destination
+
 <details>
 <summary>AudioNode</summary>
 Any kind of audio node
@@ -1027,6 +1281,7 @@ A virtual Salamander grand piano as a Tone Node
 **`out`**: `AudioNode`
   
 A piano node
+
 <details>
 <summary>AudioNode</summary>
 Any kind of audio node
@@ -1046,6 +1301,7 @@ Arpeggiate between the given notes in a number of patterns
 **`notes`**: `Note[]`
   
 Notes to arpeggiate over
+
 <details>
 <summary>Note[]</summary>
 An array of Notes. Note encoding, can be something like A4, a midi index, or a raw frequency in Hz
@@ -1060,9 +1316,10 @@ The interval at which this node loops
 **`pattern`**: `Pattern`
   
 The arpeggiation pattern. See the `Pattern` type for options.
+
 <details>
 <summary>Pattern</summary>
-Arpeggio pattern. Possible values areup - cycles upward h - cycles downwardupDown - up then and down downUp - cycles down then and upalternateUp - jump up two and down onealternateDown - jump down two and up onerandom - randomly select an indexrandomWalk - randomly moves one index away from the current positionrandomOnce - randomly select an index without repeating until all values have been chosen.
+Arpeggio pattern. Possible values areup - cycles upwarddown - cycles downwardupDown - up then and downdownUp - cycles down then and upalternateUp - jump up two and down onealternateDown - jump down two and up onerandom - randomly select an indexrandomWalk - randomly moves one index away from the current positionrandomOnce - randomly select an index without repeating until all values have been chosen.
 
 </details>
 
@@ -1081,6 +1338,7 @@ probability that each iteration will play, [0,1]
 **`note`**: `Note`
   
 The note
+
 <details>
 <summary>Note</summary>
 Note encoding, can be something like A4, a midi index, or a raw frequency in Hz
@@ -1105,6 +1363,7 @@ A node which compresses signals from its origin. Compression reduces the volume 
 **`node`**: `AudioNode`
   
 The audio node to connect to this compressor.
+
 <details>
 <summary>AudioNode</summary>
 Any kind of audio node
@@ -1126,6 +1385,7 @@ The gain reduction ratio
 **`out`**: `Compressor`
   
 The compressor node
+
 <details>
 <summary>Compressor</summary>
 An object with arbitrary keys and values
@@ -1135,6 +1395,7 @@ An object with arbitrary keys and values
 **`node`**: `AudioNode`
   
 The node that was passed in, connected to the compressor
+
 <details>
 <summary>AudioNode</summary>
 Any kind of audio node
@@ -1154,6 +1415,7 @@ A Reverb based on Freeverb (https://ccrma.stanford.edu/~jos/pasp/Freeverb.html).
 **`node`**: `AudioNode`
   
 The audio node to connect to this reverb node
+
 <details>
 <summary>AudioNode</summary>
 Any kind of audio node
@@ -1175,6 +1437,7 @@ The roomSize value between [0,1]. A larger roomSize will result in a longer deca
 **`out`**: `Reverb`
   
 The resulting Reverb Node
+
 <details>
 <summary>Reverb</summary>
 An object with arbitrary keys and values
@@ -1184,6 +1447,7 @@ An object with arbitrary keys and values
 **`node`**: `AudioNode`
   
 The node that was passed in, connected to the reverb
+
 <details>
 <summary>AudioNode</summary>
 Any kind of audio node
@@ -1203,6 +1467,7 @@ Play a sound file from a remote source
 **`url`**: `url`
   
 the url to fetch the sound file from.
+
 <details>
 <summary>url</summary>
 A basic string type
@@ -1212,6 +1477,7 @@ A basic string type
 **`call`**: `Call`
   
 Certain nodes are designated 'callable', i.e. they are operator nodes. Sending a truthy call signal will invoke that node's handler over its parameters
+
 <details>
 <summary>Call</summary>
 Something that is callable
@@ -1228,6 +1494,7 @@ Whether or not the player should loop its contents indefinitely
 **`player`**: `Player`
   
 The player node
+
 <details>
 <summary>Player</summary>
 An object with arbitrary keys and values
@@ -1247,6 +1514,7 @@ A simple volume node, useful for creating a volume fader.
 **`node`**: `AudioNode`
   
 The audio node to connect to this Volume node.
+
 <details>
 <summary>AudioNode</summary>
 Any kind of audio node
@@ -1263,6 +1531,7 @@ The volume, in decibels
 **`out`**: `Volume`
   
 The volume node
+
 <details>
 <summary>Volume</summary>
 An object with arbitrary keys and values
@@ -1272,6 +1541,7 @@ An object with arbitrary keys and values
 **`node`**: `AudioNode`
   
 The node that was passed in, connected to this volume node
+
 <details>
 <summary>AudioNode</summary>
 Any kind of audio node
@@ -1291,6 +1561,7 @@ Ramp a signal to a value over a time
 **`signal`**: `Signal`
   
 The signal to ramp
+
 <details>
 <summary>Signal</summary>
 An audio signal, like volume, pan, frequency, etc.
@@ -1310,6 +1581,43 @@ The amount of time it takes to ramp
 #### outputs
 
 
+  
+
+
+
+## Noise
+
+A noise source
+  
+
+#### inputs
+
+**`type`**: `string`
+  
+The type of noise. One of pink, brown, or white.
+
+
+**`volume`**: `number`
+  
+The volume of the noise, in dB
+
+
+**`rate`**: `number`
+  
+The playback rate of the noise [0, 1]
+
+  
+#### outputs
+
+**`noise`**: `AudioNode`
+  
+The noise
+
+<details>
+<summary>AudioNode</summary>
+Any kind of audio node
+
+</details>
   
 
 
@@ -1351,6 +1659,7 @@ The sustain to use for this instrument
 **`out`**: `SoundFont`
   
 Resulting SoundFont
+
 <details>
 <summary>SoundFont</summary>
 A sample set assembled to be a virtual instrument
@@ -1370,6 +1679,7 @@ A Node which plays tone data to a SoundFont instrument
 **`soundFont`**: `SoundFont`
   
 The particular sound font to use.
+
 <details>
 <summary>SoundFont</summary>
 A sample set assembled to be a virtual instrument
@@ -1379,6 +1689,7 @@ A sample set assembled to be a virtual instrument
 **`toneData`**: `ToneData`
   
 Data fed in through this channel will be sent to the sound font instrument to play
+
 <details>
 <summary>ToneData</summary>
 Directives for an instrument / synth to play.
@@ -1388,6 +1699,7 @@ Directives for an instrument / synth to play.
 **`midiData`**: `MidiData`
   
 Data fed in through this channel will be sent to the sound font instrument to play
+
 <details>
 <summary>MidiData</summary>
 Midi signal. Usually a note, action, velocity, and channel information
@@ -1397,6 +1709,7 @@ Midi signal. Usually a note, action, velocity, and channel information
 **`midiDevice`**: `MidiInput`
   
 Optionally attach a midi input to this node to send signals to the soundfont
+
 <details>
 <summary>MidiInput</summary>
 A connected MIDI input
@@ -1492,6 +1805,7 @@ Admittedly a node borne of laziness -- given a standard js math package operatio
 **`fn`**: `MathFn`
   
 The function name. Check type info for options
+
 <details>
 <summary>MathFn</summary>
 Signatures for the available functionsE: number; LN10: number; LN2: number; LOG10E: number; LOG2E: number; PI: number; SQRT1_2: number; SQRT2: number; abs(x: number): number; acos(x: number): number; acosh(x: number): number; asin(x: number): number; asinh(x: number): number; atan(x: number): number; atan2(y: number, x: number): number; atanh(x: number): number; cbrt(x: number): number; ceil(x: number): number; cos(x: number): number; cosh(x: number): number; exp(x: number): number; expm1(x: number): number; floor(x: number): number; fround(x: number): number; log(x: number): number; log10(x: number): number; log1p(x: number): number; log2(x: number): number; pow(x: number, y: number): number; random(): number; round(x: number): number; sign(x: number): number; sin(x: number): number; sinh(x: number): number; sqrt(x: number): number; tan(x: number): number; tanh(x: number): number; trunc(x: number): number; max(...args: number[]); min(...args: number[])
@@ -1543,6 +1857,7 @@ hex representation of this color
 **`rgb`**: `RGBColor`
   
 rgb representation
+
 <details>
 <summary>RGBColor</summary>
 RGB representation of a color
@@ -1562,6 +1877,7 @@ A focused light, intended to be added to a scene
 **`color`**: `RGBColor`
   
 The color of this directional light
+
 <details>
 <summary>RGBColor</summary>
 RGB representation of a color
@@ -1573,6 +1889,7 @@ RGB representation of a color
 **`light`**: `Light`
   
 The directional light source
+
 <details>
 <summary>Light</summary>
 A light source in a scene
@@ -1592,6 +1909,7 @@ An ambient light, intended to be added to a scene
 **`color`**: `RGBColor`
   
 The color of this ambient light
+
 <details>
 <summary>RGBColor</summary>
 RGB representation of a color
@@ -1603,6 +1921,7 @@ RGB representation of a color
 **`light`**: `Light`
   
 The ambient light source
+
 <details>
 <summary>Light</summary>
 A light source in a scene
@@ -1622,6 +1941,7 @@ A holy perturbation
 **`delay`**: `Vec2`
   
 the min and max delay between glitches, as a 2d vector in second units
+
 <details>
 <summary>Vec2</summary>
 A 2D Vector with keys x and y
@@ -1633,6 +1953,7 @@ A 2D Vector with keys x and y
 **`glitch`**: `PostEffect`
   
 glitchy pass that can be applied to a render
+
 <details>
 <summary>PostEffect</summary>
 A post production render effect
@@ -1656,6 +1977,7 @@ A scanline post-process effect
 **`pass`**: `PostEffect`
   
 a scanline pass that can be applied to a render
+
 <details>
 <summary>PostEffect</summary>
 A post production render effect
@@ -1665,6 +1987,7 @@ A post production render effect
 **`effect`**: `object`
   
 the effect info
+
 <details>
 <summary>object</summary>
 An object with arbitrary keys and values
@@ -1688,6 +2011,7 @@ A Dot-screen post-process effect
 **`pass`**: `PostEffect`
   
 a dotscreen pass that can be applied to a render
+
 <details>
 <summary>PostEffect</summary>
 A post production render effect
@@ -1697,6 +2021,7 @@ A post production render effect
 **`effect`**: `object`
   
 the effect info
+
 <details>
 <summary>object</summary>
 An object with arbitrary keys and values
@@ -1733,6 +2058,7 @@ The vignette darkness [0,1]
 **`pass`**: `PostEffect`
   
 a vignette pass that can be applied to a render
+
 <details>
 <summary>PostEffect</summary>
 A post production render effect
@@ -1742,6 +2068,7 @@ A post production render effect
 **`effect`**: `object`
   
 the effect info
+
 <details>
 <summary>object</summary>
 An object with arbitrary keys and values
@@ -1768,6 +2095,7 @@ the blending opacity
 **`pass`**: `PostEffect`
   
 a noise pass that can be applied to a render
+
 <details>
 <summary>PostEffect</summary>
 A post production render effect
@@ -1777,6 +2105,7 @@ A post production render effect
 **`effect`**: `object`
   
 the effect info
+
 <details>
 <summary>object</summary>
 An object with arbitrary keys and values
@@ -1788,7 +2117,7 @@ An object with arbitrary keys and values
 
 ## Vector 3D
 
-A two dimensional vector with x y and y components
+A two dimensional vector with x y and z components
   
 
 #### inputs
@@ -1809,6 +2138,7 @@ A two dimensional vector with x y and y components
 
 **`out`**: `Vec3`
   
+
 <details>
 <summary>Vec3</summary>
 A 3D Vector with keys x, y, and z
@@ -1947,6 +2277,7 @@ Sample an RNN model trained on the Yamaha e-Piano Competition dataset
 **`scale`**: `PitchHistogram`
   
 This pitch distribution will be used as a tonic to condition this model
+
 <details>
 <summary>PitchHistogram</summary>
 A scale represented as a distribution of pitch classes. Valid inputs are either an array of numbers (len 12), or a single string of len 12 that describes relative semitone distributions (ranged 0-9). 0-indexed at C.e.g. F Major could be either array: [1, 0, 1, 0, 1, 2, 0, 1, 0, 1, 1, 0] or string:"101012010110"
@@ -1966,6 +2297,7 @@ number of steps per second. effectively a tempo measure for note generation / pl
 **`synth`**: `Synth`
   
 Optionally attach a synth to this node and trigger its attack / release
+
 <details>
 <summary>Synth</summary>
 Any kind of synth
@@ -1975,6 +2307,7 @@ Any kind of synth
 **`midiOut`**: `MidiOut`
   
 Optionally attach a midi output to this node and send midi signals to that device
+
 <details>
 <summary>MidiOut</summary>
 A connected MIDI output
@@ -1986,6 +2319,7 @@ A connected MIDI output
 **`midiData`**: `object`
   
 midi data out
+
 <details>
 <summary>object</summary>
 An object with arbitrary keys and values
@@ -1995,9 +2329,174 @@ An object with arbitrary keys and values
 **`toneData`**: `ToneData`
   
 tone out node
+
 <details>
 <summary>ToneData</summary>
 Directives for an instrument / synth to play.
+
+</details>
+  
+
+
+
+## MultiRNN Cell
+
+Computes the next states and outputs of a stack of LSTMCells.
+  
+
+#### inputs
+
+**`lstmCells`**: `Tensor`
+  
+The weights for the cell
+
+<details>
+<summary>Tensor</summary>
+n-dimensional tensor
+
+</details>
+
+**`data`**: `Tensor`
+  
+The input to the cell
+
+<details>
+<summary>Tensor</summary>
+n-dimensional tensor
+
+</details>
+
+**`c`**: `Tensor`
+  
+Previous cell state
+
+<details>
+<summary>Tensor</summary>
+n-dimensional tensor
+
+</details>
+
+**`h`**: `Tensor`
+  
+Previous cell output
+
+<details>
+<summary>Tensor</summary>
+n-dimensional tensor
+
+</details>
+  
+#### outputs
+
+**`newC`**: `Tensor`
+  
+Next cell state
+
+<details>
+<summary>Tensor</summary>
+n-dimensional tensor
+
+</details>
+
+**`newH`**: `Tensor`
+  
+Next cell output
+
+<details>
+<summary>Tensor</summary>
+n-dimensional tensor
+
+</details>
+  
+
+
+
+## LSTM Cell
+
+Computes the next state and output of a BasicLSTMCell
+  
+
+#### inputs
+
+**`forgetBias`**: `Tensor`
+  
+Forget bias for the cell
+
+<details>
+<summary>Tensor</summary>
+n-dimensional tensor
+
+</details>
+
+**`lstmKernel`**: `Tensor`
+  
+The weights for the cell
+
+<details>
+<summary>Tensor</summary>
+n-dimensional tensor
+
+</details>
+
+**`lstmBias`**: `Tensor`
+  
+The bias for the cell
+
+<details>
+<summary>Tensor</summary>
+n-dimensional tensor
+
+</details>
+
+**`data`**: `Tensor`
+  
+The input to the cell
+
+<details>
+<summary>Tensor</summary>
+n-dimensional tensor
+
+</details>
+
+**`c`**: `Tensor`
+  
+Previous cell state
+
+<details>
+<summary>Tensor</summary>
+n-dimensional tensor
+
+</details>
+
+**`h`**: `Tensor`
+  
+Previous cell output
+
+<details>
+<summary>Tensor</summary>
+n-dimensional tensor
+
+</details>
+  
+#### outputs
+
+**`newC`**: `Tensor`
+  
+Next cell state
+
+<details>
+<summary>Tensor</summary>
+n-dimensional tensor
+
+</details>
+
+**`newH`**: `Tensor`
+  
+Next cell output
+
+<details>
+<summary>Tensor</summary>
+n-dimensional tensor
 
 </details>
   
@@ -2041,6 +2540,7 @@ The tonic for this scale, e.g. "C" or "Ab4". You can optionally specify the scal
 **`name`**: `ScaleName`
   
 The name of the scale. Check type for possible values
+
 <details>
 <summary>ScaleName</summary>
 One of:aeolian altered augmented augmented heptatonic balinese bebop bebop dominant bebop locrian bebop major bebop minor chromatic composite blues diminished dorian dorian #4 double harmonic lydian double harmonic major egyptian enigmatic flamenco flat six pentatonic flat three pentatonic half-whole diminished harmonic major harmonic minor hirajoshi hungarian major hungarian minor ichikosucho in-sen ionian augmented ionian pentatonic iwato kafi raga kumoijoshi leading whole tone locrian locrian #2 locrian major locrian pentatonic lydian lydian #5P pentatonic lydian #9 lydian augmented lydian diminished lydian dominant lydian dominant pentatonic lydian minor lydian pentatonic major major blues major flat two pentatonic major pentatonic malkos raga melodic minor melodic minor fifth mode melodic minor second mode minor #7M pentatonic minor bebop minor blues minor hexatonic minor pentatonic minor six diminished minor six pentatonic mixolydian mixolydian pentatonic mystery #1 neopolitan neopolitan major neopolitan major pentatonic neopolitan minor oriental pelog persian phrygian phrygian dominant piongio prometheus prometheus neopolitan purvi raga ritusen romanian minor scriabin six tone symmetric spanish heptatonic super locrian pentatonic todi raga vietnamese 1 vietnamese 2 whole tone whole tone pentatonic 
@@ -2052,6 +2552,7 @@ One of:aeolian altered augmented augmented heptatonic balinese bebop bebop domin
 **`notes`**: `Note[]`
   
 The notes in this scale
+
 <details>
 <summary>Note[]</summary>
 An array of Notes. Note encoding, can be something like A4, a midi index, or a raw frequency in Hz
@@ -2061,6 +2562,7 @@ An array of Notes. Note encoding, can be something like A4, a midi index, or a r
 **`intervals`**: `Interval[]`
   
 The intervals between notes in this scale
+
 <details>
 <summary>Interval[]</summary>
 An array of Intervals. Natural interval name, e.g. 1P, 2M, 3M, 4P, 5P, 6m, 7m
@@ -2080,6 +2582,7 @@ A chroma representation of a pitchset as a 12-digit binary array, with each inde
 **`notes`**: `Note[]`
   
 A list of notes to compute a chroma for
+
 <details>
 <summary>Note[]</summary>
 An array of Notes. Note encoding, can be something like A4, a midi index, or a raw frequency in Hz
@@ -2091,6 +2594,7 @@ An array of Notes. Note encoding, can be something like A4, a midi index, or a r
 **`chroma`**: `number[]`
   
 the chroma output: 12-digit binary array, with each index presenting one semitone of the octave
+
 <details>
 <summary>number[]</summary>
 An array of numbers. A basic number type
@@ -2115,6 +2619,7 @@ The tonic for this scale, e.g. "C" or "Ab4". You can optionally specify the chor
 **`name`**: `ChordName`
   
 The name of the chord. Check type for possible values
+
 <details>
 <summary>ChordName</summary>
 One of:+add#9 11 11b9 13 13#11 13#9 13#9#11 13b5 13b9 13b9#11 13no5 13sus4 4 5 64 69#11 7 7#11 7#11b13 7#5 7#5#9 7#5b9 7#5b9#11 7#5sus4 7#9 7#9#11 7#9#11b13 7#9b13 7add6 7b13 7b5 7b6 7b9 7b9#11 7b9#9 7b9b13 7b9b13#11 7no5 7sus4 7sus4b9 7sus4b9b13 9 9#11 9#11b13 9#5 9#5#11 9b13 9b5 9no5 9sus4 M M#5 M#5add9 M13 M13#11 M6 M6#11 M69 M69#11 M7#11 M7#5 M7#5sus4 M7#9#11 M7add13 M7b5 M7b6 M7b9 M7sus4 M9 M9#11 M9#5 M9#5sus4 M9b5 M9sus4 Madd9 Maddb9 Maj7 Mb5 Mb6 Msus2 Msus4 m m#5 m11 m11A 5 m11b5 m13 m6 m69 m7 m7#5 m7add11 m7b5 m9 m9#5 m9b5 mM9 mM9b6 mMaj7 mMaj7b6 madd4 madd9 mb6M7 mb6b9 o o7 o7M7 oM7 sus24 
@@ -2126,6 +2631,7 @@ One of:+add#9 11 11b9 13 13#11 13#9 13#9#11 13b5 13b9 13b9#11 13no5 13sus4 4 5 6
 **`notes`**: `Note[]`
   
 The notes in this chord
+
 <details>
 <summary>Note[]</summary>
 An array of Notes. Note encoding, can be something like A4, a midi index, or a raw frequency in Hz
@@ -2135,6 +2641,7 @@ An array of Notes. Note encoding, can be something like A4, a midi index, or a r
 **`intervals`**: `Interval[]`
   
 The intervals between notes in this chord
+
 <details>
 <summary>Interval[]</summary>
 An array of Intervals. Natural interval name, e.g. 1P, 2M, 3M, 4P, 5P, 6m, 7m
@@ -2188,6 +2695,7 @@ The name of the key (a tonic + a mode), e.g. C major, Db dorian
 **`notes`**: `Note[]`
   
 Triad lead-sheet symbols for this key
+
 <details>
 <summary>Note[]</summary>
 An array of Notes. Note encoding, can be something like A4, a midi index, or a raw frequency in Hz
@@ -2214,6 +2722,7 @@ The midi out device id *or* name. The first matching one will be used in the cas
 **`device`**: `object`
   
 The midi output, or none if none were found
+
 <details>
 <summary>object</summary>
 An object with arbitrary keys and values
@@ -2240,6 +2749,7 @@ The midi in device id *or* name. The first matching one will be used in the case
 **`device`**: `object`
   
 The midi input, or none if none were found
+
 <details>
 <summary>object</summary>
 An object with arbitrary keys and values
@@ -2266,6 +2776,7 @@ String serialization
 **`out`**: `object`
   
 Parsed object
+
 <details>
 <summary>object</summary>
 An object with arbitrary keys and values
@@ -2285,6 +2796,7 @@ Extract a value from an object. Complement of SetNode
 **`from`**: `object`
   
 Object to extract from
+
 <details>
 <summary>object</summary>
 An object with arbitrary keys and values
@@ -2316,6 +2828,7 @@ Set a value on any object / array. Complement of ExtractNode
 **`target`**: `object`
   
 Object / array to set to
+
 <details>
 <summary>object</summary>
 An object with arbitrary keys and values
@@ -2362,6 +2875,7 @@ He doesn't know or care where it comes from, but Wolfram needs an initial state 
 **`call`**: `Call`
   
 Certain nodes are designated 'callable', i.e. they are operator nodes. Sending a truthy call signal will invoke that node's handler over its parameters
+
 <details>
 <summary>Call</summary>
 Something that is callable
@@ -2373,6 +2887,7 @@ Something that is callable
 **`out`**: `number[]`
   
 The resulting binary array
+
 <details>
 <summary>number[]</summary>
 An array of numbers. A basic number type
@@ -2404,6 +2919,7 @@ Any value. This will be pushed into the output collector
 **`out`**: `any[]`
   
 The collected queue, oldest to newest.
+
 <details>
 <summary>any[]</summary>
 An array of anys. This can be anything
@@ -2423,6 +2939,7 @@ Join an array of values together with a separator
 **`array`**: `object`
   
 Array of any data. Ideally this data is string serializable.
+
 <details>
 <summary>object</summary>
 An object with arbitrary keys and values
@@ -2498,6 +3015,7 @@ The value to fill with
 **`out`**: `any[]`
   
 An array, filled to length by value
+
 <details>
 <summary>any[]</summary>
 An array of anys. This can be anything
@@ -2558,11 +3076,34 @@ Any object to zip
 **`zipped`**: `any[]`
   
 The zipped object
+
 <details>
 <summary>any[]</summary>
 An array of anys. This can be anything
 
 </details>
+  
+
+
+
+## Null
+
+A passthrough node. Useful to name streams or to organize edges
+  
+
+#### inputs
+
+**`input`**: `any`
+  
+Any input. Will be passed directly to output
+
+  
+#### outputs
+
+**`output`**: `any`
+  
+The input, passed through
+
   
 
 
@@ -2633,6 +3174,7 @@ Define a GPGPU program to be run on your machine's compatible backend
 **`userCode`**: `GPGPUKernel`
   
 Your user code for the kernel to be uploaded to your graphics hardware. Syntax is specific to your backend, but a good strategy is conforming to the OpenGL/WebGL standards that most GPUs will support. In order to set an output to your kernel call setOutput in your kernel's main function. To get the output coords in your computation call getOutputCoords.
+
 <details>
 <summary>GPGPUKernel</summary>
 An open frameworks compliant shader program
@@ -2642,6 +3184,7 @@ An open frameworks compliant shader program
 **`outputShape`**: `number[]`
   
 A tensor shape describing the kernel output, e.g. [100, 100]. if omitted, output shape is assumed to be the same as the input shape
+
 <details>
 <summary>number[]</summary>
 An array of numbers. A basic number type
@@ -2651,6 +3194,7 @@ An array of numbers. A basic number type
 **`variableNames`**: `string[]`
   
 A list of variable names that your kernel will use. This gives you access to functions inside your program kernel. i.e. variable named X gives you the methods getXAtOutCoords and getX
+
 <details>
 <summary>string[]</summary>
 An array of strings. A basic string type
@@ -2662,6 +3206,7 @@ An array of strings. A basic string type
 **`program`**: `GPGPUProgram`
   
 Program info output. Use the "Run GPGPU" node to compile and run this over inputs
+
 <details>
 <summary>GPGPUProgram</summary>
 An uncompiled GPGPU program
@@ -2681,6 +3226,7 @@ Compile and run a GPGPU program. Kernels passed in will be compiled and cached, 
 **`program`**: `GPGPUProgram`
   
 The uncompiled program info to be turned into a full WebGL shader
+
 <details>
 <summary>GPGPUProgram</summary>
 An uncompiled GPGPU program
@@ -2690,6 +3236,7 @@ An uncompiled GPGPU program
 **`input`**: `any[]`
   
 The input tensor to run through the compiled program kernel
+
 <details>
 <summary>any[]</summary>
 An array of anys. This can be anything
@@ -2701,6 +3248,7 @@ An array of anys. This can be anything
 **`result`**: `any[]`
   
 Program output
+
 <details>
 <summary>any[]</summary>
 An array of anys. This can be anything
@@ -2710,7 +3258,7 @@ An array of anys. This can be anything
 
 
 
-## JS Code
+## JavaScript
 
 Define arbitrary JS code in this node. Runtime compatibility is based on your browser
   
@@ -2720,6 +3268,7 @@ Define arbitrary JS code in this node. Runtime compatibility is based on your br
 **`userCode`**: `JSFunction`
   
 A JS code block that returns something over the inputs. You can reference variables by input name, e.g. arg1
+
 <details>
 <summary>JSFunction</summary>
 A valid JS code block. You should call return at the end of your function to provide an output.
@@ -2756,6 +3305,11 @@ Any arg to supply to the user code block, accessible via arg5
 **`return`**: `any`
   
 Whatever was returned in the userCode block
+
+
+**`error`**: `any`
+  
+If the user code errored, this is the exception and function
 
   
 
