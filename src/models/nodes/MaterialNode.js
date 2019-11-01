@@ -8,6 +8,7 @@ import {
   ShaderMaterial,
   AdditiveBlending,
   PointsMaterial,
+  TextureLoader,
 } from 'three';
 import Base, { uniforms } from 'threeUtil/Base';
 import Edge from 'models/Edge';
@@ -186,4 +187,32 @@ export class ShaderMaterialNode extends NodeBase<S, { vertex: string, fragment: 
   };
 
   process = () => this.state;
+}
+
+export class LoadTextureNode extends NodeBase<{}, { url: string, name: string }, {}> {
+  static +displayName = 'Load Texture';
+  static +registryName = 'LoadTextureNode';
+  static description = <p>Load a texture into the global uniform set</p>;
+
+  static schema = {
+    input: {
+      url: Types.string.desc('The url to fetch this texture at'),
+      name: Types.string.desc('The name to export this sampler2D as'),
+    },
+    output: {},
+    state: {},
+  };
+  _loaded = {};
+
+  onInputChange = () => {
+    const { url, name } = this.props;
+    if (url && !this._loaded[url]) {
+      const tl = new TextureLoader();
+      this._loaded[url] = tl.load(url);
+    }
+    if (name && !uniforms[name] && this._loaded[url]) {
+      uniforms[name] = { type: 't', value: this._loaded[url] };
+    }
+    return [];
+  };
 }

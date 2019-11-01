@@ -45,7 +45,12 @@ import {
   BoxGeometryNode,
   GeometryBase,
 } from './Geometries';
-import { LambertMaterialNode, ShaderMaterialNode, ParticleMaterialNode } from './MaterialNode';
+import {
+  LambertMaterialNode,
+  ShaderMaterialNode,
+  ParticleMaterialNode,
+  LoadTextureNode,
+} from './MaterialNode';
 import { AndNode, OrNode, NotNode, EqualsNode, SwitchNode } from './Logic';
 import MeshNode, { PointsNode, LineNode } from './MeshNode';
 import { MidiOutNode, MidiInNode } from './Midi';
@@ -89,6 +94,7 @@ export {
   LambertMaterialNode,
   ShaderMaterialNode,
   ParticleMaterialNode,
+  LoadTextureNode,
   BoxGeometryNode,
   GeometryBase,
   ThreeNode,
@@ -183,6 +189,7 @@ export const allNodes = [
   LambertMaterialNode,
   ShaderMaterialNode,
   ParticleMaterialNode,
+  LoadTextureNode,
   ThreeNode,
   DuoSynthNode,
   SynthNode,
