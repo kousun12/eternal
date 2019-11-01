@@ -54,16 +54,16 @@ export default class NodeBase<Val: Object, In: ?Object, Out: ?Object> {
    * Run this node over current state to compute an output
    * @param keys a subset of outKeys which should be processed
    */
-  process: (string[]) => Out = keys => {
+  process: (string[]) => Out | Promise<Out> = keys => {
     throw new Error('unimplemented');
   };
 
-  _process: (string[], boolean) => Out = (keys, force) => {
+  _process: (string[], boolean) => Out | Promise<Out> = async (keys, force) => {
     if (!this.outKeys().length) {
       // $FlowIgnore
       return {};
     }
-    const val = this.process(keys);
+    const val = await this.process(keys);
     // TODO: think about mutating objects in output cache. should we deep copy or not allow mutations?
     const forward = force ? val : omitBy(val, (v, k) => isEqual(v, this.outputCache[k]));
     this.outputCache = { ...this.outputCache, ...val };
@@ -111,8 +111,9 @@ export default class NodeBase<Val: Object, In: ?Object, Out: ?Object> {
     this.beforeConnectIn(input);
     this.inputs.push(input);
     if (input.from.requireForOutput() && input.from.outKeys().length) {
-      const initialValue = input.from.process([input.toPort]);
-      this._onInputChange(input, input.outDataFor(initialValue), true);
+      Promise.resolve(input.from.process([input.toPort])).then(initialValue => {
+        this._onInputChange(input, input.outDataFor(initialValue), true);
+      });
     } else {
       this._unPushed.push(input.id);
     }
@@ -224,17 +225,18 @@ export default class NodeBase<Val: Object, In: ?Object, Out: ?Object> {
       return;
     }
     const asList = Array.isArray(ofKeyChanges) ? ofKeyChanges : [ofKeyChanges];
-    const val = this._process(asList, force);
-    const changes = pick(val, asList);
-    for (let listener in this.listeners) {
-      this.listeners[listener](this);
-    }
-    this.outputs
-      .filter(e => e.from.id === this.id && e.fromPort in changes)
-      .forEach(edge => {
-        edge.to._onInputChange(edge, edge.outDataFor(changes), force);
-        edge.notify();
-      });
+    Promise.resolve(this._process(asList, force)).then(val => {
+      const changes = pick(val, asList);
+      for (let listener in this.listeners) {
+        this.listeners[listener](this);
+      }
+      this.outputs
+        .filter(e => e.from.id === this.id && e.fromPort in changes)
+        .forEach(edge => {
+          edge.to._onInputChange(edge, edge.outDataFor(changes), force);
+          edge.notify();
+        });
+    });
   };
 
   notifyAllOutputs = (force?: boolean = false) => this.notifyOutputs(this.outKeys(), force);

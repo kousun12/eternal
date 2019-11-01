@@ -273,16 +273,13 @@ export class RegexReplace extends NodeBase<
   };
 
   requireForOutput = () =>
-    Boolean(this.re && this.props.string && typeof this.props.replacement !== 'object');
+    Boolean(
+      this.re && this.props.string && ['string', 'number'].includes(typeof this.props.replacement)
+    );
 
-  process = () => {
-    const { string, replacement } = this.props;
-    return { out: string.replace(this.re, replacement) };
-  };
+  process = () => ({ out: this.props.string.replace(this.re, this.props.replacement) });
 
-  onInputChange = (edge: Edge, change: Object) => {
-    return this.outKeys();
-  };
+  onInputChange = (edge: Edge, change: Object) => this.outKeys();
 }
 
 export class ArrayFillNode extends NodeBase<{}, { length: number, fillWith: any }, { out: any[] }> {

@@ -99,39 +99,27 @@ export class RunGPGPUProgramNode extends NodeBase<
     output: { result: arrayOf(Types.any).desc('Program output') },
     state: {},
   };
-  _inputQ: any[][] = [];
-  _result: any;
 
-  process = () => ({ result: this._result });
+  process = async () => ({ result: await this._compileAndRun() });
 
-  // TODO can we batch this in handles?
-  _compileAndRun = () => {
-    const { program } = this.props;
-    if (!program) {
-      return;
+  requireForOutput = () =>
+    this.props.program && this.props.program.userCode && Boolean(this.props.input);
+
+  // TODO this can get out of sync, but maybe that is the point
+  _compileAndRun = async (): Promise<number[]> => {
+    const { program, input } = this.props;
+    const i = tf.tensor(input);
+    if (program && program.outputShape.length === 0) {
+      program.outputShape = i.shape.slice();
     }
-    this._inputQ.forEach(async input => {
-      const i = tf.tensor(input);
-      const { program } = this.props;
-      if (program && program.outputShape.length === 0) {
-        program.outputShape = i.shape.slice();
-      }
-      this._result = await tf
-        .backend()
-        .compileAndRun(program, [i])
-        .data();
-      i.dispose();
-      this._result && this.notifyOutputs('result');
-    });
-    this._inputQ = [];
+    const r = await tf
+      .backend()
+      .compileAndRun(program, [i])
+      .data();
+    i.dispose();
+    console.log(r);
+    return r;
   };
 
-  onInputChange = (edge: Edge, change: Object) => {
-    if (edge.toPort === 'input') {
-      const i = edge.inDataFor(change);
-      i && this._inputQ.push(i);
-    }
-    this._compileAndRun();
-    return [];
-  };
+  onInputChange = (edge: Edge, change: Object) => this.outKeys();
 }
