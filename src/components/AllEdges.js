@@ -77,7 +77,7 @@ const AllEdges = ({
             start={addVec(outOffset(frm.x, frm.y, outIdx), pan)}
             end={addVec(inOffset(to.x, to.y, inIdx), pan)}
             key={`${e.id}-spline`}
-            onRemove={() => onRemoveConnector(e)}
+            onRemove={onRemoveConnector}
           />
         );
       })}

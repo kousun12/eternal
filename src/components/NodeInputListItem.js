@@ -1,11 +1,11 @@
 // @flow
 
-import React, { Component } from 'react';
+import React from 'react';
 
 type P = { index: number, onMouseUp: number => void, item: string, filled: boolean };
 type S = { hover: boolean };
 
-export default class NodeInputListItem extends Component<P, S> {
+export default class NodeInputListItem extends React.PureComponent<P, S> {
   state = { hover: false };
 
   onMouseUp = (e: MouseEvent) => {

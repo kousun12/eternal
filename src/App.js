@@ -1,7 +1,8 @@
 // @flow
 
 import './boot';
-import React, { Component } from 'react';
+import React from 'react';
+
 import { connect } from 'react-redux';
 import { createSelector } from 'redux-starter-kit';
 import { get, throttle } from 'lodash';
@@ -63,7 +64,7 @@ type S = {
 
 const defaultNodePos = { x: 70, y: 120 };
 
-class App extends Component<P, S> {
+class App extends React.PureComponent<P, S> {
   nodeIndex: number = 0;
   mostRecentNode: ?AnyNode = null;
   fileUpload: ?FileUpload;

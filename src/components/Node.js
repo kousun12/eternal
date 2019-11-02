@@ -37,7 +37,7 @@ type P = {| ...SP, ...OP |};
 type S = { loading: boolean, renaming: boolean };
 const MoveBufferPx = 4;
 
-class Node extends React.Component<P, S> {
+class Node extends React.PureComponent<P, S> {
   state = { loading: false, renaming: false };
   dragStart: ?Pos;
 
@@ -65,6 +65,7 @@ class Node extends React.Component<P, S> {
   _onDelete = () => this.props.onDelete && this.props.onDelete(this.props.nis.node);
 
   handleDragStart = (event: MouseEvent, data: DraggableData) => {
+    event.stopPropagation();
     if (event.metaKey || event.shiftKey) {
       return;
     }
@@ -73,14 +74,17 @@ class Node extends React.Component<P, S> {
   };
 
   handleDragStop: DraggableEventHandler = (event: MouseEvent, data: DraggableData) => {
+    event.stopPropagation();
     this.props.onNodeStop(this.props.nis, data);
     setTimeout(() => {
       this.dragStart = null;
     });
   };
 
-  handleDrag = (event: MouseEvent, data: DraggableData) =>
+  handleDrag = (event: MouseEvent, data: DraggableData) => {
+    event.stopPropagation();
     !event.metaKey && this.props.onNodeMove(this.props.nis, data);
+  };
 
   onStartConnector = (i: number, e: MouseEvent, d: DraggableData) =>
     this.props.onStartConnector(this.props.nis.node.id, i, e, d);

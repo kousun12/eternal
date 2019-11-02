@@ -100,26 +100,44 @@ export class RunGPGPUProgramNode extends NodeBase<
     state: {},
   };
 
-  process = async () => ({ result: await this._compileAndRun() });
+  _result: number[];
+  _inputQ: number[][] = [];
+
+  process = () => ({ result: this._result });
 
   requireForOutput = () =>
     this.props.program && this.props.program.userCode && Boolean(this.props.input);
 
-  // TODO this can get out of sync, but maybe that is the point
-  _compileAndRun = async (): Promise<number[]> => {
-    const { program, input } = this.props;
-    const i = tf.tensor(input);
-    if (program && program.outputShape.length === 0) {
-      program.outputShape = i.shape.slice();
+  _processQ = async () => {
+    const { program } = this.props;
+    if (!this.requireForOutput()) {
+      return;
     }
-    const r = await tf
-      .backend()
-      .compileAndRun(program, [i])
-      .data();
-    i.dispose();
-    console.log(r);
-    return r;
+    let item = this._inputQ.pop();
+    while (item) {
+      const i = tf.tensor(item);
+      if (program && program.outputShape.length === 0) {
+        program.outputShape = i.shape.slice();
+      }
+      try {
+        this._result = await tf
+          .backend()
+          .compileAndRun(program, [i])
+          .data();
+        this.notifyAllOutputs(true);
+      } catch (e) {
+        console.error(e);
+      }
+      i.dispose();
+      item = this._inputQ.pop();
+    }
   };
 
-  onInputChange = (edge: Edge, change: Object) => this.outKeys();
+  onInputChange = (edge: Edge, change: Object) => {
+    if (edge.toPort === 'input') {
+      this._inputQ.push(this.props.input);
+      this._processQ();
+    }
+    return [];
+  };
 }

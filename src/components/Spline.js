@@ -15,7 +15,7 @@ type DP = {|
 type OP = {|
   start: Pos,
   end: Pos,
-  onRemove?: () => void,
+  onRemove?: Edge => void,
   edge: ?Edge,
   highlighted?: boolean,
   incomplete?: boolean,
@@ -23,11 +23,10 @@ type OP = {|
 type P = {| ...OP, ...DP |};
 type S = { selected: boolean, transmitting: boolean };
 
-class Spline extends React.Component<P, S> {
+class Spline extends React.PureComponent<P, S> {
   el: ?Element;
   state = { selected: false, transmitting: false };
   listeningOnEdge: string;
-  lastTransmit: ?number = null;
 
   handleClick = () => {
     this.setState({ selected: true });
@@ -77,7 +76,8 @@ class Spline extends React.Component<P, S> {
 
   handleRemove = () => {
     this.setState({ selected: false });
-    this.props.onRemove && this.props.onRemove();
+    const { onRemove, edge } = this.props;
+    onRemove && edge && onRemove(edge);
   };
 
   render() {

@@ -7,7 +7,7 @@ import { Dialog, Classes, Intent, Button, Label } from '@blueprintjs/core';
 type P = { isOpen: boolean, handleClose: () => void, saveFile: string => void, initial: ?string };
 type S = { name: string };
 
-export default class SaveDialog extends React.Component<P, S> {
+export default class SaveDialog extends  React.PureComponent<P, S> {
   constructor(props: P) {
     super(props);
     this.state = { name: props.initial || '' };

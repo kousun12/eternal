@@ -13,7 +13,7 @@ type P = {
   positionOffset: Pos | typeof undefined,
 };
 
-export default class NodeOutputListItem extends React.Component<P> {
+export default class NodeOutputListItem extends  React.PureComponent<P> {
   onMouseDown = (e: MouseEvent, data: DraggableData) => {
     e.stopPropagation();
     e.preventDefault();

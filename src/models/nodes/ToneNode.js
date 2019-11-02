@@ -188,8 +188,9 @@ export class PannerNode extends NodeBase<
 
   onInputChange = (edge: Edge, change: Object) => {
     if ('node' === edge.toPort && this.state._connectedTo !== edge.id) {
-      logConnect(edge.inDataFor(change), this.state.panner);
-      edge.inDataFor(change).connect(this.state.panner);
+      const node = edge.inDataFor(change);
+      logConnect(node, this.state.panner);
+      Tone.connect(node, this.state.panner);
       return this.outKeys();
     }
     return [];
@@ -244,7 +245,7 @@ export class VolumeNode extends NodeBase<
   onInputChange = (edge: Edge, change: Object) => {
     if ('node' === edge.toPort && this.state._connectedTo !== edge.id) {
       logConnect(edge.inDataFor(change), this.state.volume);
-      edge.inDataFor(change).connect(this.state.volume);
+      Tone.connect(edge.inDataFor(change), this.state.volume);
       return this.outKeys();
     }
     return [];
@@ -304,7 +305,7 @@ export class CompressorNode extends NodeBase<
   onInputChange = (edge: Edge, change: Object) => {
     if ('node' === edge.toPort) {
       logConnect(edge.inDataFor(change), this.state.compressor);
-      edge.inDataFor(change).connect(this.state.compressor);
+      Tone.connect(edge.inDataFor(change), this.state.compressor);
       return this.outKeys();
     }
     return [];
@@ -366,7 +367,7 @@ export class ReverbNode extends NodeBase<
   onInputChange = (edge: Edge, change: Object) => {
     if ('node' === edge.toPort && this.state._connectedTo !== edge.id) {
       logConnect(edge.inDataFor(change), this.state.reverb);
-      edge.inDataFor(change).connect(this.state.reverb);
+      Tone.connect(edge.inDataFor(change), this.state.reverb);
       return this.outKeys();
     }
     return [];
@@ -428,7 +429,7 @@ export class FeedbackDelayNode extends NodeBase<
   onInputChange = (edge: Edge, change: Object) => {
     if ('node' === edge.toPort && this.state._connectedTo !== edge.id) {
       logConnect(edge.inDataFor(change), this.state.feedbackDelay);
-      edge.inDataFor(change).connect(this.state.feedbackDelay);
+      Tone.connect(edge.inDataFor(change), this.state.feedbackDelay);
       return this.outKeys();
     }
     return [];
@@ -486,7 +487,7 @@ export class AudioDelayNode extends NodeBase<
   onInputChange = (edge: Edge, change: Object) => {
     if ('node' === edge.toPort && this.state._connectedTo !== edge.id) {
       logConnect(edge.inDataFor(change), this.state.delay);
-      edge.inDataFor(change).connect(this.state.delay);
+      Tone.connect(edge.inDataFor(change), this.state.delay);
       return this.outKeys();
     }
     return [];
@@ -545,7 +546,7 @@ export class AudioGainNode extends NodeBase<
   onInputChange = (edge: Edge, change: Object) => {
     if ('node' === edge.toPort && this.state._connectedTo !== edge.id) {
       logConnect(edge.inDataFor(change), this.state.gain);
-      edge.inDataFor(change).connect(this.state.gain);
+      Tone.connect(edge.inDataFor(change), this.state.gain);
       return this.outKeys();
     }
     return [];

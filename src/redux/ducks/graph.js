@@ -1,6 +1,11 @@
 // @flow
 
-import { combineReducers, createSlice, type PayloadAction as PA } from 'redux-starter-kit';
+import {
+  combineReducers,
+  createSelector,
+  createSlice,
+  type PayloadAction as PA,
+} from 'redux-starter-kit';
 import { fromPairs } from 'lodash';
 import type { State } from 'redux/types';
 import { range } from 'utils/array';
@@ -61,17 +66,43 @@ const nodePosSlice = createSlice({
   reducers: { updatePos: (memo: PosMemo, a: PA<PosMemo>) => ({ ...memo, ...a.payload }) },
 });
 
-export const selectedS = (s: State) => ({
-  selected: fromPairs(s.graph.selected.map(id => [id, true])),
-  selectCount: s.graph.selected.length,
-});
+const selectedSelector = (s: State) => s.graph.selected;
+
+const emptyById = {};
+const selectedById = createSelector(
+  [selectedSelector],
+  sel => (sel.length ? fromPairs(sel.map(id => [id, true])) : emptyById)
+);
+
+const selectCount = createSelector(
+  [selectedSelector],
+  s => s.length
+);
+
+export const selectedS = createSelector(
+  [selectedById, selectCount],
+  (selected, selectCount) => ({ selected, selectCount })
+);
 
 export type SelectedView = {| pan: Pos, scale: number, scaleInverse: number, zoom: number |};
-export const selectView = (s: State): SelectedView => {
-  const { zoom } = s.graph.view;
-  const scale = zooms[zoom] / 100;
-  return { pan: s.graph.view.pan, scale, scaleInverse: 1 / scale, zoom };
-};
+
+const zoomSelector = (s: State) => s.graph.view.zoom;
+const panSelector = (s: State) => s.graph.view.pan;
+
+const scaleSelector = createSelector(
+  [zoomSelector],
+  zoom => zooms[zoom] / 100
+);
+
+const scaleInvSelector = createSelector(
+  [scaleSelector],
+  scale => 1 / scale
+);
+
+export const selectView = createSelector(
+  [panSelector, scaleSelector, scaleInvSelector, zoomSelector],
+  (pan, scale, scaleInverse, zoom) => ({ pan, scale, scaleInverse, zoom })
+);
 
 export const selectInfoOpen = (s: State) => s.graph.infoOpen;
 export const selectPositions = (s: State) => s.graph.nodePos;

@@ -1,5 +1,5 @@
 // @flow
-import React, { Component } from 'react';
+import React from 'react';
 import { get, throttle } from 'lodash';
 import { DraggableCore } from 'react-draggable';
 import type { AnyNode, Changeable, Displayable } from 'models/NodeBase';
@@ -14,7 +14,7 @@ const Types = window.Types;
 type P = { node: AnyNode };
 type S = { fullDocs: boolean, width: number, resizerTop: number };
 
-class AttributePane extends Component<P, S> {
+class AttributePane extends React.PureComponent<P, S> {
   state = { fullDocs: true, width: 380, resizerTop: 0 };
   listener: ?string;
   root: { current: null | HTMLDivElement };
@@ -186,7 +186,7 @@ type MP = {
   editOnHotkey?: boolean,
 };
 
-class MultiTypeEditor extends Component<MP> {
+class MultiTypeEditor extends React.PureComponent<MP> {
   static defaultProps = { disabled: false, editOnHotkey: false };
 
   _isComplex = (): boolean => {

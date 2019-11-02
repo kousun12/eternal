@@ -58,7 +58,7 @@ type S = {|
   metaDown: boolean,
 |};
 
-class NodeGraph extends React.Component<P, S> {
+class NodeGraph extends React.PureComponent<P, S> {
   dragOffsets: PosMemo = {};
   canvasDragStart: ?Pos;
   moving: boolean = false;
@@ -311,7 +311,9 @@ class NodeGraph extends React.Component<P, S> {
       } else if (!e.metaKey) {
         const { setPan, pan, scaleInverse, scale } = this.props;
         const newPan = addVec(pan, scaleVec({ x: data.deltaX, y: data.deltaY }, scaleInverse));
-        setPan(newPan);
+        if (Math.max(Math.abs(pan.x - newPan.x), Math.abs(pan.y - newPan.y)) > 4) {
+          setPan(newPan);
+        }
         if (document.body) {
           document.body.style.backgroundPosition = `${newPan.x * scale}px ${newPan.y * scale}px`;
         }
@@ -331,7 +333,7 @@ class NodeGraph extends React.Component<P, S> {
 
   _onEndCanvasDrag = (e: MouseEvent, data: DraggableData) => {
     if (this.deselectNodes) {
-      this.props.selSet([]);
+      this.props.selectCount && this.props.selSet([]);
       this.deselectNodes = false;
     }
     this._clearCanvasDrag();
@@ -603,6 +605,7 @@ const select = createSelector(
   [selectedS, selectView],
   (selected, view) => ({ ...selected, ...view })
 );
+
 const dispatch = d => ({
   selSet: id => d(_selSet(id)),
   zoomIn: (pan?: Pos) => d(_zIn(pan)),

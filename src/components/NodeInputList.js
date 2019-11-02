@@ -12,7 +12,7 @@ type P = {
   display: string[],
 };
 
-export default class NodeInputList extends React.Component<P> {
+export default class NodeInputList extends  React.PureComponent<P> {
   onMouseUp = (i: number) => {
     this.props.onCompleteConnector(i);
   };

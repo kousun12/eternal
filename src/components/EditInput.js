@@ -12,7 +12,7 @@ type P = {
 };
 type S = { editing: boolean };
 
-export default class EditInput extends React.Component<P, S> {
+export default class EditInput extends  React.PureComponent<P, S> {
   input: ?HTMLInputElement;
   state = { editing: false };
 

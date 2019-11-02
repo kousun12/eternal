@@ -1,11 +1,8 @@
-import React, { Component } from 'react';
+import React from 'react';
 
-export default class SVGComponent extends Component {
+export default class SVGComponent extends React.PureComponent {
   render() {
-    return (
-      <svg {...this.props}>
-        {this.props.children}
-      </svg>
-    );
+    const { children, ...rest } = this.props;
+    return <svg {...rest}>{children}</svg>;
   }
 }

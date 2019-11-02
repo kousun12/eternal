@@ -14,7 +14,7 @@ type P = {
   positionOffset: Pos | typeof undefined,
 };
 
-export default class NodeOutputList extends React.Component<P> {
+export default class NodeOutputList extends  React.PureComponent<P> {
   render() {
     const { items, connected, display, scale, positionOffset, onStartConnector } = this.props;
     return (

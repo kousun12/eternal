@@ -1,10 +1,10 @@
 // @flow
 
-import React, { Component } from 'react';
+import React from 'react';
 import { get } from 'lodash';
 type P = { onFile: File => void };
 
-class FileUpload extends Component<P> {
+class FileUpload extends React.PureComponent<P> {
   fileInput: ?HTMLElement;
 
   openFileInput = () => {
