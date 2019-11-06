@@ -19,7 +19,6 @@ type P = {
   paneId: ?string,
   selected: { [string]: boolean },
   onRemoveConnector: Edge => void,
-  edges: Edge[],
   pan: Pos,
   positions: PosMemo,
   graph: Graph,
@@ -34,7 +33,6 @@ const AllEdges = ({
   paneId,
   selected,
   onRemoveConnector,
-  edges,
   pan,
   graph,
   scaleInverse,
@@ -57,7 +55,7 @@ const AllEdges = ({
   }
   return (
     <SVGComponent height="100%" width="100%" className="edge-svg">
-      {edges.map(e => {
+      {graph.edges.map(e => {
         const [fromId, toId] = [e.from.id, e.to.id];
         const [i, o] = [graph.nodeWithIdF(toId), graph.nodeWithIdF(fromId)];
 

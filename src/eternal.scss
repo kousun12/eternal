@@ -48,6 +48,10 @@ body {
   -moz-font-smoothing: antialiased;
 }
 
+.hide {
+  visibility: hidden;
+}
+
 #graph-root {
   position: absolute;
   width: 100%;

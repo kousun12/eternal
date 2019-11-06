@@ -63,7 +63,10 @@ const viewSlice = createSlice({
 const nodePosSlice = createSlice({
   slice: 'nodePos',
   initialState: {},
-  reducers: { updatePos: (memo: PosMemo, a: PA<PosMemo>) => ({ ...memo, ...a.payload }) },
+  reducers: {
+    updatePos: (memo: PosMemo, a: PA<PosMemo>) => ({ ...memo, ...a.payload }),
+    setPos: (memo: PosMemo, a: PA<PosMemo>) => a.payload,
+  },
 });
 
 const selectedSelector = (s: State) => s.graph.selected;
@@ -110,7 +113,7 @@ export const selectPositions = (s: State) => s.graph.nodePos;
 export const { selSet } = selectedSlice.actions;
 export const { setInfoOpen } = infoOpenSlice.actions;
 export const { zoomIn, zoomOut, zoomReset, setPan, setScale } = viewSlice.actions;
-export const { updatePos } = nodePosSlice.actions;
+export const { updatePos, setPos } = nodePosSlice.actions;
 
 export default combineReducers({
   selected: selectedSlice.reducer,

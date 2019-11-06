@@ -140,7 +140,7 @@ export default class Base {
       depthTexture: true,
     });
     const renderer = composer.renderer;
-    new OrbitControls(this.camera, renderer.domElement);
+    const controls = new OrbitControls(this.camera, renderer.domElement);
     renderer.domElement.style.visibility = 'hidden';
     document.body && document.body.appendChild(renderer.domElement);
     WEBVR.checkAvailability().then(avail => {
@@ -149,7 +149,8 @@ export default class Base {
         renderer.vr.enabled = true;
       }
     });
-
+    
+    controls.update();
     composer.reset();
     this.load(() => {
       const renderPass = new RenderPass(this.scene, this.camera);

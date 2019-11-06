@@ -20,7 +20,9 @@ import {
   zoomReset as _zReset,
   setPan as _setPan,
   updatePos as _updatePos,
+  setPos as _setPos,
   zooms,
+  selectPositions,
 } from 'redux/ducks/graph';
 
 import type { NodeInSpace, Pos } from 'types';
@@ -39,7 +41,12 @@ type OP = {|
   onNodeSelectionChange?: (?AnyNode, ?number) => void,
   visible: boolean,
 |};
-type SP = {| selected: { [string]: boolean }, selectCount: number, ...SelectedView |};
+type SP = {|
+  selected: { [string]: boolean },
+  selectCount: number,
+  ...SelectedView,
+  positions: PosMemo,
+|};
 type DP = {|
   selSet: (string[]) => void,
   zoomIn: (?Pos) => void,
@@ -47,6 +54,7 @@ type DP = {|
   zoomReset: () => void,
   setPan: Pos => void,
   updatePos: PosMemo => void,
+  setPos: PosMemo => void,
 |};
 
 type P = {| ...SP, ...OP, ...DP |};
@@ -266,7 +274,7 @@ class NodeGraph extends React.PureComponent<P, S> {
     this._onNodeChange(null);
   };
 
-  _setPosFromGraph = () => this.props.updatePos(this.props.graph.nodePositions());
+  _setPosFromGraph = () => this.props.setPos(this.props.graph.nodePositions());
 
   _onNodeChange = (n: ?AnyNode, idx?: number) => {
     if (this.props.onNodeSelectionChange) {
@@ -341,7 +349,7 @@ class NodeGraph extends React.PureComponent<P, S> {
 
   render() {
     const { connecting, source, metaDown } = this.state;
-    const { visible, selected, scale, pan, graph, scaleInverse } = this.props;
+    const { visible, selected, scale, pan, graph, scaleInverse, positions } = this.props;
     const selStyle = this._selectionBoxStyle();
     return (
       <DraggableCore
@@ -358,7 +366,8 @@ class NodeGraph extends React.PureComponent<P, S> {
           onClick={this._onCanvasClick}
         >
           <div id="graph-scalable" style={this._rootStyle()}>
-            {graph.nodes.map((nis, i) => {
+            {Object.keys(positions).map((id, i) => {
+              const nis = graph.nodeWithIdF(id);
               return (
                 <Node
                   selected={selected[nis.node.id]}
@@ -381,7 +390,6 @@ class NodeGraph extends React.PureComponent<P, S> {
               );
             })}
             <AllEdges
-              edges={get(graph, 'edges', [])}
               dragging={connecting}
               source={source}
               visible={visible}
@@ -602,8 +610,8 @@ class NodeGraph extends React.PureComponent<P, S> {
 }
 
 const select = createSelector(
-  [selectedS, selectView],
-  (selected, view) => ({ ...selected, ...view })
+  [selectedS, selectView, selectPositions],
+  (selected, view, positions) => ({ ...selected, ...view, positions })
 );
 
 const dispatch = d => ({
@@ -613,6 +621,7 @@ const dispatch = d => ({
   zoomReset: () => d(_zReset()),
   setPan: (pos: Pos) => d(_setPan(pos)),
   updatePos: (pos: PosMemo) => d(_updatePos(pos)),
+  setPos: (pos: PosMemo) => d(_setPos(pos)),
 });
 
 export default connect(

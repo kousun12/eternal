@@ -14,7 +14,10 @@ import {
   TextureLoader,
   Vector2,
   Vector3,
+  Scene,
   Color as ThreeColor,
+  PerspectiveCamera,
+  OrthographicCamera,
 } from 'three';
 import {
   ChromaticAberrationEffect,
@@ -38,6 +41,7 @@ const TT = {
   Color: Types.object.aliased('RGBColor', 'RGB representation of a color'),
   Light: Types.object.aliased('Light', 'A light source in a scene'),
   Camera: Types.object.aliased('Camera', 'A camera that exists in a scene'),
+  Scene: Types.object.aliased('Scene', 'A 3D Scene'),
   PostEffect: Types.object.aliased('PostEffect', 'A post production render effect'),
   SceneElement: Types.object.aliased(
     'SceneElement',
@@ -45,7 +49,11 @@ const TT = {
   ),
 };
 
-export default class ThreeNode extends NodeBase<S, P, null> {
+export default class ThreeNode extends NodeBase<
+  S,
+  P,
+  { camera: PerspectiveCamera | OrthographicCamera, scene: Scene }
+> {
   static +displayName = 'Render Scene';
   static +registryName = 'ThreeNode';
   static description = (
@@ -61,7 +69,10 @@ export default class ThreeNode extends NodeBase<S, P, null> {
       clearColor: TT.Color.desc("The renderer's clear color"),
       clearAlpha: Types.number.desc("The alpha component for the renderer's clear color"),
     },
-    output: {},
+    output: {
+      camera: TT.Camera.desc("The scene's camera"),
+      scene: TT.Scene.desc('The scene'),
+    },
     state: {},
   };
 
@@ -73,7 +84,7 @@ export default class ThreeNode extends NodeBase<S, P, null> {
   _start = () => {
     if (this.props.child && !this.started) {
       this.started = true;
-      this.state.base.camera.position.set(0, 0, 30);
+      this.state.base.camera.position.set(0, 7, 30);
       this.state.base.camera.lookAt(new Vector3(0, 0, 0));
       this.state.base.start();
       if (this.state.base.renderPass && this.state.base.renderPass.renderToScreen) {
@@ -149,6 +160,8 @@ export default class ThreeNode extends NodeBase<S, P, null> {
     this._start();
     return [];
   };
+
+  process = () => ({ camera: this.state.base.camera, scene: this.state.base.scene });
 }
 
 export class AmbientLightNode extends NodeBase<

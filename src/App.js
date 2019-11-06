@@ -108,7 +108,7 @@ class App extends React.PureComponent<P, S> {
     showWelcome && this._setGraph(Graph.load(welcomeGraph));
 
     const hide = this._paramFor(urlRe.hide);
-    typeof hide === 'string' && this.setState({ visible: hide === '0' });
+    typeof hide === 'string' && this._setVisible(hide === '0');
 
     const debug = this._paramFor(urlRe.debug);
     typeof debug === 'string' && debug === '1' && this._toggleDebug();
@@ -119,6 +119,15 @@ class App extends React.PureComponent<P, S> {
   componentWillUnmount() {
     document.removeEventListener('mousemove', this._onMouseMove);
   }
+
+  _setVisible = (visible: boolean) => {
+    this.setState({ visible });
+    if (!visible) {
+      document.getElementById('eternal-root').className = 'hide';
+    } else {
+      document.getElementById('eternal-root').className = '';
+    }
+  };
 
   _paramFor = (re: RegExp): any => get(window.location.search.match(re), 1);
 
@@ -198,6 +207,8 @@ class App extends React.PureComponent<P, S> {
       // only show node info if pane is already open
       if (showNode) {
         this._onNodeSelect(node);
+      } else {
+        this._setNode(node);
       }
       selSet([node.id]);
       updatePos({ [node.id]: pos });
@@ -207,6 +218,11 @@ class App extends React.PureComponent<P, S> {
 
   _onNodeSelect = (node: ?AnyNode, idx?: number) => {
     this._setInfoOpen(get(node, 'id', null));
+    this._setNode(node, idx);
+    this.state.searchingNodes && this._closeSearch();
+  };
+
+  _setNode = (node: ?AnyNode, idx?: number) => {
     const _node = node;
     if (_node) {
       this.mostRecentNode = _node;
@@ -215,7 +231,6 @@ class App extends React.PureComponent<P, S> {
       }
       window.$node = node;
     }
-    this.state.searchingNodes && this._closeSearch();
   };
 
   _closeSearch = () =>
@@ -223,7 +238,7 @@ class App extends React.PureComponent<P, S> {
   _closeSave = () => this.setState({ saveOpen: false });
   _showSave = () => this.setState({ saveOpen: true });
   _showNodeSearch = () => this.setState({ searchingNodes: true });
-  _toggleGraph = () => this.setState({ visible: !this.state.visible });
+  _toggleGraph = () => this._setVisible(!this.state.visible);
 
   _loadUrl = (example?: GraphSerialization) => {
     const { promptLoad } = this.state;

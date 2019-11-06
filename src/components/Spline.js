@@ -42,6 +42,14 @@ class Spline extends React.PureComponent<P, S> {
     this._setListener();
   }
 
+  componentWillUnmount(): * {
+    if (this.props.edge && this.listeningOnEdge) {
+      this.props.edge.notifyListener = null;
+      this.listeningOnEdge = '';
+    }
+    this.transTime && clearTimeout(this.transTime);
+  }
+
   _setListener = () => {
     if (this.props.edge && this.listeningOnEdge !== this.props.edge.id) {
       this.props.edge.notifyListener = this._onNotify;
