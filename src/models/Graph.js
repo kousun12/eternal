@@ -1,5 +1,6 @@
 //@flow
 import { get, flatten, uniqBy, fromPairs, mapValues } from 'lodash';
+import dagre from 'dagre';
 import Edge from 'models/Edge';
 import NodeBase from 'models/NodeBase';
 import type { NodeInSpace, Pos } from 'types';
@@ -106,8 +107,10 @@ export default class Graph {
       description: this.description || '',
     };
   };
-  
-  setName = (name: string) => { this.name = name }
+
+  setName = (name: string) => {
+    this.name = name;
+  };
 
   duplicate: (NodeInSpace[]) => NodeInSpace[] = nodes => {
     const ids = nodes.map(nis => nis.node.id);
@@ -122,6 +125,25 @@ export default class Graph {
       }
     });
     return newNodes;
+  };
+
+  layout = () => {
+    const g = new dagre.graphlib.Graph();
+    g.setGraph({});
+    g.setDefaultEdgeLabel(() => ({}));
+    this.nodes.forEach(nis => {
+      const dom = nis.node.domNode();
+      g.setNode(nis.node.id, dom.getBoundingClientRect());
+    });
+    this.edges.forEach(edge => {
+      g.setEdge(edge.from.id, edge.to.id);
+    });
+    g.nodes().forEach(function(v) {
+      console.log('Node ' + v + ': ' + JSON.stringify(g.node(v)));
+    });
+    g.edges().forEach(function(e) {
+      console.log('Edge ' + e.v + ' -> ' + e.w + ': ' + JSON.stringify(g.edge(e)));
+    });
   };
 
   dispose = () => {
