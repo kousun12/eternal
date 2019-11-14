@@ -6,6 +6,7 @@ import store from './redux/rootStore';
 // import './utils/docgen';
 
 import * as serviceWorker from './serviceWorker';
+
 serviceWorker.register();
 
 const render = () => {

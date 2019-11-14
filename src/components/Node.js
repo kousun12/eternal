@@ -98,6 +98,8 @@ class Node extends React.PureComponent<P, S> {
     this.props.onNodeSelect &&
     this.props.onNodeSelect(this.props.nis, this.props.index, resetHighlights);
 
+  _selectNodeWithResets = () => this._selectNode(true);
+
   _deselectNode = (removeHighlight: boolean, resetOtherHighlights: boolean) => {
     if (this.props.onNodeDeselect) {
       this.props.onNodeDeselect(this.props.nis, removeHighlight, resetOtherHighlights);
@@ -165,7 +167,7 @@ class Node extends React.PureComponent<P, S> {
         <div
           className={nodeClass}
           onClick={this.handleClick}
-          onDoubleClick={() => this._selectNode(true)}
+          onDoubleClick={this._selectNodeWithResets}
           id={node.domId()}
         >
           <header
