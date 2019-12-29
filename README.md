@@ -1,7 +1,7 @@
-<p align="center">👾 welcome to the eternal 👾</p>
+<p align="center">👾 welcome to the eternal  👾</p>
 
 <p align="center"><a href="https://kousun12.github.io/eternal">~~ demo ~~</a></p>
-<p align="center"><a href="https://github.com/kousun12/eternal/blob/master/background/README.md">~~ writeup / explanation ~~</a></p>
+<p align="center"><a href="https://github.com/kousun12/eternal/blob/master/background/README.md">~~ writeup ~~</a></p>
 <p align="center"><a href="https://github.com/kousun12/eternal/blob/master/docs.md">~~ node docs ~~</a></p>
 
 This project was created for gratuitous reasons; it serves an aesthetic that I appreciate, over a medium which I feel is appropriate for its expression. 
