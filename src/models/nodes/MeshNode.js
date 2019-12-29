@@ -80,16 +80,17 @@ export default class MeshNode extends NodeBase<
   process = () => this.state;
 }
 
-export const [LineNode, PointsNode] = [Line, Points].map(
-  clazz =>
+// NB can't use class constructor name because we'll minify in prod
+export const [LineNode, PointsNode] = [[Line, 'Line'], [Points, 'Points']].map(
+  ([clazz, name]) =>
     class _MeshNode extends MeshNode {
-      static +displayName = clazz.name;
-      static +registryName = `${clazz.name}Node`;
-      static description = <span>A WebGL {clazz.name}</span>;
+      static +displayName = name;
+      static +registryName = `${name}Node`;
+      static description = <span>A WebGL {name}</span>;
 
       static schema = {
         ...super.schema,
-        output: { mesh: TT.Mesh.desc(`The resulting ${clazz.name} object`) },
+        output: { mesh: TT.Mesh.desc(`The resulting ${name} object`) },
       };
 
       willBecomeLive = () => {
