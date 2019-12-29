@@ -57,10 +57,12 @@ Computer graphics and scenes are similarly very naturally composed as hierarchic
 <br/>
 <sub>Drawing a cart procedurally with context transforms vs. describing a scene graph statically</sub>
 </p>
-
-[!houdini](!brain.gif)
-
-<sub>node composition in houdini</sub>
+<br/>
+<p align="center">
+<img src="brain.gif" alt="node-composition-houdini">
+<br/>
+<sub>Node composition in Houdini</sub>
+</p>
 
 Excel and computer spreadsheets, some of the most brilliant computer programs ever conceived, are also directly interpretable as functional programs over a fluent interface. The keras API made composing complex layered neural network graphs much more legible than in the early days of transporting and transforming tensors in a more procedural way.
 
