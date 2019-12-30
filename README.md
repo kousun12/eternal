@@ -96,6 +96,8 @@ and so on, until the ends.
 #### Development
 This might smell in some ways like consumer software, but you should understand it as an art project. While I believe that there's a place for something like this (a node-based audio / visual creative tool in the browser), this has been made as an aesthetic exploration; I will support it out of personal interests, but I don't intend to support it for the general public.
 
+This definitely isn't where I spend a lot of my time, but if you're really into this and want to help drive it with me part time, shoot me an email / dm. 
+
 `yarn start`
 
 Runs the app in the development mode.<br>
