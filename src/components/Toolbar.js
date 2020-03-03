@@ -84,6 +84,15 @@ const Toolbar = ({
             target="_blank"
           />
         </Tooltip>
+        <Tooltip content="what is this thing?">
+          <AnchorButton
+            minimal
+            icon="help"
+            large
+            href="https://github.com/kousun12/eternal/blob/master/background/README.md"
+            target="_blank"
+          />
+        </Tooltip>
         <Tooltip content="show keyboard shortcuts">
           <AnchorButton minimal icon="key-command" large onClick={_showHotKeys} />
         </Tooltip>
