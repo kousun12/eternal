@@ -1,27 +1,25 @@
 {
   "files": {
-    "main.css": "/static/css/main.fb4c4d9f.chunk.css",
-    "main.js": "/static/js/main.f7a07172.chunk.js",
-    "main.js.map": "/static/js/main.f7a07172.chunk.js.map",
-    "runtime-main.js": "/static/js/runtime-main.d7c61133.js",
-    "runtime-main.js.map": "/static/js/runtime-main.d7c61133.js.map",
-    "static/css/2.2e799eb9.chunk.css": "/static/css/2.2e799eb9.chunk.css",
-    "static/js/2.6abc9350.chunk.js": "/static/js/2.6abc9350.chunk.js",
-    "static/js/2.6abc9350.chunk.js.map": "/static/js/2.6abc9350.chunk.js.map",
+    "main.css": "/static/css/main.1700c725.css",
+    "main.js": "/static/js/main.44520e14.js",
+    "static/media/fontawesome-webfont.svg?v=4.7.0": "/static/media/fontawesome-webfont.c1e38fd9e0e74ba58f7a.svg",
+    "static/media/fontawesome-webfont.eot": "/static/media/fontawesome-webfont.8b43027f47b20503057d.eot",
+    "static/media/fontawesome-webfont.ttf?v=4.7.0": "/static/media/fontawesome-webfont.1e59d2330b4c6deb84b3.ttf",
+    "static/media/icons-20.eot": "/static/media/icons-20.9285da04b1371b5652c9.eot",
+    "static/media/icons-20.woff": "/static/media/icons-20.af3b1815ec3318e5dd45.woff",
+    "static/media/icons-20.ttf": "/static/media/icons-20.10ffd4a23ccb08b67b22.ttf",
+    "static/media/fontawesome-webfont.woff?v=4.7.0": "/static/media/fontawesome-webfont.f691f37e57f04c152e23.woff",
+    "static/media/icons-16.eot": "/static/media/icons-16.cbcd02296395eb6b0dc2.eot",
+    "static/media/icons-16.woff": "/static/media/icons-16.6e3b228c392998444cae.woff",
+    "static/media/icons-16.ttf": "/static/media/icons-16.9578e4a053c13297af42.ttf",
+    "static/media/fontawesome-webfont.woff2?v=4.7.0": "/static/media/fontawesome-webfont.20fd1704ea223900efa9.woff2",
+    "static/media/bg-texture-dark.png": "/static/media/bg-texture-dark.0d4b4d72a395c5affc00.png",
     "index.html": "/index.html",
-    "precache-manifest.ea6e9c795e0797f5c86dfd834698f78f.js": "/precache-manifest.ea6e9c795e0797f5c86dfd834698f78f.js",
-    "service-worker.js": "/service-worker.js",
-    "static/css/2.2e799eb9.chunk.css.map": "/static/css/2.2e799eb9.chunk.css.map",
-    "static/css/main.fb4c4d9f.chunk.css.map": "/static/css/main.fb4c4d9f.chunk.css.map",
-    "static/media/eternal.scss": "/static/media/bg-texture-dark.8aa56616.png",
-    "static/media/font-awesome.scss": "/static/media/fontawesome-webfont.fee66e71.woff",
-    "static/media/blueprint-icons.css": "/static/media/icons-20.9f1e6164.woff"
+    "main.1700c725.css.map": "/static/css/main.1700c725.css.map",
+    "main.44520e14.js.map": "/static/js/main.44520e14.js.map"
   },
   "entrypoints": [
-    "static/js/runtime-main.d7c61133.js",
-    "static/css/2.2e799eb9.chunk.css",
-    "static/js/2.6abc9350.chunk.js",
-    "static/css/main.fb4c4d9f.chunk.css",
-    "static/js/main.f7a07172.chunk.js"
+    "static/css/main.1700c725.css",
+    "static/js/main.44520e14.js"
   ]
 }
