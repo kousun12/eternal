@@ -35,18 +35,20 @@ export default class Graph {
     meta: MetaData = {}
   ) {
     this.id = uuid();
-    (nodes || []).forEach(nis => this.addNode(nis.node, nis.pos));
+    (nodes || []).forEach((nis) => this.addNode(nis.node, nis.pos));
     (edges || []).forEach(this.addEdge);
     this.name = name;
     this.description = description || '';
     this.meta = meta;
   }
 
-  nodeWithId: string => ?NodeInSpace = id => this._nodesById[id];
+  nodeWithId: (string) => ?NodeInSpace = (id) => this._nodesById[id];
 
-  nodeWithIdF: string => NodeInSpace = id => {
+  nodeWithIdF: (string) => NodeInSpace = (id) => {
     const n = this.nodeWithId(id);
-    if (!n) throw new Error('not found');
+    if (!n) {
+      throw new Error('not found');
+    }
     return n;
   };
 
@@ -58,14 +60,14 @@ export default class Graph {
     return nis;
   };
 
-  setNodes: (NodeInSpace[]) => Graph = nodes => {
+  setNodes: (NodeInSpace[]) => Graph = (nodes) => {
     this.nodes = nodes;
-    this._nodesById = fromPairs(nodes.map(n => [n.node.id, n]));
+    this._nodesById = fromPairs(nodes.map((n) => [n.node.id, n]));
     return this;
   };
 
   updatePositions = (pos: PosMemo) => {
-    this.nodes.forEach(nis => {
+    this.nodes.forEach((nis) => {
       const p = pos[nis.node.id];
       if (p) {
         nis.pos = p;
@@ -77,22 +79,22 @@ export default class Graph {
 
   nodePositions = (): PosMemo => mapValues(this._nodesById, 'pos');
 
-  removeNode: AnyNode => Graph = node => {
+  removeNode: (AnyNode) => Graph = (node) => {
     node.inputs.forEach(this.removeEdge);
     node.outputs.forEach(this.removeEdge);
     node.willBeRemoved();
-    this.setNodes(this.nodes.filter(n => n.node.id !== node.id));
+    this.setNodes(this.nodes.filter((n) => n.node.id !== node.id));
     return this;
   };
 
-  addEdge: Edge => void = edge => {
+  addEdge: (Edge) => void = (edge) => {
     this.edges.push(edge);
     edge.from.addOutput(edge);
     edge.to.addInput(edge);
   };
 
-  removeEdge: Edge => void = edge => {
-    this.edges = this.edges.filter(e => e.id !== edge.id);
+  removeEdge: (Edge) => void = (edge) => {
+    this.edges = this.edges.filter((e) => e.id !== edge.id);
     edge.from.removeOutput(edge);
     edge.to.removeInput(edge);
   };
@@ -100,33 +102,37 @@ export default class Graph {
   serialize: (string, ?MetaData) => GraphSerialization = (name, meta) => {
     return {
       name,
-      nodes: this.nodes.map(n => n.node.serialize(n.pos.x, n.pos.y)),
-      edges: this.edges.map(e => e.serialize()),
+      nodes: this.nodes.map((n) => n.node.serialize(n.pos.x, n.pos.y)),
+      edges: this.edges.map((e) => e.serialize()),
       ...(meta && { meta }),
       description: this.description || '',
     };
   };
-  
-  setName = (name: string) => { this.name = name }
 
-  duplicate: (NodeInSpace[]) => NodeInSpace[] = nodes => {
-    const ids = nodes.map(nis => nis.node.id);
-    const newNodes = nodes.map(nis =>
+  setName = (name: string) => {
+    this.name = name;
+  };
+
+  duplicate: (NodeInSpace[]) => NodeInSpace[] = (nodes) => {
+    const ids = nodes.map((nis) => nis.node.id);
+    const newNodes = nodes.map((nis) =>
       this.addNode(NodeBase.duplicate(nis.node), { x: nis.pos.x + 50, y: nis.pos.y + 50 })
     );
-    uniqBy(flatten(nodes.map(nis => nis.node.inputs.concat(nis.node.outputs))), 'id').forEach(e => {
-      const fIdx = ids.indexOf(e.from.id);
-      const tIdx = ids.indexOf(e.to.id);
-      if (fIdx !== -1 && tIdx !== -1) {
-        this.addEdge(new Edge(newNodes[fIdx].node, newNodes[tIdx].node, e.fromPort, e.toPort));
+    uniqBy(flatten(nodes.map((nis) => nis.node.inputs.concat(nis.node.outputs))), 'id').forEach(
+      (e) => {
+        const fIdx = ids.indexOf(e.from.id);
+        const tIdx = ids.indexOf(e.to.id);
+        if (fIdx !== -1 && tIdx !== -1) {
+          this.addEdge(new Edge(newNodes[fIdx].node, newNodes[tIdx].node, e.fromPort, e.toPort));
+        }
       }
-    });
+    );
     return newNodes;
   };
 
   dispose = () => {
     this.edges.forEach(this.removeEdge);
-    this.nodes.map(n => n.node).forEach(this.removeNode);
+    this.nodes.map((n) => n.node).forEach(this.removeNode);
     this.edges = [];
     this.nodes = [];
     this._nodesById = {};
@@ -136,9 +142,12 @@ export default class Graph {
   };
 
   static load(json: GraphSerialization): Graph {
-    const nodesInSpace = json.nodes.map(n => ({ node: NodeBase.load(n), pos: { x: n.x, y: n.y } }));
-    const nodes = nodesInSpace.map(nis => nis.node);
-    const edges = json.edges.map(j => Edge.load(j, nodes));
+    const nodesInSpace = json.nodes.map((n) => ({
+      node: NodeBase.load(n),
+      pos: { x: n.x, y: n.y },
+    }));
+    const nodes = nodesInSpace.map((nis) => nis.node);
+    const edges = json.edges.map((j) => Edge.load(j, nodes));
     const name = json.name || 'untitled';
     const desc = json.description || '';
     const meta = json.meta || {};
@@ -153,7 +162,7 @@ export default class Graph {
     return typeof frm === 'object' && frm.edges && frm.nodes ? frm : null;
   }
 
-  static fromFile(file: File, handler: GraphSerialization => void) {
+  static fromFile(file: File, handler: (GraphSerialization) => void) {
     const fileReader = new FileReader();
     fileReader.onload = () => {
       const result = fileReader.result;

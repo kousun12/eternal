@@ -34,9 +34,9 @@ import type { Direction } from 'utils/vector';
 
 type OP = {|
   graph: Graph,
-  onCreateEdge?: Edge => void,
-  onDeleteEdge?: Edge => void,
-  onNodeSelect?: AnyNode => void,
+  onCreateEdge?: (Edge) => void,
+  onDeleteEdge?: (Edge) => void,
+  onNodeSelect?: (AnyNode) => void,
   onNodeDeselect?: (AnyNode, ?boolean, ?boolean) => void,
   onNodeSelectionChange?: (?AnyNode, ?number) => void,
   visible: boolean,
@@ -52,9 +52,9 @@ type DP = {|
   zoomIn: (?Pos) => void,
   zoomOut: (?Pos) => void,
   zoomReset: () => void,
-  setPan: Pos => void,
-  updatePos: PosMemo => void,
-  setPos: PosMemo => void,
+  setPan: (Pos) => void,
+  updatePos: (PosMemo) => void,
+  setPos: (PosMemo) => void,
 |};
 
 type P = {| ...SP, ...OP, ...DP |};
@@ -73,7 +73,13 @@ class NodeGraph extends React.PureComponent<P, S> {
   deselectNodes: boolean = false;
   timeoutId: ?TimeoutID = null;
   deltaY: number = 0;
-  state = { source: null, connecting: false, mousePos: null, canvasDragEnd: null, metaDown: false };
+  state = {
+    source: null,
+    connecting: false,
+    mousePos: null,
+    canvasDragEnd: null,
+    metaDown: false,
+  };
 
   componentDidMount() {
     document.addEventListener('mousemove', this.onMouseMove);
@@ -83,7 +89,9 @@ class NodeGraph extends React.PureComponent<P, S> {
     window.centerP = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
     window.addEventListener('resize', this.onWinResize);
     const { graph } = this.props;
-    graph && this._setPosFromGraph();
+    if (graph) {
+      this._setPosFromGraph();
+    }
   }
 
   componentWillUnmount() {
@@ -155,7 +163,7 @@ class NodeGraph extends React.PureComponent<P, S> {
 
   _getSelected = (): NodeInSpace[] => {
     const { selected, graph } = this.props;
-    return graph.nodes.filter(nis => selected[nis.node.id]);
+    return graph.nodes.filter((nis) => selected[nis.node.id]);
   };
 
   onNodeStartMove = (started: NodeInSpace, data: DraggableData) => {
@@ -165,7 +173,7 @@ class NodeGraph extends React.PureComponent<P, S> {
     } else {
       this.dragOffsets = fromPairs(
         this._getSelected()
-          .map(nis => [nis.node.id, subVec(started.pos, nis.pos)])
+          .map((nis) => [nis.node.id, subVec(started.pos, nis.pos)])
           .concat([[started.node.id, zero]])
       );
     }
@@ -174,7 +182,7 @@ class NodeGraph extends React.PureComponent<P, S> {
 
   onNodeStopMove = (node: NodeInSpace, data: DraggableData) => {
     this.onNodeMove(node, data);
-    const updates = mapValues(this.dragOffsets, offset => subVec(data, offset));
+    const updates = mapValues(this.dragOffsets, (offset) => subVec(data, offset));
     this._posUpdate(updates);
     this.dragOffsets = {};
     this.moving = false;
@@ -196,7 +204,7 @@ class NodeGraph extends React.PureComponent<P, S> {
       Math.abs(this.lastData.x - data.x) > thresh ||
       Math.abs(this.lastData.y - data.y) > thresh
     ) {
-      const updates = mapValues(this.dragOffsets, offset => subVec(data, offset));
+      const updates = mapValues(this.dragOffsets, (offset) => subVec(data, offset));
       this.props.updatePos(updates);
       this.lastUpdateTime = performance.now();
       this.lastData = data;
@@ -235,6 +243,8 @@ class NodeGraph extends React.PureComponent<P, S> {
       this.props.onDeleteEdge(edge);
     }
     this.props.graph.removeEdge(edge);
+    const origMouse = this.state.mousePos;
+    this.setState({ mousePos: { x: 0, y: 0 } }, () => this.setState({ mousePos: origMouse }));
     this.forceUpdate();
   };
 
@@ -286,7 +296,7 @@ class NodeGraph extends React.PureComponent<P, S> {
     !(r1.right < r2.left || r1.left > r2.right || r1.bottom < r2.top || r1.top > r2.bottom);
 
   _nodesIntersecting = (box: ClientRect): NodeInSpace[] =>
-    this.props.graph.nodes.filter(nis => {
+    this.props.graph.nodes.filter((nis) => {
       const el = nis.node.domNode();
       return el && this._overlaps(box, el.getBoundingClientRect());
     });
@@ -301,12 +311,12 @@ class NodeGraph extends React.PureComponent<P, S> {
       return;
     }
     const { selSet, selected } = this.props;
-    const ids = this._nodesIntersecting(selBound).map(nis => nis.node.id);
+    const ids = this._nodesIntersecting(selBound).map((nis) => nis.node.id);
     selSet(
       union
         ? uniq(Object.keys(selected).concat(ids))
         : subtract
-        ? Object.keys(selected).filter(sId => !ids.includes(sId))
+        ? Object.keys(selected).filter((sId) => !ids.includes(sId))
         : ids
     );
   }, 30);
@@ -331,6 +341,7 @@ class NodeGraph extends React.PureComponent<P, S> {
   }, 18);
 
   _onStartCanvasDrag = (e: MouseEvent, data: DraggableData) => {
+    console.log(data);
     if (e.metaKey) {
       this.canvasDragStart = data;
       this.deselectNodes = false;
@@ -367,8 +378,8 @@ class NodeGraph extends React.PureComponent<P, S> {
         >
           <div id="graph-scalable" style={this._rootStyle()}>
             {Object.keys(positions).map((id, i) => {
-              const nis = graph.nodeWithIdF(id);
-              return (
+              const nis = graph.nodeWithId(id);
+              return nis ? (
                 <Node
                   selected={selected[nis.node.id]}
                   visible={visible}
@@ -387,7 +398,7 @@ class NodeGraph extends React.PureComponent<P, S> {
                   scale={scale}
                   positionOffset={pan}
                 />
-              );
+              ) : null;
             })}
             <AllEdges
               dragging={connecting}
@@ -464,7 +475,7 @@ class NodeGraph extends React.PureComponent<P, S> {
   };
 
   _onCopy = () => {
-    const selected = this.props.graph.duplicate(this._getSelected()).map(nis => nis.node.id);
+    const selected = this.props.graph.duplicate(this._getSelected()).map((nis) => nis.node.id);
     this.props.selSet(selected);
   };
 
@@ -474,7 +485,7 @@ class NodeGraph extends React.PureComponent<P, S> {
       return;
     }
     const x = selected[0].pos.x;
-    const updates = fromPairs(selected.map(nis => [nis.node.id, { ...nis.pos, x }]));
+    const updates = fromPairs(selected.map((nis) => [nis.node.id, { ...nis.pos, x }]));
     this._posUpdate(updates);
   };
 
@@ -484,7 +495,7 @@ class NodeGraph extends React.PureComponent<P, S> {
       return;
     }
     const y = selected[0].pos.y;
-    const updates = fromPairs(selected.map(nis => [nis.node.id, { ...nis.pos, y }]));
+    const updates = fromPairs(selected.map((nis) => [nis.node.id, { ...nis.pos, y }]));
     this._posUpdate(updates);
   };
 
@@ -501,7 +512,7 @@ class NodeGraph extends React.PureComponent<P, S> {
     if (set.length < 2) {
       return;
     }
-    const byId = fromPairs(set.map(nis => [nis.node.id, nis]));
+    const byId = fromPairs(set.map((nis) => [nis.node.id, nis]));
     let next = get(set, [0, 'node', 'id']);
     const groups = [];
     while (next) {
@@ -525,7 +536,7 @@ class NodeGraph extends React.PureComponent<P, S> {
     const updates = {};
     for (const group of groups) {
       const x = group[0].pos.x;
-      group.forEach(nis => {
+      group.forEach((nis) => {
         updates[nis.node.id] = { ...nis.pos, x };
       });
     }
@@ -614,8 +625,8 @@ const select = createSelector(
   (selected, view, positions) => ({ ...selected, ...view, positions })
 );
 
-const dispatch = d => ({
-  selSet: id => d(_selSet(id)),
+const dispatch = (d) => ({
+  selSet: (id) => d(_selSet(id)),
   zoomIn: (pan?: Pos) => d(_zIn(pan)),
   zoomOut: (pan?: Pos) => d(_zOut(pan)),
   zoomReset: () => d(_zReset()),
@@ -624,7 +635,4 @@ const dispatch = d => ({
   setPos: (pos: PosMemo) => d(_setPos(pos)),
 });
 
-export default connect(
-  select,
-  dispatch
-)(HotkeysTarget(NodeGraph));
+export default connect(select, dispatch)(HotkeysTarget(NodeGraph));
