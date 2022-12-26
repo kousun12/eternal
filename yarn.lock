@@ -8275,11 +8275,6 @@ optionator@^0.9.1:
     type-check "^0.4.0"
     word-wrap "^1.2.3"
 
-orbit-controls-es6@^2.0.0:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/orbit-controls-es6/-/orbit-controls-es6-2.0.1.tgz#43ee3d470007364106aaae337edbe4a74eedc041"
-  integrity sha512-Np+XREwlIFl7tSpMSqHuJ20ySonCwCJO+vxyMGmijCJv5+I1SqGQMNfn2fwJC3TVvakXRIxa4ayxJdzeF5dPAA==
-
 os-tmpdir@~1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/os-tmpdir/-/os-tmpdir-1.0.2.tgz#bbe67406c79aa85c5cfec766fe5734555dfa1274"
@@ -9371,10 +9366,10 @@ postinstall-postinstall@^2.0.0:
   resolved "https://registry.yarnpkg.com/postinstall-postinstall/-/postinstall-postinstall-2.1.0.tgz#4f7f77441ef539d1512c40bd04c71b06a4704ca3"
   integrity sha512-7hQX6ZlZXIoRiWNrbMQaLzUUfH+sSx39u8EJ9HYuDc1kLo9IXKWjM5RSquZN1ad5GnH8CGFM78fsAAQi3OKEEQ==
 
-postprocessing@^5.3.2:
-  version "5.6.0"
-  resolved "https://registry.yarnpkg.com/postprocessing/-/postprocessing-5.6.0.tgz#210edaf366e4970ecb7689ee5bc289dcea4ebaf2"
-  integrity sha512-+kvzu6teSCFzqjJHvz2Ov1aOot3v4O3dwfLgDn1bp16Dr8kWewUriCEwsSjK//e7znAoy+rZsi2ptZwW+FPh+g==
+postprocessing@^6.29.1:
+  version "6.29.1"
+  resolved "https://registry.yarnpkg.com/postprocessing/-/postprocessing-6.29.1.tgz#169b48cca498a52d3ee4b8960645b089cc7f64b3"
+  integrity sha512-w+XoL2Z7YpVDsHbIeg6sldMMmDqZS4Hul1FDq3TjOeXZ0Wnp0Qy1EvR7QmYJxyWBux1cKQx/k3XO7LxfvPsZyg==
 
 prelude-ls@^1.2.1:
   version "1.2.1"
@@ -11152,10 +11147,10 @@ text-table@^0.2.0:
   resolved "https://registry.yarnpkg.com/text-table/-/text-table-0.2.0.tgz#7f5ee823ae805207c00af2df4a84ec3fcfa570b4"
   integrity sha512-N+8UisAXDGk8PFXP4HAzVR9nbfmVJ3zYLAWiTIoqC5v5isinhr+r5uaO8+7r3BMfuNIufIsA7RdpVgacC2cSpw==
 
-three@^0.99.0:
-  version "0.99.0"
-  resolved "https://registry.yarnpkg.com/three/-/three-0.99.0.tgz#65711fda7a16501da83948121437d824df1fea19"
-  integrity sha512-DmNNq6H6nRGaqxScJ8x7v5VjdtDZR72oTVwDdKbB2BYNFxCkAoo9vdFAznEsMu9YzTV2yFvbVs7qHRzvJZzTIg==
+three@^0.148.0:
+  version "0.148.0"
+  resolved "https://registry.yarnpkg.com/three/-/three-0.148.0.tgz#b6f62f9c84227f8d51c151bf17b67984ded8e4d7"
+  integrity sha512-8uzVV+qhTPi0bOFs/3te3RW6hb3urL8jYEl6irjCWo/l6sr8MPNMcClFev/MMYeIxr0gmDcoXTy/8LXh/LXkfw==
 
 throat@^6.0.1:
   version "6.0.1"

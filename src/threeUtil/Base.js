@@ -11,7 +11,8 @@ import {
   OrthographicCamera,
 } from 'three';
 import { throttle } from 'lodash';
-import OrbitControls from 'orbit-controls-es6';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+
 import Stats from 'threeUtil/Stats';
 import WEBVR from 'threeUtil/WebVR';
 import { EffectComposer, RenderPass } from 'postprocessing';
@@ -101,7 +102,7 @@ export default class Base {
     }
   }
 
-  update: (delta: number) => ?UpdateSignal = delta => {};
+  update: (delta: number) => ?UpdateSignal = (delta) => {};
 
   configure(gui: ?Object) {}
 
@@ -143,13 +144,13 @@ export default class Base {
     const controls = new OrbitControls(this.camera, renderer.domElement);
     renderer.domElement.style.visibility = 'hidden';
     document.body && document.body.appendChild(renderer.domElement);
-    WEBVR.checkAvailability().then(avail => {
+    WEBVR.checkAvailability().then((avail) => {
       if (avail && document.body) {
         document.body.appendChild(WEBVR.createButton(renderer));
         renderer.vr.enabled = true;
       }
     });
-    
+
     controls.update();
     composer.reset();
     this.load(() => {

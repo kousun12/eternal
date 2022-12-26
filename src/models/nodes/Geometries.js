@@ -4,11 +4,12 @@ import NodeBase from 'models/NodeBase';
 import Edge from 'models/Edge';
 import {
   TorusKnotBufferGeometry,
-  Geometry,
+  BufferGeometry,
   PlaneBufferGeometry,
   BoxBufferGeometry,
   SphereBufferGeometry,
   Vector3,
+  BufferAttribute,
 } from 'three';
 import { arrayOf } from 'utils/typeUtils';
 const Types = window.Types;
@@ -21,8 +22,8 @@ type P = {
   p: number,
   q: number,
 };
-type S = { geometry: Geometry };
-type O = { geometry: Geometry };
+type S = { geometry: BufferGeometry };
+type O = { geometry: BufferGeometry };
 
 const TT = {
   Geometry: Types.object.aliased(
@@ -61,14 +62,16 @@ export class GeometryBase extends NodeBase<S, { vertices: Vector3[], appendVerts
     const { vertices, appendVerts } = this.props;
     if (appendVerts) {
       if (!this.state.geometry) {
-        this.state.geometry = new Geometry();
+        this.state.geometry = new BufferGeometry();
       }
-      this.state.geometry.vertices.push(vertices || []);
+      const vArray = vertices.map((v) => [v.x, v.y, v.z]);
+      this.state.geometry.setAttribute('position', new BufferAttribute(vArray, 3));
       this.state.geometry.verticesNeedUpdate = true;
     } else {
       this.state.geometry && this.state.geometry.dispose();
-      this.state.geometry = new Geometry();
-      this.state.geometry.vertices.push(vertices || []);
+      this.state.geometry = new BufferGeometry();
+      const vArray = vertices.map((v) => [v.x, v.y, v.z]);
+      this.state.geometry.setAttribute('position', new BufferAttribute(vArray, 3));
     }
   };
 
@@ -138,7 +141,7 @@ export class TorusKnotGeometryNode extends NodeBase<S, P, O> {
 
   onInputChange = (edge: Edge) => {
     let notify = false;
-    ['radius', 'tube', 'tubularSegments', 'radialSegments', 'p', 'q'].forEach(k => {
+    ['radius', 'tube', 'tubularSegments', 'radialSegments', 'p', 'q'].forEach((k) => {
       if (k === edge.toPort && this.state.geometry.parameters[k] !== this.props[k]) {
         this._setGeo();
         notify = true;
@@ -184,7 +187,7 @@ export class PlaneGeometryNode extends NodeBase<S, { width: number, height: numb
 
   onInputChange = (edge: Edge) => {
     let notify = false;
-    ['width', 'height'].forEach(k => {
+    ['width', 'height'].forEach((k) => {
       if (k === edge.toPort && this.state.geometry.parameters[k] !== this.props[k]) {
         this._setGeo();
         notify = true;
@@ -243,7 +246,7 @@ export class BoxGeometryNode extends NodeBase<
 
   onInputChange = (edge: Edge) => {
     let notify = false;
-    ['width', 'height', 'depth'].forEach(k => {
+    ['width', 'height', 'depth'].forEach((k) => {
       if (k === edge.toPort && this.state.geometry.parameters[k] !== this.props[k]) {
         this._setGeo();
         notify = true;
@@ -302,7 +305,7 @@ export class SphereGeometryNode extends NodeBase<
 
   onInputChange = (edge: Edge) => {
     let notify = false;
-    ['radius', 'widthSegments', 'heightSegments'].forEach(k => {
+    ['radius', 'widthSegments', 'heightSegments'].forEach((k) => {
       if (k === edge.toPort && this.state.geometry.parameters[k] !== this.props[k]) {
         this._setGeo();
         notify = true;
