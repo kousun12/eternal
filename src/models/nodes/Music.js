@@ -7,11 +7,12 @@ import NodeBase from 'models/NodeBase';
 import Edge from 'models/Edge';
 import { arrayOf } from 'utils/typeUtils';
 import { chroma } from 'tonal-pcset';
-import { Chord, Scale } from 'tonal';
+import { Chord, ChordType, Scale } from 'tonal';
 const Types = window.Types;
 // window.Chord = Chord;
+window.ChordType = ChordType;
 // window.Key = Key;
-// window.Scale = Scale;
+window.Scale = Scale;
 
 const TT = {
   Note: Types.string.aliased(
@@ -40,7 +41,7 @@ const TT = {
     <div>
       <p>One of:</p>
       <p style={{ display: 'flex', flexWrap: 'wrap' }}>
-        {Chord.names().map((n) => (
+        {ChordType.symbols().map((n) => (
           <span style={{ marginRight: 4, marginBottom: 6 }} key={n}>
             <code>{n}</code>{' '}
           </span>
@@ -77,9 +78,11 @@ export class ScaleNode extends NodeBase<
     if (!get(this.props, 'tonic')) {
       return { notes: [], intervals: [] };
     }
+    const str = [this.props.tonic, this.props.name].join(' ');
+    const s = Scale.get(str);
     return {
-      notes: Scale.notes(this.props.tonic, this.props.name),
-      intervals: Scale.intervals(this.props.name || this.props.tonic),
+      notes: s.notes,
+      intervals: s.intervals,
     };
   };
 
@@ -114,9 +117,10 @@ export class ChordNode extends NodeBase<
     if (!get(this.props, 'tonic')) {
       return { notes: [], intervals: [] };
     }
+    const c = Chord.getChord(this.props.name, this.props.tonic);
     return {
-      notes: Chord.notes(this.props.tonic, this.props.name),
-      intervals: Chord.intervals(this.props.name || this.props.tonic),
+      notes: c.notes,
+      intervals: c.intervals,
     };
   };
 
