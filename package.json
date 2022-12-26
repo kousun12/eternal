@@ -23,7 +23,7 @@
     "fuzzy-search": "^2.1.0",
     "json-loader": "^0.5.7",
     "lodash": "^4.17.21",
-    "node-sass": "4.13.1",
+    "node-sass": "7.0.0",
     "orbit-controls-es6": "^2.0.0",
     "patch-package": "^6.2.0",
     "postinstall-postinstall": "^2.0.0",
