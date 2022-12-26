@@ -50,24 +50,26 @@ const itemListRenderer = (o: {
   itemsParentRef: (ref: HTMLElement | null) => void,
   renderItem: (item: T, index: number) => Node,
 }): Node => {
-  const items = o.filteredItems.map(o.renderItem).filter(item => item != null);
+  const items = o.filteredItems.map(o.renderItem).filter((item) => item != null);
   const content = items.length > 0 ? items : noResults;
   return <Menu ulRef={o.itemsParentRef}>{content}</Menu>;
 };
 
 const searcher = new FuzzySearch(examples, ['name']);
-const itemsPredicate = q => (Boolean(q) ? searcher.search(q) : examples).slice(0, 12);
+const itemsPredicate = (q) => (Boolean(q) ? searcher.search(q) : examples).slice(0, 12);
 
-export default (p: IOmnibarProps<T>) => (
-  <Omnibar
-    {...p}
-    items={examples}
-    className="bp3-dark"
-    itemListPredicate={itemsPredicate}
-    resetOnSelect={true}
-    itemListRenderer={itemListRenderer}
-    itemRenderer={renderItem}
-    noResults={noResults}
-    inputProps={{ placeholder: 'Examples...' }}
-  />
-);
+export default function ExampleSearch(p: IOmnibarProps<T>) {
+  return (
+    <Omnibar
+      {...p}
+      items={examples}
+      className="bp3-dark"
+      itemListPredicate={itemsPredicate}
+      resetOnSelect={true}
+      itemListRenderer={itemListRenderer}
+      itemRenderer={renderItem}
+      noResults={noResults}
+      inputProps={{ placeholder: 'Examples...' }}
+    />
+  );
+}

@@ -61,7 +61,6 @@ export default class Performance {
     time: Tone.Time,
     normalizedVelocity?: number
   ) => void = null;
-  velocityMapListener: (Map<number, number>) => void;
   activeVelocities = new Map<number, number>();
   activeNotes = new Map<number, number>();
   forgetBias = tf.scalar(1.0);
@@ -102,7 +101,7 @@ export default class Performance {
       Tone.Transport.start();
     }
     fetch(`${CHECKPOINT_URL}/weights_manifest.json`)
-      .then(response => response.json())
+      .then((response) => response.json())
       .then((manifest: tf.WeightsManifestConfig) => tf.io.loadWeights(manifest, CHECKPOINT_URL))
       .then((vars: { [varName: string]: tf.Tensor }) => {
         this.lstmKernel1 = vars['rnn/multi_rnn_cell/cell_0/basic_lstm_cell/kernel'];
@@ -205,8 +204,8 @@ export default class Performance {
         const axis = 0;
         const input = conditioning.concat(eventInput, axis).toFloat();
         const output = tf.multiRNNCell([lstm1, lstm2, lstm3], input.as2D(1, -1), this.c, this.h);
-        this.c.forEach(c => c.dispose());
-        this.h.forEach(h => h.dispose());
+        this.c.forEach((c) => c.dispose());
+        this.h.forEach((h) => h.dispose());
         this.c = output[0];
         this.h = output[1];
         const outputH = this.h[2];
