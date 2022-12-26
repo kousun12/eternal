@@ -8,11 +8,12 @@ import Edge from 'models/Edge';
 import { arrayOf } from 'utils/typeUtils';
 import { chroma } from 'tonal-pcset';
 import { Chord, ChordType, Scale } from 'tonal';
+
 const Types = window.Types;
 // window.Chord = Chord;
-window.ChordType = ChordType;
+// window.ChordType = ChordType;
 // window.Key = Key;
-window.Scale = Scale;
+// window.Scale = Scale;
 
 const TT = {
   Note: Types.string.aliased(
@@ -78,7 +79,7 @@ export class ScaleNode extends NodeBase<
     if (!get(this.props, 'tonic')) {
       return { notes: [], intervals: [] };
     }
-    const str = [this.props.tonic, this.props.name].join(' ');
+    const str = [this.props.tonic, this.props.name].filter((a) => a).join(' ');
     const s = Scale.get(str);
     return {
       notes: s.notes,
