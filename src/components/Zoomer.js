@@ -4,7 +4,7 @@ import { zooms, setScale as _setScale } from 'redux/ducks/graph';
 import { connect } from 'react-redux';
 import { Slider } from '@blueprintjs/core';
 
-type P = {| zoom: number, setScale: number => void |};
+type P = {| zoom: number, setScale: (number) => void |};
 
 const Zoomer = ({ zoom, setScale }: P) => {
   return (
@@ -17,7 +17,7 @@ const Zoomer = ({ zoom, setScale }: P) => {
         labelStepSize={10}
         onChange={setScale}
         value={zoom}
-        labelRenderer={v => `${zooms[v] / 100}x`}
+        labelRenderer={(v) => `${zooms[v] / 100}x`}
         showTrackFill={false}
       />
     </div>
@@ -25,6 +25,6 @@ const Zoomer = ({ zoom, setScale }: P) => {
 };
 
 export default connect(
-  s => ({ zoom: s.graph.view.zoom }),
-  d => ({ setScale: s => d(_setScale(s)) })
+  (s) => ({ zoom: s.graph.view.zoom }),
+  (d) => ({ setScale: (s) => d(_setScale(s)) })
 )(Zoomer);

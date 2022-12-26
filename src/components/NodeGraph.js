@@ -460,16 +460,19 @@ class NodeGraph extends React.PureComponent<P, S> {
     const {
       canvasDragStart,
       state: { canvasDragEnd },
+      props: { scale },
     } = this;
     if (!canvasDragEnd || !canvasDragStart) {
       return;
     }
-    const selCoord = subVec(canvasDragEnd, canvasDragStart);
+    const scaledStart = scaleVec(canvasDragStart, scale);
+    const scaledEnd = scaleVec(canvasDragEnd, scale);
+    const selection = subVec(scaledEnd, scaledStart);
     return {
-      width: Math.abs(selCoord.x),
-      height: Math.abs(selCoord.y),
-      top: Math.min(canvasDragStart.y, canvasDragEnd.y),
-      left: Math.min(canvasDragStart.x, canvasDragEnd.x),
+      width: Math.abs(selection.x),
+      height: Math.abs(selection.y),
+      top: Math.min(scaledStart.y, scaledEnd.y),
+      left: Math.min(scaledStart.x, scaledEnd.x),
     };
   };
 

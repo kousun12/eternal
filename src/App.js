@@ -147,7 +147,8 @@ class App extends React.PureComponent<P, S> {
         this._setInfoOpen(readme ? readme.node.id : null);
       }
       if (typeof graph.meta.zoom === 'number') {
-        this.props.setScale(graph.meta.zoom);
+        const n = graph.meta.zoom;
+        this.props.setScale(n);
       }
       this.setState({ graph }, () => (window.$graph = graph));
     });
