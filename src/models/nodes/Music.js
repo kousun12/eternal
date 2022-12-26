@@ -1,13 +1,13 @@
 // @flow
 import React from 'react';
 import { get } from 'lodash';
-import { Chord, Scale } from 'tonal';
 import * as Key from 'tonal-key';
-import { chroma } from 'tonal-pcset';
 import { transpose } from 'tonal-distance';
 import NodeBase from 'models/NodeBase';
 import Edge from 'models/Edge';
 import { arrayOf } from 'utils/typeUtils';
+import { chroma } from 'tonal-pcset';
+import { Chord, Scale } from 'tonal';
 const Types = window.Types;
 // window.Chord = Chord;
 // window.Key = Key;
@@ -27,7 +27,7 @@ const TT = {
     <div>
       <p>One of:</p>
       <p style={{ display: 'flex', flexWrap: 'wrap' }}>
-        {Scale.names().map(n => (
+        {Scale.names().map((n) => (
           <span style={{ marginRight: 4, marginBottom: 6 }} key={n}>
             <code>{n}</code>{' '}
           </span>
@@ -40,7 +40,7 @@ const TT = {
     <div>
       <p>One of:</p>
       <p style={{ display: 'flex', flexWrap: 'wrap' }}>
-        {Chord.names().map(n => (
+        {Chord.names().map((n) => (
           <span style={{ marginRight: 4, marginBottom: 6 }} key={n}>
             <code>{n}</code>{' '}
           </span>
@@ -56,7 +56,7 @@ export class ScaleNode extends NodeBase<
 > {
   static +displayName = 'Music Scale';
   static +registryName = 'ScaleNode';
-  static description = <span>A Musical scale</span>;
+  static description = (<span>A Musical scale</span>);
   static schema = {
     input: {
       tonic: Types.string.desc(
@@ -93,7 +93,7 @@ export class ChordNode extends NodeBase<
 > {
   static +displayName = 'Music Chord';
   static +registryName = 'ChordNode';
-  static description = <span>A Chord</span>;
+  static description = (<span>A Chord</span>);
   static schema = {
     input: {
       tonic: Types.string.desc(
@@ -126,7 +126,7 @@ export class ChordNode extends NodeBase<
 export class KeyTriadsNode extends NodeBase<{}, { key: string }, { notes: string[] }> {
   static +displayName = 'Key Triads';
   static +registryName = 'KeyTriadsNode';
-  static description = <span>Triads For a Key</span>;
+  static description = (<span>Triads For a Key</span>);
   static schema = {
     input: {
       key: Types.string.desc('The name of the key (a tonic + a mode), e.g. C major, Db dorian'),
@@ -154,7 +154,9 @@ export class TransposeNode extends NodeBase<
 > {
   static +displayName = 'Transpose';
   static +registryName = 'TransposeNode';
-  static description = <span>Transpose a note by an interval. e.g. transpose(A4, M3) -> C#5 </span>;
+  static description = (
+    <span>Transpose a note by an interval. e.g. transpose(A4, M3) -> C#5 </span>
+  );
   static schema = {
     input: {
       note: Types.string.desc(
@@ -204,7 +206,7 @@ export class ChromaNode extends NodeBase<{}, { notes: string[] }, { chroma: numb
     return {
       chroma: chroma(this.props.notes)
         .split('')
-        .map(s => parseInt(s)),
+        .map((s) => parseInt(s)),
     };
   };
 

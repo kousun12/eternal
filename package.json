@@ -23,7 +23,7 @@
     "fuzzy-search": "^2.1.0",
     "json-loader": "^0.5.7",
     "lodash": "^4.17.21",
-    "node-sass": "4.13.1",
+    "node-sass": "^8.0.0",
     "orbit-controls-es6": "^2.0.0",
     "patch-package": "^6.2.0",
     "postinstall-postinstall": "^2.0.0",
@@ -37,7 +37,7 @@
     "react-lifecycles-compat": "^3.0.4",
     "react-onclickoutside": "^6.7.1",
     "react-redux": "^7.1.1",
-    "react-scripts": "3.2.0",
+    "react-scripts": "^5.0.1",
     "react-select": "^1.0.0-rc.10",
     "react-syntax-highlighter": "^11.0.2",
     "react-textarea-autosize": "^7.1.0-1",
@@ -84,6 +84,9 @@
   "eslintIgnore": [
     "src/vendor/**"
   ],
+  "engines": {
+    "node": "16.x"
+  },
   "browserslist": [
     ">0.2%",
     "not dead",
