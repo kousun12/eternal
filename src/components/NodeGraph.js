@@ -341,7 +341,6 @@ class NodeGraph extends React.PureComponent<P, S> {
   }, 18);
 
   _onStartCanvasDrag = (e: MouseEvent, data: DraggableData) => {
-    console.log(data);
     if (e.metaKey) {
       this.canvasDragStart = data;
       this.deselectNodes = false;
