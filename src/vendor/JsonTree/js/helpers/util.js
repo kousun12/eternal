@@ -23,11 +23,7 @@ export function toType(obj) {
 
 //source: http://stackoverflow.com/questions/7390426/better-way-to-get-type-of-a-javascript-variable/7390612#7390612
 function getType(obj) {
-  return {}.toString
-    .call(obj)
-    .split(' ')[1]
-    .slice(0, -1)
-    .toLowerCase();
+  return {}.toString.call(obj).split(' ')[1].slice(0, -1).toLowerCase();
 }
 
 //validation for base-16 themes

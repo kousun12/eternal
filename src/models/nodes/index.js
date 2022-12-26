@@ -53,7 +53,7 @@ import {
 } from './MaterialNode';
 import { AndNode, OrNode, NotNode, EqualsNode, SwitchNode } from './Logic';
 import MeshNode, { PointsNode, LineNode } from './MeshNode';
-import { MidiOutNode, MidiInNode } from './Midi';
+import { MidiOutNode, MidiInNode, MidiDevicesNode } from './Midi';
 import {
   InfoLog,
   JSONParse,
@@ -154,6 +154,7 @@ export {
   KeyTriadsNode,
   MidiOutNode,
   MidiInNode,
+  MidiDevicesNode,
   JSONParse,
   ExtractNode,
   SetNode,
@@ -247,6 +248,7 @@ export const allNodes = [
   KeyTriadsNode,
   MidiOutNode,
   MidiInNode,
+  MidiDevicesNode,
   JSONParse,
   ExtractNode,
   SetNode,
@@ -271,7 +273,7 @@ export const allNodes = [
 
 window.allNodes = allNodes;
 
-const NodeRegistry = fromPairs(allNodes.map(n => [n.getRegistryName(), n]));
+const NodeRegistry = fromPairs(allNodes.map((n) => [n.getRegistryName(), n]));
 if (Object.keys(NodeRegistry).length !== allNodes.length) {
   throw new Error('duplicate node by registryName in node registry');
 }

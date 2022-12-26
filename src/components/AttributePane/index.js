@@ -1,6 +1,6 @@
 // @flow
 import React from 'react';
-import { get, throttle } from 'lodash';
+import { get, throttle, clone } from 'lodash';
 import { DraggableCore } from 'react-draggable';
 import type { AnyNode, Changeable, Displayable } from 'models/NodeBase';
 import JsonTree from 'vendor/JsonTree/js';
@@ -148,7 +148,7 @@ class AttributePane extends React.PureComponent<P, S> {
 
   _onResize = (e: MouseEvent) => this.setState({ width: window.innerWidth - e.clientX });
 
-  _onScroll = r => this.setState({ resizerTop: r.target.scrollTop });
+  _onScroll = (r) => this.setState({ resizerTop: r.target.scrollTop });
 
   render() {
     if (!this.props.node) {
