@@ -58,6 +58,7 @@ export default class Base {
     // this.scene.background = new Color(0x2c2222);
     this.scene.fog = new FogExp2(0x0d0d0d, 0.0025);
     this.camera = new PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 1000);
+    // this.camera = this.orthoCam();
     if (this.showStats) {
       this.stats = new Stats();
     }
@@ -91,7 +92,7 @@ export default class Base {
       window.innerHeight / 2,
       window.innerHeight / -2,
       0.1,
-      1000
+      2000
     );
 
   initialise(composer?: ?EffectComposer, renderPass?: ?RenderPass) {
