@@ -121,8 +121,8 @@ export default class ThreeNode extends NodeBase<
     const { toPort } = edge;
     if (toPort === 'child') {
       if (this.state.added.includes(edge.from.id)) {
-        this.state.added = this.state.added.filter(id => id !== edge.from.id);
-        Object.values(edge.from.outputCache).forEach(child => {
+        this.state.added = this.state.added.filter((id) => id !== edge.from.id);
+        Object.values(edge.from.outputCache).forEach((child) => {
           if (child instanceof Object3D) {
             this.state.base.scene.remove(child);
           }
@@ -145,7 +145,7 @@ export default class ThreeNode extends NodeBase<
     if (toPort === 'clearColor') {
       const newColor = edge.inDataFor(change);
       const renderer = get(this.state, 'base.renderer');
-      if (renderer && renderer.getClearColor() !== newColor) {
+      if (renderer && renderer.getClearColor(new ThreeColor()) !== newColor) {
         renderer.setClearColor(newColor);
         this.state.base.scene.background = new ThreeColor(newColor);
       }
@@ -171,7 +171,7 @@ export class AmbientLightNode extends NodeBase<
 > {
   static +displayName = 'Ambient Light';
   static +registryName = 'AmbientLightNode';
-  static description = <span>An ambient light, intended to be added to a scene</span>;
+  static description = (<span>An ambient light, intended to be added to a scene</span>);
   static schema = {
     input: { color: TT.Color.desc('The color of this ambient light') },
     output: { light: TT.Light.desc('The ambient light source') },
@@ -185,7 +185,7 @@ export class AmbientLightNode extends NodeBase<
   process = () => ({ light: this.state.light });
 
   willReceiveProps = (newProps: Object, prevProps: Object) => {
-    ['color'].forEach(k => {
+    ['color'].forEach((k) => {
       if (!prevProps || newProps[k] !== prevProps[k]) {
         this.pushToState('light', { [k]: newProps[k] }, [], k);
       }
@@ -204,7 +204,7 @@ export class DirectionalLightNode extends NodeBase<
 > {
   static +displayName = 'Directional Light';
   static +registryName = 'DirectionalLightNode';
-  static description = <span>A focused light, intended to be added to a scene</span>;
+  static description = (<span>A focused light, intended to be added to a scene</span>);
   static schema = {
     input: { color: TT.Color.desc('The color of this directional light') },
     output: { light: TT.Light.desc('The directional light source') },
@@ -224,7 +224,7 @@ export class DirectionalLightNode extends NodeBase<
   };
 
   willReceiveProps = (newProps: Object, prevProps: Object) => {
-    ['color'].forEach(k => {
+    ['color'].forEach((k) => {
       if (!prevProps || newProps[k] !== prevProps[k]) {
         this.pushToState('light', { [k]: newProps[k] }, [], k);
       }
@@ -242,7 +242,7 @@ export class Color extends NodeBase<{}, ColorT, { rgb: ColorT, hex: number }> {
   static +displayName = 'Color';
   static +registryName = 'Color';
   static defaultProps = { r: 0, g: 0, b: 0 };
-  static description = <span>A color representation</span>;
+  static description = (<span>A color representation</span>);
   static schema = {
     input: {
       r: Types.number.desc('red channel, [0,255]'),
@@ -272,7 +272,7 @@ export class Color extends NodeBase<{}, ColorT, { rgb: ColorT, hex: number }> {
 export class GlitchPassNode extends NodeBase<{}, {}, { glitch: Object }> {
   static +displayName = 'Glitch Pass';
   static +registryName = 'GlitchPassNode';
-  static description = <span>A holy perturbation</span>;
+  static description = (<span>A holy perturbation</span>);
 
   static schema = {
     input: {
@@ -299,7 +299,7 @@ export class GlitchPassNode extends NodeBase<{}, {}, { glitch: Object }> {
         callback();
       }
     };
-    textureLoader.load(URL_BASE + '/latent/textures/perturb.jpg', texture => {
+    textureLoader.load(URL_BASE + '/latent/textures/perturb.jpg', (texture) => {
       texture.magFilter = texture.minFilter = NearestFilter;
       assets.set('perturb-map', texture);
     });
@@ -310,7 +310,7 @@ export class GlitchPassNode extends NodeBase<{}, {}, { glitch: Object }> {
       return;
     }
 
-    this.outputs.forEach(edge => {
+    this.outputs.forEach((edge) => {
       if (edge.to instanceof ThreeNode) {
         const threeN: ThreeNode = edge.to;
         const camera = threeN.state.base.camera;
@@ -328,10 +328,10 @@ export class GlitchPassNode extends NodeBase<{}, {}, { glitch: Object }> {
 
   beforeDisconnectOut = () => {
     this.rendered = false;
-    this.outputs.forEach(edge => {
+    this.outputs.forEach((edge) => {
       if (edge.to instanceof ThreeNode) {
         const threeN: ThreeNode = edge.to;
-        this.passes.forEach(pass => {
+        this.passes.forEach((pass) => {
           pass.enabled = false;
           threeN.removePass(pass);
         });
@@ -375,7 +375,7 @@ export class VignettePassNode extends NodeBase<
 > {
   static +displayName = 'Vignette Pass';
   static +registryName = 'VignettePassNode';
-  static description = <span>A Vignette post-process effect</span>;
+  static description = (<span>A Vignette post-process effect</span>);
 
   static schema = {
     input: {
@@ -401,7 +401,7 @@ export class VignettePassNode extends NodeBase<
       return;
     }
 
-    this.outputs.forEach(edge => {
+    this.outputs.forEach((edge) => {
       if (edge.to instanceof ThreeNode) {
         const threeN: ThreeNode = edge.to;
         const camera = threeN.state.base.camera;
@@ -421,7 +421,7 @@ export class VignettePassNode extends NodeBase<
 
   beforeDisconnectOut = () => {
     this.rendered = false;
-    this.outputs.forEach(edge => {
+    this.outputs.forEach((edge) => {
       if (edge.to instanceof ThreeNode) {
         const threeN: ThreeNode = edge.to;
         threeN.removePass(this.pass);
@@ -432,14 +432,14 @@ export class VignettePassNode extends NodeBase<
   willReceiveProps = (newProps: Object, prevProps: Object) => {
     const effect = this.effect;
     if (!effect) return;
-    ['darkness', 'offset'].forEach(k => {
+    ['darkness', 'offset'].forEach((k) => {
       const uni = effect.uniforms.get(k);
       const newVal = newProps[k];
       if (uni !== undefined && typeof newVal === 'number' && prevProps[k] !== newVal) {
         uni.value = newVal;
       }
     });
-    ['opacity'].forEach(k => {
+    ['opacity'].forEach((k) => {
       const opacity = get(effect, 'blendMode.opacity');
       const newVal = newProps[k];
       if (opacity !== undefined && typeof newVal === 'number' && opacity.value !== newVal) {
@@ -467,7 +467,7 @@ export class VignettePassNode extends NodeBase<
 export class ScanlinePassNode extends NodeBase<{}, {}, { pass: Object, effect: Effect }> {
   static +displayName = 'Scanline Pass';
   static +registryName = 'ScanlinePassNode';
-  static description = <span>A scanline post-process effect</span>;
+  static description = (<span>A scanline post-process effect</span>);
 
   static schema = {
     input: {},
@@ -489,7 +489,7 @@ export class ScanlinePassNode extends NodeBase<{}, {}, { pass: Object, effect: E
       return;
     }
 
-    this.outputs.forEach(edge => {
+    this.outputs.forEach((edge) => {
       if (edge.to instanceof ThreeNode) {
         const threeN: ThreeNode = edge.to;
         const camera = threeN.state.base.camera;
@@ -507,7 +507,7 @@ export class ScanlinePassNode extends NodeBase<{}, {}, { pass: Object, effect: E
 
   beforeDisconnectOut = () => {
     this.rendered = false;
-    this.outputs.forEach(edge => {
+    this.outputs.forEach((edge) => {
       if (edge.to instanceof ThreeNode) {
         const threeN: ThreeNode = edge.to;
         threeN.removePass(this.pass);
@@ -534,7 +534,7 @@ export class ScanlinePassNode extends NodeBase<{}, {}, { pass: Object, effect: E
 export class DotScreenPassNode extends NodeBase<{}, {}, { pass: Object, effect: Effect }> {
   static +displayName = 'DotScreen Pass';
   static +registryName = 'DotScreenPassNode';
-  static description = <span>A Dot-screen post-process effect</span>;
+  static description = (<span>A Dot-screen post-process effect</span>);
 
   static schema = {
     input: {},
@@ -554,7 +554,7 @@ export class DotScreenPassNode extends NodeBase<{}, {}, { pass: Object, effect: 
       return;
     }
 
-    this.outputs.forEach(edge => {
+    this.outputs.forEach((edge) => {
       if (edge.to instanceof ThreeNode) {
         const threeN: ThreeNode = edge.to;
         const camera = threeN.state.base.camera;
@@ -578,7 +578,7 @@ export class DotScreenPassNode extends NodeBase<{}, {}, { pass: Object, effect: 
 
   beforeDisconnectOut = () => {
     this.rendered = false;
-    this.outputs.forEach(edge => {
+    this.outputs.forEach((edge) => {
       if (edge.to instanceof ThreeNode) {
         const threeN: ThreeNode = edge.to;
         threeN.removePass(this.pass);
@@ -609,7 +609,7 @@ export class NoisePassNode extends NodeBase<
 > {
   static +displayName = 'Noise Pass';
   static +registryName = 'NoisePassNode';
-  static description = <span>A noise post-process effect</span>;
+  static description = (<span>A noise post-process effect</span>);
 
   static schema = {
     input: {
@@ -630,7 +630,7 @@ export class NoisePassNode extends NodeBase<
     if (this.rendered) {
       return;
     }
-    this.outputs.forEach(edge => {
+    this.outputs.forEach((edge) => {
       if (edge.to instanceof ThreeNode) {
         const threeN: ThreeNode = edge.to;
         const camera = threeN.state.base.camera;
@@ -648,7 +648,7 @@ export class NoisePassNode extends NodeBase<
   willReceiveProps = (newProps: Object) => {
     const effect = this.effect;
     if (!effect) return;
-    ['opacity'].forEach(k => {
+    ['opacity'].forEach((k) => {
       const opacity = get(effect, 'blendMode.opacity');
       const newVal = newProps[k];
       if (opacity !== undefined && typeof newVal === 'number' && opacity.value !== newVal) {
@@ -665,7 +665,7 @@ export class NoisePassNode extends NodeBase<
 
   beforeDisconnectOut = () => {
     this.rendered = false;
-    this.outputs.forEach(edge => {
+    this.outputs.forEach((edge) => {
       if (edge.to instanceof ThreeNode) {
         const threeN: ThreeNode = edge.to;
         threeN.removePass(this.pass);
