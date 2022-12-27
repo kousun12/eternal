@@ -261,6 +261,15 @@ export class MidiListenNode extends NodeBase<
     }
   };
 
+  willBeRemoved = () => {
+    const d = this.device;
+    if (d) {
+      d.removeListener('noteon', this._noteOnListener);
+      d.removeListener('noteoff', this._noteOffListener);
+      d.removeListener(this.props.eventType, this._onEvent);
+    }
+  };
+
   _setMidi = (id: string) => {
     const oldDevice = this.device;
     const d = WebMidi.getInputById(id);

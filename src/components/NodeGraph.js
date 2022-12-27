@@ -295,11 +295,12 @@ class NodeGraph extends React.PureComponent<P, S> {
   _overlaps = (r1: ClientRect, r2: ClientRect) =>
     !(r1.right < r2.left || r1.left > r2.right || r1.bottom < r2.top || r1.top > r2.bottom);
 
-  _nodesIntersecting = (box: ClientRect): NodeInSpace[] =>
-    this.props.graph.nodes.filter((nis) => {
+  _nodesIntersecting = (box: ClientRect): NodeInSpace[] => {
+    return this.props.graph.nodes.filter((nis) => {
       const el = nis.node.domNode();
       return el && this._overlaps(box, el.getBoundingClientRect());
     });
+  };
 
   _setIntersects = throttle((union: boolean, subtract: boolean) => {
     const selBox = document.getElementById('selection-box');
