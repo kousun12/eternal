@@ -22,6 +22,7 @@ export const examples = [
   require('models/examples/soundfont-tone.json'),
   require('models/examples/gpgpu.json'),
   require('models/examples/midi-in.json'),
+  require('models/examples/midi chords.json'),
 ];
 
 const titleMaxLen = 40;
@@ -56,7 +57,7 @@ const itemListRenderer = (o: {
 };
 
 const searcher = new FuzzySearch(examples, ['name']);
-const itemsPredicate = (q) => (Boolean(q) ? searcher.search(q) : examples).slice(0, 12);
+const itemsPredicate = (q) => (Boolean(q) ? searcher.search(q) : examples).slice(0, 14);
 
 export default function ExampleSearch(p: IOmnibarProps<T>) {
   return (
