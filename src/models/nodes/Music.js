@@ -152,6 +152,30 @@ export class KeyTriadsNode extends NodeBase<{}, { key: string }, { notes: string
   onInputChange = (edge: Edge, change: Object) => this.outKeys();
 }
 
+export class ChordDetectNode extends NodeBase<{}, { notes: string[] }, { chords: string[] }> {
+  static +displayName = 'Chord Detect';
+  static +registryName = 'ChordDetectNode';
+  static description = (<span>Given a list of notes, get possible chord names.</span>);
+  static schema = {
+    input: {
+      notes: arrayOf(TT.Note).desc('List of input notes'),
+    },
+    output: {
+      chords: arrayOf(TT.Chord).desc('Possible chord names'),
+    },
+    state: {},
+  };
+
+  process = () => {
+    if (!get(this.props, 'notes')) {
+      return { chords: [] };
+    }
+    return { chords: Chord.detect(this.props.notes) };
+  };
+
+  onInputChange = (edge: Edge, change: Object) => this.outKeys();
+}
+
 export class TransposeNode extends NodeBase<
   {},
   { note: string, interval: string },

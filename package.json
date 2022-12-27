@@ -23,7 +23,6 @@
     "fuzzy-search": "^2.1.0",
     "json-loader": "^0.5.7",
     "lodash": "^4.17.21",
-    "midimessage": "^1.0.5",
     "node-sass": "^8.0.0",
     "patch-package": "^6.2.0",
     "postinstall-postinstall": "^2.0.0",

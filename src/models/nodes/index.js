@@ -53,7 +53,7 @@ import {
 } from './MaterialNode';
 import { AndNode, OrNode, NotNode, EqualsNode, SwitchNode } from './Logic';
 import MeshNode, { PointsNode, LineNode } from './MeshNode';
-import { MidiOutNode, MidiInNode, MidiDevicesNode } from './Midi';
+import { MidiOutNode, MidiInNode, MidiDevicesNode, MidiListenNode } from './Midi';
 import {
   InfoLog,
   JSONParse,
@@ -72,7 +72,14 @@ import Vector2D from './Vector2D';
 import Vector3D from './Vector3D';
 import { DomNode } from './Dom';
 import { PlusNode } from './String';
-import { ScaleNode, ChromaNode, ChordNode, TransposeNode, KeyTriadsNode } from './Music';
+import {
+  ScaleNode,
+  ChromaNode,
+  ChordNode,
+  TransposeNode,
+  KeyTriadsNode,
+  ChordDetectNode,
+} from './Music';
 import { PerformanceRNNNode, LSTMCellNode, MultiRNNCellNode } from './Neural';
 import { DivideNode, SumNode, ProductNode, IntToIntMathNode } from './MathNodes';
 import { GPGPUProgramNode, RunGPGPUProgramNode } from './GPGPU';
@@ -152,9 +159,11 @@ export {
   ChordNode,
   TransposeNode,
   KeyTriadsNode,
+  ChordDetectNode,
   MidiOutNode,
   MidiInNode,
   MidiDevicesNode,
+  MidiListenNode,
   JSONParse,
   ExtractNode,
   SetNode,
@@ -246,9 +255,11 @@ export const allNodes = [
   ChordNode,
   TransposeNode,
   KeyTriadsNode,
+  ChordDetectNode,
   MidiOutNode,
   MidiInNode,
   MidiDevicesNode,
+  MidiListenNode,
   JSONParse,
   ExtractNode,
   SetNode,
