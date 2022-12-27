@@ -3,7 +3,7 @@
   "version": "1.3.0",
   "license": "MIT",
   "private": false,
-  "homepage": "https://eternal.robcheung.com",
+  "homepage": "https://eternal.rob.computer",
   "dependencies": {
     "@babel/plugin-proposal-export-default-from": "^7.18.10",
     "@babel/preset-flow": "^7.18.6",
@@ -52,7 +52,7 @@
     "tonal-key": "^2.2.2",
     "tonal-pcset": "^2.2.2",
     "tonal-scale": "^2.2.2",
-    "tone": "^13.8.25",
+    "tone": "^13.8.34",
     "tone-piano": "^0.0.12",
     "webmidi": "^3.0.25",
     "webpack-assets-manifest": "^5.1.0"

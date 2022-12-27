@@ -11292,7 +11292,7 @@ tone-piano@^0.0.12:
   dependencies:
     tone "^0.12.5"
 
-tone@^0.12.5, tone@^13.8.25:
+tone@^0.12.5, tone@^13.8.25, tone@^13.8.34:
   version "13.8.34"
   resolved "https://registry.yarnpkg.com/tone/-/tone-13.8.34.tgz#fcc3286d173c53f0741bbfba8aa8fbf0c4ef66dc"
   integrity sha512-sFIYee0CO5lDcnC/RwIPiPMOIZCMEk35AaxF0Q64q7SE1BL+i+efYR6vrD+peDGrswXJ+D3bTmci2wCy+omx+Q==
