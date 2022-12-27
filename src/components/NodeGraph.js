@@ -236,6 +236,7 @@ class NodeGraph extends React.PureComponent<P, S> {
     }
     this.setState({ connecting: false, mousePos: null });
     this.forceUpdate();
+    this._setPosFromGraph();
   };
 
   handleRemoveConnector = (edge: Edge) => {
@@ -246,6 +247,7 @@ class NodeGraph extends React.PureComponent<P, S> {
     const origMouse = this.state.mousePos;
     this.setState({ mousePos: { x: 0, y: 0 } }, () => this.setState({ mousePos: origMouse }));
     this.forceUpdate();
+    this._setPosFromGraph();
   };
 
   onNodeSelect = (n: NodeInSpace, idx?: number, resetHighlights?: boolean) => {
@@ -478,8 +480,11 @@ class NodeGraph extends React.PureComponent<P, S> {
   };
 
   _onCopy = () => {
-    const selected = this.props.graph.duplicate(this._getSelected()).map((nis) => nis.node.id);
-    this.props.selSet(selected);
+    const toCopy = this._getSelected();
+    const selected: NodeInSpace[] = this.props.graph.duplicate(toCopy);
+    const newIds = selected.map((nis) => nis.node.id);
+    this.props.selSet(newIds);
+    this._setPosFromGraph();
   };
 
   _vAlign = () => {
