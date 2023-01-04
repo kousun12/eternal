@@ -25,6 +25,8 @@ export const examples = [
   require('models/examples/midi chords.json'),
 ];
 
+export const hiddenExamples = [require('models/examples/in the gardens of eden lmy.json')];
+
 const titleMaxLen = 40;
 
 const renderItem: ItemRenderer<T> = (graph, { handleClick, modifiers }) => {
@@ -51,13 +53,13 @@ const itemListRenderer = (o: {
   itemsParentRef: (ref: HTMLElement | null) => void,
   renderItem: (item: T, index: number) => Node,
 }): Node => {
-  const items = o.filteredItems.map(o.renderItem).filter((item) => item != null);
+  const items = o.filteredItems.map(o.renderItem).filter(item => item != null);
   const content = items.length > 0 ? items : noResults;
   return <Menu ulRef={o.itemsParentRef}>{content}</Menu>;
 };
 
 const searcher = new FuzzySearch(examples, ['name']);
-const itemsPredicate = (q) => (Boolean(q) ? searcher.search(q) : examples).slice(0, 14);
+const itemsPredicate = q => (Boolean(q) ? searcher.search(q) : examples).slice(0, 14);
 
 export default function ExampleSearch(p: IOmnibarProps<T>) {
   return (

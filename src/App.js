@@ -23,7 +23,7 @@ import { downloadObj } from 'utils';
 import FileUpload from 'components/FileUpload';
 import SaveDialog from 'components/SaveDialog';
 import NodeSearcher from 'components/NodeSearcher';
-import ExampleSearch, { examples } from 'components/ExampleSearch';
+import ExampleSearch, { examples, hiddenExamples } from 'components/ExampleSearch';
 
 import type { Pos } from 'types';
 import Toolbar from 'components/Toolbar';
@@ -47,9 +47,9 @@ const welcomeGraph = require('models/examples/welcome.json');
 type P = {
   setInfoOpen: (?string) => void,
   showNode: ?string,
-  updatePos: (PosMemo) => void,
+  updatePos: PosMemo => void,
   view: SelectedView,
-  setScale: (number) => void,
+  setScale: number => void,
   selSet: (string[]) => void,
 };
 type S = {
@@ -95,7 +95,8 @@ class App extends React.PureComponent<P, S> {
     const exId = this._paramFor(urlRe.exId);
     if (exId) {
       const name = decodeURIComponent(exId).replace(/\+/g, ' ');
-      const exFromUrl = examples.find((e) => e.name === name);
+      const exFromUrl =
+        examples.find(e => e.name === name) || hiddenExamples.find(e => e.name === name);
       if (exFromUrl) {
         showWelcome = false;
         if (process.env.NODE_ENV === 'development') {
@@ -143,7 +144,7 @@ class App extends React.PureComponent<P, S> {
     this.setState({ graph: null }, () => {
       this.mostRecentNode = get(graph.nodes, [0, 'node']);
       if (process.env.NODE_ENV === 'production') {
-        const readme = graph.nodes.find((nis) => nis.node.title === 'README');
+        const readme = graph.nodes.find(nis => nis.node.title === 'README');
         this._setInfoOpen(readme ? readme.node.id : null);
       }
       if (typeof graph.meta.zoom === 'number') {
@@ -247,7 +248,7 @@ class App extends React.PureComponent<P, S> {
     const { promptLoad } = this.state;
     const exJson = Graph.serialization(example);
     if (exJson || promptLoad) {
-      const json = exJson || examples.find((e) => e.name === promptLoad);
+      const json = exJson || examples.find(e => e.name === promptLoad);
       json && this._setGraph(Graph.load(json));
     }
     this.setState({ promptLoad: null });
@@ -301,8 +302,15 @@ class App extends React.PureComponent<P, S> {
   };
 
   render() {
-    const { graph, searchOpen, saveOpen, searchingNodes, visible, searchingExamples, promptLoad } =
-      this.state;
+    const {
+      graph,
+      searchOpen,
+      saveOpen,
+      searchingNodes,
+      visible,
+      searchingExamples,
+      promptLoad,
+    } = this.state;
     const { showNode } = this.props;
     const title = get(graph, 'name', '');
     const inPane = showNode && graph ? get(graph.nodeWithId(showNode), 'node', null) : null;
@@ -351,7 +359,7 @@ class App extends React.PureComponent<P, S> {
         {promptLoad && (
           <LoadPrompt onClose={this._closePrompt} title={promptLoad} load={this._loadUrl} />
         )}
-        <FileUpload onFile={this._onFileUpload} ref={(r) => (this.fileUpload = r)} />
+        <FileUpload onFile={this._onFileUpload} ref={r => (this.fileUpload = r)} />
       </>
     );
   }
@@ -403,9 +411,9 @@ const select = createSelector([selectInfoOpen, selectView], (showNode, view) => 
   showNode,
   view,
 }));
-export default connect(select, (d) => ({
-  setInfoOpen: (n) => d(_setInfoOpen(n)),
+export default connect(select, d => ({
+  setInfoOpen: n => d(_setInfoOpen(n)),
   updatePos: (pos: PosMemo) => d(_updatePos(pos)),
-  setScale: (s) => d(_setScale(s)),
-  selSet: (id) => d(_selSet(id)),
+  setScale: s => d(_setScale(s)),
+  selSet: id => d(_selSet(id)),
 }))(AppWithHK);

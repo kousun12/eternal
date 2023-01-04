@@ -7,13 +7,15 @@ import NodeBase from 'models/NodeBase';
 import Edge from 'models/Edge';
 import { arrayOf } from 'utils/typeUtils';
 import { chroma } from 'tonal-pcset';
-import { Chord, ChordType, Scale } from 'tonal';
+import { Chord, ChordType, Scale, Note } from 'tonal';
+import Tuning from '../../utils/tuning';
 
 const Types = window.Types;
 // window.Chord = Chord;
 // window.ChordType = ChordType;
 // window.Key = Key;
 // window.Scale = Scale;
+window.Note = Note;
 
 const TT = {
   Note: Types.string.aliased(
@@ -29,7 +31,7 @@ const TT = {
     <div>
       <p>One of:</p>
       <p style={{ display: 'flex', flexWrap: 'wrap' }}>
-        {Scale.names().map((n) => (
+        {Scale.names().map(n => (
           <span style={{ marginRight: 4, marginBottom: 6 }} key={n}>
             <code>{n}</code>{' '}
           </span>
@@ -37,12 +39,13 @@ const TT = {
       </p>
     </div>
   ),
+  TuningSystem: Types.object.aliased('TuningSystem', 'A tuning system'),
   Chord: Types.string.aliased(
     'ChordName',
     <div>
       <p>One of:</p>
       <p style={{ display: 'flex', flexWrap: 'wrap' }}>
-        {ChordType.symbols().map((n) => (
+        {ChordType.symbols().map(n => (
           <span style={{ marginRight: 4, marginBottom: 6 }} key={n}>
             <code>{n}</code>{' '}
           </span>
@@ -79,11 +82,123 @@ export class ScaleNode extends NodeBase<
     if (!get(this.props, 'tonic')) {
       return { notes: [], intervals: [] };
     }
-    const str = [this.props.tonic, this.props.name].filter((a) => a).join(' ');
+    const str = [this.props.tonic, this.props.name].filter(a => a).join(' ');
     const s = Scale.get(str);
     return {
       notes: s.notes,
       intervals: s.intervals,
+    };
+  };
+
+  onInputChange = () => this.outKeys();
+}
+
+export class NoteNode extends NodeBase<
+  {},
+  { name: string },
+  { chroma: number, frequency: number, octave: number }
+> {
+  static +displayName = 'Note';
+  static +registryName = 'NoteNode';
+  static description = (<span>A Musical note</span>);
+  static schema = {
+    input: {
+      name: Types.string.desc('The name of the note. e.g. A or Gb4'),
+    },
+    output: {
+      chroma: Types.number.desc('Chroma index of this note, normalized on C'),
+      frequency: Types.number.desc('Frequency of this note'),
+      octave: Types.number.desc('Octave of this note'),
+    },
+    state: {},
+  };
+
+  process = () => {
+    if (!get(this.props, 'name')) {
+      return { chroma: 0, frequency: 0, octave: 0 };
+    }
+    const s = Note.get(this.props.name);
+    return {
+      chroma: s.chroma,
+      frequency: s.freq,
+      octave: s.oct,
+    };
+  };
+
+  onInputChange = () => this.outKeys();
+}
+
+export class TuningNode extends NodeBase<
+  {},
+  { scale: string[], tonic?: string[] | string },
+  { frequencies: number[], tuning: Tuning | null }
+> {
+  static +displayName = 'Tuning';
+  static +registryName = 'TuningNode';
+  static description = (<span>A tuning system</span>);
+  static schema = {
+    input: {
+      scale: arrayOf(Types.string).desc(
+        'A list of either ratios or cents, omitting the tonic, and including the octave (i.e. .scl format lines)'
+      ),
+      tonic: Types.string.desc(
+        'Either a raw value in Hz, or a tuple pinning a scale degree to a frequency, e.g. [440, 6]'
+      ),
+    },
+    output: {
+      frequencies: arrayOf(Types.number).desc('Frequencies of the scale, beginning at the tonic'),
+      tuning: TT.TuningSystem.desc(
+        'The output tuning system for use in e.g. Tuning Frequency node'
+      ),
+    },
+    state: {},
+  };
+
+  process = () => {
+    if (!get(this.props, 'scale')) {
+      return { frequencies: [], tuning: null };
+    }
+    const t = new Tuning(this.props.scale, this.props.tonic);
+    return {
+      frequencies: t.frequencies(),
+      tuning: t,
+    };
+  };
+
+  onInputChange = () => this.outKeys();
+}
+
+export class TuningFrequencyNode extends NodeBase<
+  {},
+  { tuning: Tuning, degree: number, octaveOffset?: number },
+  { frequency: number }
+> {
+  static +displayName = 'Tuning Frequency';
+  static +registryName = 'TuningFrequencyNode';
+  static description = (
+    <span>Given a Tuning system, compute a frequency for a scale degree and octave offset</span>
+  );
+  static schema = {
+    input: {
+      tuning: TT.TuningSystem.desc('The input Tuning system, as given by a Tuning node'),
+      degree: Types.number.desc('The scale degree to get a frequency for, zero-indexed'),
+      octaveOffset: Types.number.desc(
+        'The octave offset from the tuning system tonic for the scale degree, optional.'
+      ),
+    },
+    output: {
+      frequency: Types.number.desc('Frequency of the scale degree, given the tuning system'),
+    },
+    state: {},
+  };
+
+  process = () => {
+    if (!get(this.props, 'tuning') || typeof get(this.props, 'degree') !== 'number') {
+      return { frequency: 0 };
+    }
+    const t = this.props.tuning;
+    return {
+      frequency: t.frequency(this.props.degree, this.props.octaveOffset),
     };
   };
 
@@ -235,7 +350,7 @@ export class ChromaNode extends NodeBase<{}, { notes: string[] }, { chroma: numb
     return {
       chroma: chroma(this.props.notes)
         .split('')
-        .map((s) => parseInt(s)),
+        .map(s => parseInt(s)),
     };
   };
 

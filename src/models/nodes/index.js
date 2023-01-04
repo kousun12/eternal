@@ -76,6 +76,9 @@ import {
   ScaleNode,
   ChromaNode,
   ChordNode,
+  NoteNode,
+  TuningNode,
+  TuningFrequencyNode,
   TransposeNode,
   KeyTriadsNode,
   ChordDetectNode,
@@ -157,6 +160,9 @@ export {
   ScaleNode,
   ChromaNode,
   ChordNode,
+  NoteNode,
+  TuningNode,
+  TuningFrequencyNode,
   TransposeNode,
   KeyTriadsNode,
   ChordDetectNode,
@@ -253,6 +259,9 @@ export const allNodes = [
   ScaleNode,
   ChromaNode,
   ChordNode,
+  NoteNode,
+  TuningNode,
+  TuningFrequencyNode,
   TransposeNode,
   KeyTriadsNode,
   ChordDetectNode,
@@ -284,7 +293,7 @@ export const allNodes = [
 
 window.allNodes = allNodes;
 
-const NodeRegistry = fromPairs(allNodes.map((n) => [n.getRegistryName(), n]));
+const NodeRegistry = fromPairs(allNodes.map(n => [n.getRegistryName(), n]));
 if (Object.keys(NodeRegistry).length !== allNodes.length) {
   throw new Error('duplicate node by registryName in node registry');
 }

@@ -8,21 +8,22 @@ const Types = window.Types;
 export class DivideNode extends NodeBase<
   {},
   { dividend: number, divisor: number },
-  { result: number, int: number }
+  { result: number, int: number, remainder: number }
 > {
   static +displayName = 'Divide';
   static +registryName = 'DivideNode';
   static +defaultProps = { dividend: 0, divisor: 1 };
-  static description = <span>Divide one number by another</span>;
+  static description = (<span>Divide one number by another</span>);
   static schema = {
     input: { dividend: Types.number, divisor: Types.number },
-    output: { result: Types.number, int: Types.number },
+    output: { result: Types.number, int: Types.number, remainder: Types.number },
     state: {},
   };
 
   process = () => ({
     result: this.props.dividend / this.props.divisor,
     int: parseInt(this.props.dividend / this.props.divisor, 10),
+    remainder: this.props.dividend % this.props.divisor,
   });
 
   onInputChange = () => (this.props.dividend && this.props.divisor ? this.outKeys() : []);
@@ -31,7 +32,7 @@ export class DivideNode extends NodeBase<
 export class SumNode extends NodeBase<{}, { numbers: number[] }, { result: number }> {
   static +displayName = 'Sum';
   static +registryName = 'SumNode';
-  static description = <span>Sum across numbers</span>;
+  static description = (<span>Sum across numbers</span>);
   static schema = {
     input: { numbers: Types.number.desc('All numbers to add together') },
     output: { result: Types.number.desc('Sum') },
@@ -50,7 +51,7 @@ export class SumNode extends NodeBase<{}, { numbers: number[] }, { result: numbe
 export class ProductNode extends NodeBase<{}, { numbers: number[] }, { result: number }> {
   static +displayName = 'Product';
   static +registryName = 'ProductNode';
-  static description = <span>Multiply over numbers</span>;
+  static description = (<span>Multiply over numbers</span>);
   static schema = {
     input: { numbers: Types.number.desc('All numbers to multiply together') },
     output: { result: Types.number.desc('Product') },
