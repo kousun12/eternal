@@ -248,7 +248,10 @@ class App extends React.PureComponent<P, S> {
     const { promptLoad } = this.state;
     const exJson = Graph.serialization(example);
     if (exJson || promptLoad) {
-      const json = exJson || examples.find(e => e.name === promptLoad);
+      const json =
+        exJson ||
+        examples.find(e => e.name === promptLoad) ||
+        hiddenExamples.find(e => e.name === promptLoad);
       json && this._setGraph(Graph.load(json));
     }
     this.setState({ promptLoad: null });
