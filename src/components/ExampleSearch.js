@@ -25,7 +25,10 @@ export const examples = [
   require('models/examples/midi chords.json'),
 ];
 
-export const hiddenExamples = [require('models/examples/in the gardens of eden lmy.json')];
+export const hiddenExamples = [
+  require('models/examples/in the gardens of eden lmy.json'),
+  require('models/examples/tuning-lmy.json'),
+];
 
 const titleMaxLen = 40;
 
