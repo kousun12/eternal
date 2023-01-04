@@ -15,7 +15,7 @@ const Types = window.Types;
 // window.ChordType = ChordType;
 // window.Key = Key;
 // window.Scale = Scale;
-window.Note = Note;
+// window.Note = Note;
 
 const TT = {
   Note: Types.string.aliased(
