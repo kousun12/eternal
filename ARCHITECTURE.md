@@ -250,5 +250,150 @@ This architecture enables:
 - **Visual Programming**: Spatial positioning enables intuitive graph editing
 - **Extensibility**: New node types can be added without modifying core classes
 
+## Technology Stack
+
+Eternal leverages a carefully curated set of modern web technologies to deliver a powerful node-based programming environment. The technology stack is organized around core domains: UI framework, graphics rendering, audio processing, state management, type safety, and specialized libraries.
+
+### Frontend Framework & UI
+
+#### React Ecosystem
+- **React 18.2.0**: Modern React with concurrent features, hooks, and improved performance
+- **React DOM 16.10.2**: DOM rendering layer for React components
+- **React Redux 7.1.1**: Official React bindings for Redux state management
+- **Redux Starter Kit 0.7.0**: Opinionated Redux utilities for simplified state management
+
+#### UI Component Libraries
+- **Blueprint.js 3.19.0**: Professional React UI toolkit providing consistent, accessible components
+  - `@blueprintjs/core`: Core components (buttons, inputs, dialogs, etc.)
+  - `@blueprintjs/select`: Advanced selection components
+- **React Select 1.3.0**: Flexible select input control with search and multi-select capabilities
+- **React Draggable 4.0.3**: Drag and drop functionality for node positioning
+
+#### UI Enhancement Libraries
+- **FontAwesome 5.5.0**: Comprehensive icon library with React integration
+  - `@fortawesome/fontawesome-free`: Free icon set
+  - `@fortawesome/react-fontawesome`: React component wrapper
+- **React Syntax Highlighter 11.0.2**: Code syntax highlighting for JavaScript nodes
+- **React Textarea Autosize 7.1.0**: Auto-resizing text areas for better UX
+
+### Graphics & 3D Rendering
+
+#### Three.js Ecosystem
+- **Three.js 0.148.0**: Comprehensive 3D graphics library built on WebGL
+  - Scene management and 3D object rendering
+  - Material and lighting systems
+  - Geometry generation and manipulation
+  - Camera controls and animation
+
+#### Post-Processing
+- **Postprocessing 6.29.1**: Advanced post-processing effects for Three.js scenes
+  - Shader-based visual effects (glitch, scanline, dot screen, vignette, noise)
+  - Compositing and render pass management
+  - Performance-optimized effect chains
+
+### Audio Processing & Music
+
+#### Web Audio Framework
+- **Tone.js 13.8.34**: Comprehensive Web Audio API framework for audio synthesis
+  - Synthesizers, effects, and audio routing
+  - Transport and timing systems
+  - Audio analysis and visualization
+  - MIDI integration capabilities
+
+#### Music Theory & Instruments
+- **Tonal 4.8.0**: Music theory library for harmonic analysis and composition
+  - `tonal-detect`: Chord and scale detection
+  - `tonal-key`: Key signature analysis
+  - `tonal-scale`: Scale generation and analysis
+  - `tonal-pcset`: Pitch class set operations
+- **SoundFont Player 0.11.0**: General MIDI instrument playback
+- **Tone Piano 0.0.12**: High-quality piano sample library
+- **WebMIDI 3.0.25**: MIDI device integration for hardware controllers
+
+### State Management & Data Flow
+
+#### Redux Architecture
+- **Redux Starter Kit 0.7.0**: Modern Redux with simplified boilerplate
+  - Immutable state updates with Immer
+  - Redux Toolkit Query for data fetching
+  - DevTools integration
+
+#### Utility Libraries
+- **Lodash 4.17.21**: Comprehensive utility library for data manipulation
+  - Functional programming utilities
+  - Object and array manipulation
+  - Performance-optimized operations
+- **Flux 3.1.3**: Unidirectional data flow architecture
+
+### Type Safety & Development Tools
+
+#### Static Type Checking
+- **Flow 0.81.0**: Static type checker for JavaScript
+  - Gradual typing system
+  - Generic type support
+  - Interface definitions
+  - Runtime type validation
+
+#### Build System & Tooling
+- **React Scripts 5.0.1**: Create React App build system
+  - Webpack configuration
+  - Babel transpilation
+  - Development server with hot reloading
+  - Production optimization
+
+#### Code Quality
+- **ESLint**: Code linting with React-specific rules
+- **Prettier 1.18.2**: Code formatting for consistent style
+- **Patch Package 6.2.0**: NPM package patching for custom modifications
+
+### Machine Learning & AI
+
+#### TensorFlow Integration
+- **TensorFlow.js Core 1.2.11**: Machine learning capabilities in the browser
+  - Neural network construction and training
+  - Pre-trained model loading
+  - GPU acceleration via WebGL
+  - Integration with audio and visual processing nodes
+
+### Specialized Libraries
+
+#### Search & Discovery
+- **Fuzzy Search 2.1.0**: Intelligent search functionality for node discovery
+- **React Base16 Styling 0.6.0**: Consistent color theming system
+
+#### File Processing & Utilities
+- **Node Sass 8.0.0**: Sass/SCSS compilation for advanced styling
+- **JSON Loader 0.5.7**: JSON file processing and loading
+- **CSS Loader 0.28.7**: CSS module processing
+
+#### Polyfills & Compatibility
+- **Babel Polyfill 6.26.0**: ES6+ feature support for older browsers
+- **Regenerator Runtime 0.11.0**: Async/await support
+- **React Lifecycles Compat 3.0.4**: Compatibility layer for React lifecycle methods
+
+### Development & Deployment
+
+#### Version Control & Deployment
+- **gh-pages 4.0.0**: GitHub Pages deployment automation
+- **Webpack Assets Manifest 5.1.0**: Asset tracking for production builds
+
+#### Runtime Requirements
+- **Node.js 16.x**: Specified engine version for development and build processes
+- **Modern Browser Support**: Targets browsers with >0.2% usage, excluding IE ≤ 11
+
+### Architecture Integration
+
+The technology stack is architected to support Eternal's core requirements:
+
+1. **Real-time Performance**: Three.js and Tone.js provide hardware-accelerated graphics and audio
+2. **Type Safety**: Flow ensures reliable data flow through the node graph
+3. **Reactive Updates**: Redux and React enable efficient state propagation
+4. **Extensibility**: Modular architecture allows easy addition of new node types
+5. **Professional UI**: Blueprint.js provides consistent, accessible interface components
+6. **Cross-platform**: Web-based deployment ensures broad compatibility
+
+This carefully balanced stack enables Eternal to deliver professional-grade creative tools while maintaining the flexibility and accessibility of web technologies.
+
 This architecture enables Eternal to function as both a creative tool and a technical platform, supporting complex audio-visual compositions while maintaining code clarity and extensibility.
+
 
