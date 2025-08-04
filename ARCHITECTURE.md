@@ -113,4 +113,142 @@ The root component orchestrates:
 - Audio samples, textures, and example graphs included
 - Optimized build process with Create React App
 
+## Core Architecture Components
+
+The heart of Eternal's architecture lies in its node-based computation system, built around four fundamental classes that work together to create a flexible, reactive programming environment.
+
+### NodeBase (`/src/models/NodeBase.js`)
+
+**NodeBase** is the abstract foundation class for all computational nodes in the system. It implements the core node lifecycle and provides the infrastructure for reactive computation.
+
+#### Key Features:
+- **Generic Type System**: Uses Flow generics `<Val, In, Out>` for state, input, and output types
+- **Unique Identity**: Each node has a UUID for graph-wide identification
+- **State Management**: Maintains internal state separate from props (external parameters)
+- **Connection Management**: Tracks input and output edges with lifecycle hooks
+- **Output Caching**: Implements intelligent caching to prevent unnecessary recomputation
+- **Reactive Updates**: Automatically propagates changes through the computation graph
+
+#### Core Properties:
+```javascript
+class NodeBase<Val: Object, In: ?Object, Out: ?Object> {
+  +id: string;              // Unique identifier
+  state: Val;               // Internal node state
+  props: $Shape<In>;        // External parameters
+  inputs: Edge[] = [];      // Incoming connections
+  outputs: Edge[] = [];     // Outgoing connections
+  outputCache = {};         // Cached computation results
+  live: boolean = false;    // Execution state
+}
+```
+
+#### Lifecycle Hooks:
+- `onAddToGraph()`: Called when node is added to a graph
+- `willBecomeLive()`: Fired when all inputs are connected
+- `willBeRemoved()`: Cleanup before removal from graph
+- Connection hooks for before/after connect/disconnect events
+
+#### Processing Model:
+The `process(keys)` method is the core computation function that each node type must implement. It receives a list of output keys to compute and returns the calculated values. The `_process()` method wraps this with caching logic, only forwarding values that have changed.
+
+### Graph (`/src/models/Graph.js`)
+
+**Graph** serves as the container and orchestrator for the entire node network, managing nodes, edges, and their spatial relationships.
+
+#### Key Responsibilities:
+- **Node Management**: Add, remove, and track nodes with spatial positioning
+- **Edge Management**: Maintain connections between nodes
+- **Serialization**: Convert graphs to/from JSON for persistence
+- **Spatial Coordination**: Track node positions for visual representation
+- **Graph Operations**: Provide utilities for graph traversal and manipulation
+
+#### Core Structure:
+```javascript
+class Graph {
+  id: string;                           // Unique graph identifier
+  name: string = 'untitled';           // Human-readable name
+  nodes: NodeInSpace[] = [];           // Nodes with positions
+  _nodesById: { [string]: NodeInSpace }; // Fast node lookup
+  edges: Edge[] = [];                  // All connections
+  meta: MetaData = {};                 // Zoom and other metadata
+}
+```
+
+#### Serialization Support:
+The graph implements comprehensive serialization through the `GraphSerialization` type, enabling:
+- Save/load functionality for user compositions
+- Example graph distribution
+- Version control and sharing capabilities
+
+### Edge (`/src/models/Edge.js`)
+
+**Edge** represents the connections between nodes, defining how data flows through the computation graph.
+
+#### Connection Model:
+```javascript
+class Edge {
+  id: string;           // Unique edge identifier
+  from: AnyNode;        // Source node
+  to: AnyNode;          // Destination node
+  fromPort: string;     // Output port name
+  toPort: string;       // Input port name
+}
+```
+
+#### Data Flow Functions:
+- `outDataFor(data)`: Transforms output data for transmission
+- `inDataFor(change)`: Extracts relevant input data
+- `notify()`: Triggers update notifications through the graph
+
+#### Serialization:
+Edges can be serialized to `EdgeSerialization` format, storing node IDs and port names for reconstruction during graph loading.
+
+### AttributeType (`/src/models/AttributeType.js`)
+
+**AttributeType** implements the type system that governs data flow and validation throughout the node graph.
+
+#### Type System Features:
+- **Flexible Types**: Supports primitives, enums, and complex object types
+- **Runtime Validation**: Parse and serialize functions for type safety
+- **Schema Definition**: Nested type definitions for complex data structures
+- **Default Values**: Automatic initialization of typed attributes
+- **Metadata Support**: Additional type configuration and constraints
+
+#### Type Categories:
+```javascript
+type TypeType = 'primitive' | 'enum' | 'complex';
+```
+
+#### Core Interface:
+```javascript
+interface AttributeType {
+  id: Symbol;                    // Runtime unique identifier
+  name: string;                  // Type name (lowercase for primitives)
+  typeDescription: Node;         // React component for type documentation
+  description: ?Node;            // Attribute-specific description
+  schema: ?AttributeSchema;      // Nested type definition
+  defaultValue: any;             // Default initialization value
+  parse: any => any;             // Input validation/transformation
+  serialize: ?(any) => any;      // Output serialization
+}
+```
+
+### Component Relationships
+
+The four core components work together in a carefully orchestrated system:
+
+1. **Graph** contains multiple **NodeBase** instances positioned in space
+2. **Edge** objects connect **NodeBase** inputs to outputs, defining data flow
+3. **AttributeType** governs the types of data that flow through **Edge** connections
+4. **NodeBase** uses **AttributeType** definitions to validate inputs and outputs
+5. **Graph** serialization preserves the entire network structure for persistence
+
+This architecture enables:
+- **Dynamic Graph Construction**: Nodes and edges can be added/removed at runtime
+- **Type Safety**: AttributeType system prevents incompatible connections
+- **Reactive Updates**: Changes propagate automatically through the graph
+- **Visual Programming**: Spatial positioning enables intuitive graph editing
+- **Extensibility**: New node types can be added without modifying core classes
+
 This architecture enables Eternal to function as both a creative tool and a technical platform, supporting complex audio-visual compositions while maintaining code clarity and extensibility.
+
