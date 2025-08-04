@@ -619,7 +619,285 @@ The directory structure follows several key principles:
 
 This organization enables developers to quickly locate relevant code, understand system boundaries, and extend functionality without disrupting existing features.
 
+## Node System Architecture
+
+The node system is the computational heart of Eternal, implementing a sophisticated plugin-based architecture that enables reactive, type-safe data flow through a graph of interconnected processing units. With 96+ specialized node types spanning multiple domains, the system provides a flexible foundation for audio-visual composition and computational creativity.
+
+### Plugin-Based Node Architecture
+
+#### Node Registration System
+All nodes are registered through a centralized registry system (`/src/models/nodes/index.js`) that provides:
+
+```javascript
+const NodeRegistry = fromPairs(allNodes.map(n => [n.getRegistryName(), n]));
+```
+
+**Key Features:**
+- **Dynamic Discovery**: Nodes are automatically registered by registry name
+- **Collision Detection**: Prevents duplicate node registrations
+- **Runtime Access**: Global registry enables dynamic node instantiation
+- **Type Safety**: Flow types ensure proper node class structure
+
+#### Node Class Hierarchy
+Every node extends the abstract `NodeBase` class, inheriting core functionality:
+
+```javascript
+export default class NodeBase<Val: Object, In: ?Object, Out: ?Object>
+```
+
+**Generic Type Parameters:**
+- `Val`: Internal state type for node-specific data
+- `In`: Input schema defining expected input types
+- `Out`: Output schema defining produced output types
+
+#### Static Node Metadata
+Each node class defines static properties for system integration:
+
+```javascript
+static +displayName: ?string;        // Human-readable name
+static +registryName: string;        // Unique system identifier
+static +description: ?Node;          // React component documentation
+static +schema: Schema;              // Input/output/state type definitions
+static +defaultState: ?$Shape<Val>;  // Default internal state
+static +defaultProps: ?$Shape<In>;   // Default input values
+```
+
+### Reactive Execution Model
+
+#### Change Propagation System
+The reactive model ensures automatic updates throughout the node graph:
+
+1. **Input Change Detection**: Nodes monitor input changes via edge notifications
+2. **Selective Processing**: Only affected outputs are recomputed
+3. **Downstream Propagation**: Changes cascade through connected nodes
+4. **Cycle Prevention**: Graph topology prevents infinite loops
+
+#### Processing Pipeline
+Each node implements a standardized processing pipeline:
+
+```javascript
+process: (string[]) => Out = keys => {
+  // Node-specific computation logic
+  // Returns object with computed output values
+};
+```
+
+**Pipeline Stages:**
+1. **Input Validation**: Verify required inputs are available
+2. **State Access**: Read current node state and input props
+3. **Computation**: Execute node-specific processing logic
+4. **Output Generation**: Return computed values for specified keys
+5. **Cache Update**: Store results for future reference
+
+#### Lifecycle Management
+Nodes participate in a comprehensive lifecycle system:
+
+- `onAddToGraph()`: Initialize when added to graph
+- `willBecomeLive()`: Activate when all inputs connected
+- `willBeRemoved()`: Cleanup before removal
+- Connection hooks for edge management
+
+### Type System Integration
+
+#### AttributeType Framework
+The type system governs data flow and ensures compatibility:
+
+```javascript
+interface AttributeType {
+  name: string;                    // Type identifier
+  typeDescription: Node;           // Documentation component
+  schema: ?AttributeSchema;        // Nested type definition
+  defaultValue: any;               // Default initialization
+  parse: any => any;               // Input validation
+  serialize: ?(any) => any;        // Output serialization
+}
+```
+
+#### Type Categories
+- **Primitives**: `number`, `string`, `boolean`, `date`
+- **Complex Objects**: `Vec2`, `Vec3`, `Mesh`, `Material`, `Geometry`
+- **Audio Types**: `AudioNode`, `Synth`, `Signal`, `Note`
+- **Specialized**: `JSFunction`, `GLSL`, `Tensor`
+
+#### Type Validation
+- **Connection Validation**: Prevents incompatible type connections
+- **Runtime Checking**: Validates data at node boundaries
+- **Automatic Conversion**: Handles compatible type transformations
+- **Error Reporting**: Provides clear feedback for type mismatches
+
+### Caching Mechanisms
+
+#### Output Caching Strategy
+Intelligent caching prevents unnecessary recomputation:
+
+```javascript
+outputCache = {};  // Stores computed results by output key
+
+_process: (string[], boolean) => Out = (keys, force) => {
+  const val = this.process(keys);
+  const forward = force ? val : omitBy(val, (v, k) => 
+    isEqual(v, this.outputCache[k])
+  );
+  this.outputCache = { ...this.outputCache, ...val };
+  return forward;
+};
+```
+
+**Caching Benefits:**
+- **Performance Optimization**: Avoids redundant calculations
+- **Change Detection**: Only propagates actual value changes
+- **Memory Efficiency**: Selective cache invalidation
+- **Consistency**: Ensures deterministic behavior
+
+#### Cache Invalidation
+- **Input Changes**: Automatically invalidate affected outputs
+- **State Updates**: Clear cache when internal state changes
+- **Manual Clearing**: Force recomputation when needed
+- **Selective Updates**: Invalidate only specific output keys
+
+### Node Categories and Implementations
+
+The 96+ node types are organized into specialized categories, each serving specific computational domains:
+
+#### Audio Processing Nodes (ToneNode.js - 27 nodes)
+**Synthesis Nodes:**
+- `SynthNode`: Basic oscillator synthesis
+- `DuoSynthNode`: Dual-oscillator synthesis
+- `AttackReleaseNode`: Envelope-controlled synthesis
+- `PianoNode`: Piano sample playback
+- `NoiseNode`: Noise generation
+
+**Effects and Processing:**
+- `ReverbNode`: Convolution reverb effects
+- `CompressorNode`: Dynamic range compression
+- `FeedbackDelayNode`: Echo and delay effects
+- `AudioGainNode`: Volume and amplitude control
+- `PannerNode`: Stereo positioning
+
+**Sequencing and Control:**
+- `TimeLoopNode`: Rhythmic pattern generation
+- `ArpeggiateNode`: Arpeggio pattern creation
+- `TransportTimeNode`: Global timing synchronization
+- `SetNoteNode`: Note triggering and scheduling
+
+#### 3D Graphics Nodes (ThreeNode.js - 18 nodes)
+**Scene Objects:**
+- `ThreeNode`: Base 3D object with transform controls
+- `DirectionalLightNode`: Directional lighting
+- `AmbientLightNode`: Ambient scene lighting
+- `Color`: Color value generation
+
+**Post-Processing Effects:**
+- `GlitchPassNode`: Digital glitch effects
+- `ScanlinePassNode`: CRT scanline simulation
+- `DotScreenPassNode`: Halftone dot patterns
+- `VignettePassNode`: Lens vignetting effects
+- `NoisePassNode`: Film grain and noise
+
+#### Geometry Generation (Geometries.js - 5 nodes)
+- `BoxGeometryNode`: Cubic geometry generation
+- `SphereGeometryNode`: Spherical geometry
+- `PlaneGeometryNode`: Flat surface geometry
+- `TorusKnotGeometryNode`: Complex knot geometry
+- `GeometryBase`: Abstract geometry foundation
+
+#### Material System (MaterialNode.js - 4 nodes)
+- `LambertMaterialNode`: Diffuse surface materials
+- `ShaderMaterialNode`: Custom GLSL shader materials
+- `ParticleMaterialNode`: Point sprite materials
+- `LoadTextureNode`: Texture loading and management
+
+#### Mathematical Operations (MathNodes.js - 4 nodes)
+- `SumNode`: Addition operations
+- `ProductNode`: Multiplication operations
+- `DivideNode`: Division operations
+- `IntToIntMathNode`: Integer mathematics
+
+#### Music Theory (Music.js - 9 nodes)
+- `ScaleNode`: Musical scale generation
+- `ChordNode`: Chord construction
+- `NoteNode`: Note representation and manipulation
+- `TuningNode`: Alternative tuning systems
+- `TransposeNode`: Pitch transposition
+- `KeyTriadsNode`: Key-based chord progressions
+- `ChordDetectNode`: Harmonic analysis
+
+#### Neural Networks (Neural.js - 3 nodes)
+- `PerformanceRNNNode`: Music generation RNN
+- `LSTMCellNode`: LSTM neural network cell
+- `MultiRNNCellNode`: Multi-layer RNN architecture
+
+#### MIDI Integration (Midi.js - 4 nodes)
+- `MidiInNode`: MIDI input device handling
+- `MidiOutNode`: MIDI output device control
+- `MidiDevicesNode`: Device enumeration
+- `MidiListenNode`: MIDI event monitoring
+
+#### GPU Computation (GPGPU.js - 2 nodes)
+- `GPGPUProgramNode`: GPU shader program compilation
+- `RunGPGPUProgramNode`: GPU program execution
+
+#### Logic and Control Flow (Logic.js - 5 nodes)
+- `AndNode`: Boolean AND operations
+- `OrNode`: Boolean OR operations
+- `NotNode`: Boolean NOT operations
+- `EqualsNode`: Equality comparison
+- `SwitchNode`: Conditional routing
+
+#### Utility and Data Processing (UtilNodes.js - 10 nodes)
+- `JSONParse`: JSON data parsing
+- `ExtractNode`: Object property extraction
+- `CollectNode`: Array aggregation
+- `ArrayFillNode`: Array generation
+- `RegexReplace`: String pattern replacement
+- `StephenWolfram`: Cellular automata simulation
+
+#### Primitive Data Types (primitives.js - 4 nodes)
+- `number`: Numeric value input
+- `string`: Text value input
+- `boolean`: Boolean value input
+- `date`: Date/time value input
+
+### Node Development Patterns
+
+#### Creating New Node Types
+New nodes follow established patterns:
+
+1. **Extend NodeBase**: Inherit core functionality
+2. **Define Schema**: Specify input/output types
+3. **Implement Process**: Core computation logic
+4. **Register Node**: Add to node registry
+5. **Add Documentation**: Provide usage examples
+
+#### Best Practices
+- **Pure Functions**: Minimize side effects in processing
+- **Type Safety**: Leverage Flow types for validation
+- **Performance**: Optimize for real-time execution
+- **Modularity**: Keep nodes focused and composable
+- **Documentation**: Provide clear descriptions and examples
+
+### System Integration
+
+#### Graph Execution Engine
+The node system integrates with the graph execution engine:
+
+1. **Topological Sorting**: Determines execution order
+2. **Dependency Resolution**: Ensures inputs are available
+3. **Parallel Execution**: Processes independent branches
+4. **Error Handling**: Graceful failure and recovery
+
+#### UI Integration
+Nodes integrate seamlessly with the visual interface:
+
+- **Dynamic Rendering**: UI adapts to node schema
+- **Type-Aware Inputs**: Input controls match data types
+- **Real-time Updates**: Changes reflect immediately
+- **Visual Feedback**: Connection validation and status
+
+This sophisticated node system architecture enables Eternal to provide a powerful, extensible platform for creative computation while maintaining type safety, performance, and ease of use.
+
 This architecture enables Eternal to function as both a creative tool and a technical platform, supporting complex audio-visual compositions while maintaining code clarity and extensibility.
+
 
 
 
