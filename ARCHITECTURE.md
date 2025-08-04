@@ -896,7 +896,307 @@ Nodes integrate seamlessly with the visual interface:
 
 This sophisticated node system architecture enables Eternal to provide a powerful, extensible platform for creative computation while maintaining type safety, performance, and ease of use.
 
+## Development Workflow
+
+Eternal's development workflow is designed to support rapid iteration, code quality, and reliable deployment. The system leverages modern JavaScript tooling to provide a seamless development experience while maintaining production-ready builds.
+
+### Build System (Create React App)
+
+#### Foundation
+Eternal is built on **Create React App 5.0.1**, providing a robust, zero-configuration build system that handles:
+
+- **Webpack Configuration**: Optimized bundling with code splitting and tree shaking
+- **Babel Transpilation**: ES6+ to ES5 conversion with polyfills
+- **Development Server**: Hot module replacement for instant feedback
+- **Production Optimization**: Minification, compression, and asset optimization
+- **Asset Management**: Automatic handling of images, fonts, and static files
+
+#### Development Commands
+
+**Start Development Server:**
+```bash
+yarn start
+# Launches development server at localhost:3000
+# Enables hot reloading for instant code changes
+# Provides detailed error reporting and debugging
+```
+
+**Production Build:**
+```bash
+yarn build
+# Creates optimized production build in /build directory
+# Minifies JavaScript, CSS, and HTML
+# Generates source maps for debugging
+# Optimizes assets and enables compression
+```
+
+**Run Tests:**
+```bash
+yarn test
+# Executes Jest test suite with watch mode
+# Provides coverage reporting
+# Supports snapshot testing for UI components
+```
+
+**Eject Configuration (Not Recommended):**
+```bash
+yarn eject
+# Exposes underlying Webpack configuration
+# Irreversible operation - use with caution
+# Generally not needed due to CRA's flexibility
+```
+
+#### Build Optimization Features
+- **Code Splitting**: Automatic chunking for optimal loading
+- **Tree Shaking**: Eliminates unused code from bundles
+- **Asset Optimization**: Image compression and format conversion
+- **Caching Strategy**: Long-term caching with content hashing
+- **Bundle Analysis**: Built-in tools for analyzing bundle size
+
+### Flow Type Checking Configuration
+
+#### Configuration File (`.flowconfig`)
+Flow provides static type checking with comprehensive configuration:
+
+```ini
+[ignore]
+# No specific ignores - checks all relevant files
+
+[include]
+# Includes all files by default
+
+[libs]
+flow-typed          # Third-party library definitions
+
+[options]
+module.file_ext=.js     # JavaScript files
+module.file_ext=.jsx    # React JSX files
+module.file_ext=.json   # JSON imports
+module.file_ext=.css    # CSS modules
+module.file_ext=.scss   # Sass stylesheets
+
+# Module resolution
+module.system.node.resolve_dirname=node_modules
+module.system.node.resolve_dirname=src
+
+# Language features
+esproposal.decorators=ignore
+
+# Error suppression
+suppress_comment= \\(.\\|\n\\)*\\$FlowIssue
+suppress_comment= \\(.\\|\n\\)*\\$FlowIgnore
+
+[strict]
+# Enables strict mode for enhanced type checking
+```
+
+#### Type Checking Commands
+```bash
+yarn flow
+# Runs Flow type checker on entire codebase
+# Reports type errors and warnings
+# Validates type annotations and inference
+```
+
+#### Flow Integration Benefits
+- **Static Analysis**: Catches type errors before runtime
+- **IDE Integration**: Real-time type checking in editors
+- **Gradual Adoption**: Can be added incrementally to existing code
+- **Generic Support**: Advanced type features for complex data structures
+- **Null Safety**: Prevents null and undefined errors
+
+#### Type Checking Strategy
+- **Core Models**: Comprehensive type coverage for NodeBase, Graph, Edge
+- **Component Props**: React component interfaces with Flow types
+- **Redux State**: Typed actions, reducers, and selectors
+- **Node System**: Generic types for extensible node architecture
+- **Utility Functions**: Type-safe helper functions and utilities
+
+### Deployment Process
+
+#### Automated Deployment Script (`deploy.sh`)
+The deployment process is streamlined through an automated bash script:
+
+```bash
+#!/bin/bash
+
+# Usage: ./deploy.sh [major | minor | patch | premajor | preminor | prepatch | prerelease]
+
+if [ "$1" = "help" ]; then
+  echo "Usage: $(basename "$0") [major | minor | patch | premajor | preminor | prepatch | prerelease]"
+  exit
+fi
+
+release=$1
+
+# Check for uncommitted changes
+changes=$(git status --porcelain)
+if [ -z "${changes}" ]; then
+  version=${release:-minor}    # Default to minor version bump
+  yarn version --"$version"    # Update package.json version
+  yarn deploy                  # Deploy to GitHub Pages
+  git push --tags             # Push version tags to repository
+else
+  echo "git dirty, commit first"
+  exit 1
+fi
+```
+
+#### Deployment Workflow
+1. **Pre-deployment Checks**: Ensures clean git working directory
+2. **Version Management**: Automatic semantic versioning with git tags
+3. **Build Generation**: Creates optimized production build
+4. **GitHub Pages Deploy**: Publishes to `https://eternal.rob.computer`
+5. **Tag Management**: Pushes version tags for release tracking
+
+#### GitHub Pages Configuration
+```bash
+yarn deploy
+# Executes: gh-pages -d build
+# Deploys build/ directory to gh-pages branch
+# Automatically configures GitHub Pages hosting
+```
+
+#### Deployment Commands
+```bash
+# Manual deployment
+yarn predeploy    # Runs production build
+yarn deploy       # Deploys to GitHub Pages
+
+# Automated versioned deployment
+./deploy.sh patch    # Patch version (1.0.0 → 1.0.1)
+./deploy.sh minor    # Minor version (1.0.0 → 1.1.0)
+./deploy.sh major    # Major version (1.0.0 → 2.0.0)
+```
+
+### Code Quality and Linting
+
+#### ESLint Configuration (`.eslintrc`)
+Maintains code quality with React-specific linting rules:
+
+```json
+{
+  "extends": "react-app",
+  "globals": {
+    "Types": true        // Global Types object for node system
+  },
+  "overrides": [
+    {
+      "files": ["*"],
+      "rules": {
+        "no-undef": "off",      // Disabled due to Flow types
+        "no-unused-vars": "off"  // Disabled due to Flow analysis
+      }
+    }
+  ]
+}
+```
+
+#### Linting Strategy
+- **React App Preset**: Standard React development rules
+- **Flow Integration**: Coordinated with Flow type checking
+- **Global Variables**: Configured for node system globals
+- **Vendor Exclusions**: Ignores third-party code in `src/vendor/`
+
+#### Code Formatting
+- **Prettier Integration**: Automatic code formatting on save
+- **Consistent Style**: Enforced across entire codebase
+- **Editor Integration**: Works with VS Code, WebStorm, and other editors
+
+### Package Management and Dependencies
+
+#### Yarn Package Manager
+- **Lock File**: `yarn.lock` ensures consistent dependency versions
+- **Workspaces**: Supports monorepo development if needed
+- **Performance**: Faster installs with parallel downloads
+- **Security**: Built-in security auditing
+
+#### Dependency Management
+```bash
+# Install dependencies
+yarn install
+
+# Add new dependency
+yarn add package-name
+
+# Add development dependency
+yarn add --dev package-name
+
+# Update dependencies
+yarn upgrade
+
+# Security audit
+yarn audit
+```
+
+#### Post-Install Hooks
+```bash
+yarn postinstall
+# Executes: patch-package
+# Applies custom patches to node_modules
+# Maintains local modifications to third-party packages
+```
+
+### Development Environment
+
+#### Node.js Version Management
+- **Required Version**: Node.js 16.x (specified in `package.json`)
+- **Version Consistency**: Ensures consistent behavior across environments
+- **NVM Support**: `.nvmrc` file for automatic version switching
+
+#### Browser Compatibility
+```json
+"browserslist": [
+  ">0.2%",           // Browsers with >0.2% market share
+  "not dead",        // Actively maintained browsers
+  "not ie <= 11",    // Excludes Internet Explorer 11 and below
+  "not op_mini all"  // Excludes Opera Mini
+]
+```
+
+#### Development Tools Integration
+- **Hot Module Replacement**: Instant code updates without page refresh
+- **Source Maps**: Debugging support for transpiled code
+- **Error Overlay**: In-browser error reporting during development
+- **Performance Monitoring**: Built-in performance profiling tools
+
+### Continuous Integration Considerations
+
+While not explicitly configured, the workflow supports CI/CD integration:
+
+#### Recommended CI Pipeline
+1. **Dependency Installation**: `yarn install --frozen-lockfile`
+2. **Type Checking**: `yarn flow`
+3. **Linting**: `yarn lint` (if configured)
+4. **Testing**: `yarn test --coverage --watchAll=false`
+5. **Build Verification**: `yarn build`
+6. **Deployment**: Automated on main branch merges
+
+#### Quality Gates
+- **Type Safety**: Flow type checking must pass
+- **Build Success**: Production build must complete without errors
+- **Test Coverage**: Maintain adequate test coverage
+- **Dependency Security**: Regular security audits
+
+### Development Best Practices
+
+#### Workflow Recommendations
+1. **Feature Branches**: Develop features in isolated branches
+2. **Type-First Development**: Add Flow types before implementation
+3. **Incremental Testing**: Write tests alongside feature development
+4. **Regular Deployment**: Deploy frequently with small changes
+5. **Version Management**: Use semantic versioning for releases
+
+#### Performance Optimization
+- **Bundle Analysis**: Regular analysis of bundle size and composition
+- **Code Splitting**: Implement route-based and component-based splitting
+- **Asset Optimization**: Optimize images and other static assets
+- **Caching Strategy**: Leverage browser caching for static assets
+
+This comprehensive development workflow ensures code quality, type safety, and reliable deployment while supporting rapid iteration and creative experimentation.
+
 This architecture enables Eternal to function as both a creative tool and a technical platform, supporting complex audio-visual compositions while maintaining code clarity and extensibility.
+
 
 
 
