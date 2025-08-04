@@ -394,6 +394,232 @@ The technology stack is architected to support Eternal's core requirements:
 
 This carefully balanced stack enables Eternal to deliver professional-grade creative tools while maintaining the flexibility and accessibility of web technologies.
 
+## Directory Structure
+
+The Eternal codebase is organized into a logical hierarchy that separates concerns and promotes maintainability. The source code is primarily contained within the `src/` directory, with each subdirectory serving a specific architectural purpose.
+
+### Root Source Directory (`/src`)
+
+The main source directory contains the application entry points and global configuration:
+
+```
+src/
+├── App.js              # Main application component with routing and global state
+├── App.css             # Global application styles
+├── App.test.js         # Application-level tests
+├── index.js            # React application entry point
+├── boot.js             # Application bootstrap and initialization
+├── types.js            # Global Flow type definitions
+├── eternal.scss        # Main stylesheet with design system
+└── serviceWorker.js    # Progressive Web App service worker
+```
+
+### Core Data Models (`/src/models`)
+
+Contains the fundamental data structures and business logic that power the node-based system:
+
+```
+models/
+├── NodeBase.js         # Abstract base class for all computational nodes
+├── Graph.js            # Graph container managing nodes and edges
+├── Edge.js             # Connection system between node inputs/outputs
+├── AttributeType.js    # Type system for data validation and flow
+├── nodes/              # 96+ node implementations (detailed below)
+├── examples/           # Pre-built example graphs and compositions
+└── types/              # Additional type definitions and schemas
+```
+
+#### Core Model Responsibilities:
+- **NodeBase.js**: Provides the foundation for all nodes with lifecycle management, caching, and reactive updates
+- **Graph.js**: Manages the spatial arrangement of nodes and their connections with serialization support
+- **Edge.js**: Handles data flow between nodes with type validation and change propagation
+- **AttributeType.js**: Implements the type system that governs data compatibility and validation
+
+### Node Implementations (`/src/models/nodes`)
+
+The heart of Eternal's functionality, containing 96+ specialized node types organized by domain:
+
+```
+nodes/
+├── index.js            # Node registry and export management
+├── primitives.js       # Basic data type nodes (number, string, boolean, date)
+├── ToneNode.js         # Audio synthesis and processing nodes (40+ nodes)
+├── ThreeNode.js        # 3D graphics and rendering nodes (18+ nodes)
+├── MathNodes.js        # Mathematical operations and utilities
+├── Neural.js           # Machine learning and neural network nodes
+├── Geometries.js       # 3D geometry generation nodes
+├── MaterialNode.js     # 3D material and shader nodes
+├── MeshNode.js         # 3D mesh composition nodes
+├── Music.js            # Music theory and composition nodes
+├── Midi.js             # MIDI input/output and processing
+├── SoundFont.js        # General MIDI instrument nodes
+├── GPGPU.js            # GPU computation and parallel processing
+├── Logic.js            # Boolean logic and conditional operations
+├── UtilNodes.js        # Utility functions and data manipulation
+├── Code.js             # JavaScript code execution nodes
+├── Dom.js              # DOM manipulation and web integration
+├── Vector2D.js         # 2D vector mathematics
+├── Vector3D.js         # 3D vector mathematics
+├── String.js           # String manipulation utilities
+├── IntervalNode.js     # Timing and interval operations
+└── MapperNode.js       # Data mapping and transformation
+```
+
+#### Node Categories:
+- **Audio Nodes** (ToneNode.js): Synthesizers, effects, sequencers, and audio analysis
+- **Visual Nodes** (ThreeNode.js): 3D objects, lights, cameras, and post-processing effects
+- **Mathematical Nodes** (MathNodes.js): Arithmetic, trigonometry, and advanced mathematics
+- **Neural Network Nodes** (Neural.js): TensorFlow.js integration for machine learning
+- **Music Theory Nodes** (Music.js): Scales, chords, progressions, and harmonic analysis
+- **Utility Nodes** (UtilNodes.js): Data structures, control flow, and general utilities
+
+### Example Graphs (`/src/models/examples`)
+
+Pre-built compositions demonstrating various capabilities:
+
+```
+examples/
+├── welcome.json                        # Introduction graph for new users
+├── nude, eternally.json               # Radiohead-inspired eternal composition
+├── in the gardens of eden.json       # Complex audio-visual composition
+├── stephen wolfram.json               # Cellular automata visualization
+├── gpgpu wolfram.json                 # GPU-accelerated computation example
+├── shaders.json                       # GLSL shader demonstration
+├── midi chords.json                   # MIDI input processing example
+├── percept nets.json                  # Neural network perception demo
+├── platonic plague.json               # Geometric audio-visual piece
+├── soundfont-midi.json                # General MIDI instrument demo
+├── the music while the music lasts.json # Temporal composition example
+└── tuning-lmy.json                    # Microtonal tuning exploration
+```
+
+### React UI Components (`/src/components`)
+
+User interface components organized by functionality:
+
+```
+components/
+├── NodeGraph.js            # Main graph editing canvas (20k+ lines)
+├── Node.js                 # Individual node rendering and interaction
+├── AllEdges.js             # Edge rendering and connection visualization
+├── Spline.js               # Curved connection lines between nodes
+├── AttributePane/          # Node property editing interface
+│   ├── index.js           # Main attribute editor component
+│   └── InfoPopup.js       # Contextual help and documentation
+├── Toolbar.js              # Main application toolbar
+├── SearchBar.js            # Global search functionality
+├── NodeSearcher.js         # Node type discovery and insertion
+├── ExampleSearch.js        # Example graph browser and loader
+├── SaveDialog.js           # Graph export and sharing interface
+├── FileUpload.js           # JSON graph import functionality
+├── Zoomer.js               # Canvas zoom and pan controls
+├── EditInput.js            # Inline text editing component
+├── NodeInputList.js        # Node input port rendering
+├── NodeInputListItem.js    # Individual input port component
+├── NodeOutputList.js       # Node output port rendering
+├── NodeOutputListItem.js   # Individual output port component
+├── SVGComponent.js         # SVG rendering utilities
+├── dialogs/                # Modal dialog components
+└── util.js                 # Component utility functions
+```
+
+#### Component Architecture:
+- **NodeGraph.js**: The central canvas component handling node positioning, selection, and interaction
+- **Node.js**: Renders individual nodes with their inputs, outputs, and visual representation
+- **AttributePane/**: Provides dynamic property editing based on node type and schema
+- **Search Components**: Enable discovery and insertion of nodes and examples
+
+### State Management (`/src/redux`)
+
+Redux-based state management following the ducks pattern:
+
+```
+redux/
+├── rootStore.js            # Redux store configuration and middleware
+├── rootReducer.js          # Root reducer combining all state slices
+├── types.js                # Redux action type definitions
+└── ducks/                  # Feature-based state modules
+    └── graph.js           # Graph state management (positions, selection, UI)
+```
+
+#### State Architecture:
+- **graph.js**: Manages node positions, selection state, zoom level, and UI visibility
+- Follows the ducks pattern for co-locating actions, reducers, and selectors
+- Integrates with React components via react-redux hooks and selectors
+
+### Three.js Utilities (`/src/threeUtil`)
+
+Specialized utilities for 3D graphics and WebGL integration:
+
+```
+threeUtil/
+├── Base.js                 # Core Three.js scene management and rendering
+├── Stats.js                # Performance monitoring and FPS display
+└── WebVR.js                # Virtual reality support and controls
+```
+
+#### Graphics Infrastructure:
+- **Base.js**: Provides the foundation for 3D scene management, camera controls, and render loops
+- **Stats.js**: Integrates performance monitoring for optimization and debugging
+- **WebVR.js**: Enables VR experiences and immersive audio-visual compositions
+
+### Utility Functions (`/src/utils`)
+
+Common utilities and helper functions used throughout the application:
+
+```
+utils/
+├── index.js                # Main utility exports and re-exports
+├── array.js                # Array manipulation and functional utilities
+├── string.js               # String processing and UUID generation
+├── vector.js               # Vector mathematics and spatial calculations
+├── typeUtils.js            # Type checking and validation utilities
+├── tuning.js               # Musical tuning systems and frequency calculations
+├── docgen.js               # Documentation generation for node types
+└── url.js                  # URL parsing and manipulation
+```
+
+#### Utility Categories:
+- **Mathematical**: Vector operations, tuning calculations, and numerical utilities
+- **Data Processing**: Array manipulation, string processing, and type validation
+- **Documentation**: Automated generation of node documentation and schemas
+- **System**: URL handling, UUID generation, and general-purpose functions
+
+### Additional Directories
+
+#### Performance Monitoring (`/src/performance`)
+```
+performance/
+└── index.js                # Performance tracking and optimization utilities
+```
+
+#### Vendor Code (`/src/vendor`)
+```
+vendor/
+└── JsonTree/               # Modified third-party JSON tree component
+```
+
+#### Static Assets (`/src/img`)
+```
+img/
+├── bg-img.png              # Background images for UI theming
+├── bg-poly.png             # Geometric background patterns
+└── bg-texture-dark.png     # Dark theme texture assets
+```
+
+### Directory Design Principles
+
+The directory structure follows several key principles:
+
+1. **Separation of Concerns**: Each directory has a clear, single responsibility
+2. **Feature-Based Organization**: Related functionality is co-located (e.g., AttributePane components)
+3. **Scalability**: The node system can accommodate new types without restructuring
+4. **Discoverability**: Logical naming and organization make the codebase navigable
+5. **Modularity**: Components and utilities can be imported and used independently
+
+This organization enables developers to quickly locate relevant code, understand system boundaries, and extend functionality without disrupting existing features.
+
 This architecture enables Eternal to function as both a creative tool and a technical platform, supporting complex audio-visual compositions while maintaining code clarity and extensibility.
+
 
 
